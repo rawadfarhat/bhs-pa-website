@@ -105,3 +105,166 @@ function renderMemberCards(array $members): void
     }
 }
 
+function publicEvents(): array
+{
+    static $events;
+    if (is_array($events)) return $events;
+    try {
+        $events = db()->query("SELECT id,name,event_date,description FROM events WHERE deleted_at IS NULL AND status='active' AND publish_to_website=1 ORDER BY event_date DESC,id DESC")->fetchAll();
+    } catch (Throwable $error) {
+        error_log('Public event query failed: ' . $error->getMessage());
+        $events = [];
+    }
+    return $events;
+}
+
+function publicEvent(int $id): ?array
+{
+    try {
+        $stmt = db()->prepare("SELECT id,name,event_date,description,events_page_content_html,publish_photos FROM events WHERE id=:id AND deleted_at IS NULL AND status='active' AND publish_to_website=1 LIMIT 1");
+        $stmt->execute(['id' => $id]);
+        return $stmt->fetch() ?: null;
+    } catch (Throwable $error) {
+        error_log('Public event lookup failed: ' . $error->getMessage());
+        return null;
+    }
+}
+
+function publicEventPhotos(int $eventId): array
+{
+    try {
+        $stmt = db()->prepare("SELECT a.id,a.file_name,a.image_width,a.image_height,
+            COALESCE((SELECT v.width FROM attachment_image_variants v WHERE v.attachment_id=a.id AND v.variant='medium'),a.image_width) display_width,
+            COALESCE((SELECT v.height FROM attachment_image_variants v WHERE v.attachment_id=a.id AND v.variant='medium'),a.image_height) display_height
+            FROM attachments a INNER JOIN events e ON e.id=a.entity_id
+            WHERE a.entity_type='event_photo' AND a.entity_id=:event_id AND a.mime_type IN ('image/jpeg','image/png','image/webp')
+              AND e.deleted_at IS NULL AND e.status='active' AND e.publish_to_website=1 AND e.publish_photos=1
+            ORDER BY a.id ASC");
+        $stmt->execute(['event_id' => $eventId]);
+        return $stmt->fetchAll();
+    } catch (Throwable $error) {
+        error_log('Public event photo query failed: ' . $error->getMessage());
+        return [];
+    }
+}
+
+function publicEventAttachments(int $eventId): array
+{
+    try {
+        $stmt = db()->prepare("SELECT a.id,a.file_name,a.mime_type
+            FROM attachments a INNER JOIN events e ON e.id=a.entity_id
+            WHERE a.entity_type='event_attachment' AND a.entity_id=:event_id
+              AND e.deleted_at IS NULL AND e.status='active' AND e.publish_to_website=1
+            ORDER BY a.id ASC");
+        $stmt->execute(['event_id' => $eventId]);
+        return $stmt->fetchAll();
+    } catch (Throwable $error) {
+        error_log('Public event attachment query failed: ' . $error->getMessage());
+        return [];
+    }
+}
+
+function replaceEventAttachmentPlaceholders(string $html, array $attachments): string
+{
+    foreach ($attachments as $attachment) {
+        $name = (string) ($attachment['file_name'] ?? '');
+        if ($name === '') continue;
+        $safeName = str_replace(['{', '}'], '', $name);
+        $filePatterns = array_unique([preg_quote($safeName, '/'), preg_quote(e($safeName), '/')]);
+        $pattern = '/\{attachment:\s*(?:' . implode('|', $filePatterns) . ')\s*(?:;\s*name\s*:\s*([^{}]*?))?\s*\}/iu';
+        $html = preg_replace_callback($pattern, static function (array $match) use ($attachment, $name): string {
+            $customLabel = html_entity_decode(trim((string) ($match[1] ?? '')), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            $label = $customLabel !== '' ? $customLabel : $name;
+            return '<a href="' . e(url('event-attachment.php?id=' . (int) $attachment['id'])) . '">' . e($label) . '</a>';
+        }, $html) ?? $html;
+    }
+    return $html;
+}
+
+function renderEventGallery(array $event, array $photos): string
+{
+    if ($photos === []) return '';
+    ob_start();
+    ?>
+    <section class="event-gallery-block" aria-label="<?= e($event['name']) ?> photo gallery" data-event-gallery>
+        <div class="event-gallery-heading"><h2>Photo gallery</h2><p>Scroll through the thumbnails or select one to open the gallery.</p></div>
+        <div class="event-thumbnail-strip" aria-label="Event photo thumbnails">
+            <?php foreach ($photos as $index => $photo): $base = 'event-photo.php?id=' . (int) $photo['id'] . '&variant='; ?>
+                <button class="event-gallery-thumb" type="button" data-gallery-index="<?= $index ?>" data-medium="<?= e(url($base . 'medium')) ?>" data-large="<?= e(url($base . 'large')) ?>" data-alt="<?= e($event['name']) ?> photo <?= $index + 1 ?>" aria-label="Open <?= e($event['name']) ?> photo <?= $index + 1 ?>">
+                    <img src="<?= e(url($base . 'thumbnail')) ?>" width="480" height="320" alt="<?= e($event['name']) ?> photo <?= $index + 1 ?>" loading="lazy" decoding="async">
+                </button>
+            <?php endforeach; ?>
+        </div>
+        <dialog class="event-gallery-dialog" aria-label="<?= e($event['name']) ?> expanded photo gallery">
+            <div class="event-gallery-dialog-shell">
+                <button class="event-gallery-close" type="button" data-gallery-close aria-label="Close photo gallery">×</button>
+                <button class="event-gallery-nav event-gallery-previous" type="button" data-gallery-previous aria-label="Previous photo">‹</button>
+                <figure><img src="" alt=""><figcaption aria-live="polite"></figcaption></figure>
+                <button class="event-gallery-nav event-gallery-next" type="button" data-gallery-next aria-label="Next photo">›</button>
+                <div class="event-gallery-dialog-thumbs" aria-label="Choose a photo">
+                    <?php foreach ($photos as $index => $photo): $base = 'event-photo.php?id=' . (int) $photo['id'] . '&variant='; ?>
+                        <button type="button" data-dialog-gallery-index="<?= $index ?>" aria-label="Show photo <?= $index + 1 ?>"><img src="<?= e(url($base . 'thumbnail')) ?>" width="120" height="80" alt="" loading="lazy" decoding="async"></button>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </dialog>
+    </section>
+    <?php
+    return (string) ob_get_clean();
+}
+
+/** @return array{html:string,gallery_placed:bool} */
+function renderPublicEventContent(?string $html, array $attachments, string $galleryHtml): array
+{
+    $content = safeEventHtml(replaceEventAttachmentPlaceholders((string) $html, $attachments));
+    $galleryPlaced = false;
+    if ($galleryHtml !== '') {
+        $content = preg_replace('/<p>\s*\{image_gallery\}\s*<\/p>|\{image_gallery\}/i', '__EVENT_IMAGE_GALLERY__', $content) ?? $content;
+        if (str_contains($content, '__EVENT_IMAGE_GALLERY__')) {
+            $content = preg_replace('/__EVENT_IMAGE_GALLERY__/', $galleryHtml, $content, 1) ?? $content;
+            $content = str_replace('__EVENT_IMAGE_GALLERY__', '', $content);
+            $galleryPlaced = true;
+        }
+    } else {
+        $content = preg_replace('/<p>\s*\{image_gallery\}\s*<\/p>|\{image_gallery\}/i', '', $content) ?? $content;
+    }
+    return ['html' => $content, 'gallery_placed' => $galleryPlaced];
+}
+
+function safeEventHtml(?string $html): string
+{
+    $html = trim((string) $html);
+    if ($html === '') return '';
+    $document = new DOMDocument();
+    libxml_use_internal_errors(true);
+    $document->loadHTML('<?xml encoding="utf-8" ?><div id="event-content">' . $html . '</div>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+    libxml_clear_errors();
+    $allowed = ['div','p','br','strong','b','em','i','u','ul','ol','li','h2','h3','h4','blockquote','table','thead','tbody','tr','th','td','a','span'];
+    $nodes = $document->getElementsByTagName('*');
+    for ($i = $nodes->length - 1; $i >= 0; $i--) {
+        $node = $nodes->item($i);
+        if (!$node instanceof DOMElement || $node->getAttribute('id') === 'event-content') continue;
+        if (!in_array(strtolower($node->tagName), $allowed, true)) {
+            $node->parentNode?->removeChild($node);
+            continue;
+        }
+        foreach (iterator_to_array($node->attributes) as $attribute) {
+            $name = strtolower($attribute->name);
+            if ($node->tagName === 'a' && $name === 'href') {
+                $href = html_entity_decode(trim($attribute->value), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                $scheme = parse_url($href, PHP_URL_SCHEME);
+                if (!preg_match('/[\x00-\x1F\x7F]/', $href)
+                    && !str_starts_with($href, '//')
+                    && ($scheme === null || in_array(strtolower((string) $scheme), ['http', 'https', 'mailto'], true))) continue;
+            }
+            if ($node->tagName === 'a' && in_array($name, ['title'], true)) continue;
+            $node->removeAttribute($attribute->name);
+        }
+        if ($node->tagName === 'a') $node->setAttribute('rel', 'noopener noreferrer');
+    }
+    $root = $document->getElementById('event-content');
+    $output = '';
+    if ($root) foreach ($root->childNodes as $child) $output .= $document->saveHTML($child);
+    return $output;
+}
+

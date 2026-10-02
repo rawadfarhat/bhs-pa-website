@@ -2,11 +2,11 @@
 declare(strict_types=1);
 $pageTitle = $pageTitle ?? 'BHS Parents Association';
 $activePage = $activePage ?? '';
+$publishedEvents = publicEvents();
 $nav = [
     'home' => ['Home', 'index.php'],
     'members' => ['Our PA', 'pa-members.php'],
     'connect' => ['Stay Connected', 'subscribe.php'],
-    'events' => ['Events', 'festival-of-peace-2026.php'],
     'terms' => ['Terms', 'terms.php'],
 ];
 ?>
@@ -35,6 +35,7 @@ $nav = [
             <?php foreach ($nav as $key => [$label, $href]): ?>
                 <a href="<?= e(url($href)) ?>"<?= $activePage === $key ? ' aria-current="page"' : '' ?>><?= e($label) ?></a>
             <?php endforeach; ?>
+            <?php if ($publishedEvents !== []): ?><div class="nav-dropdown"><a href="<?= e(url('events.php')) ?>"<?= $activePage === 'events' ? ' aria-current="page"' : '' ?>>Events <span aria-hidden="true">▾</span></a><div class="nav-submenu"><?php foreach ($publishedEvents as $navEvent): ?><a href="<?= e(url('event.php?id=' . (int) $navEvent['id'])) ?>"><?= e($navEvent['name']) ?></a><?php endforeach; ?></div></div><?php endif; ?>
             <a class="button button-small" href="<?= e(url('subscribe.php')) ?>">Register your details</a>
         </nav>
     </div>

@@ -7,6 +7,10 @@ return [
         'base_path' => '',
         'debug' => false,
     ],
+    'portal' => [
+        // Only needed for legacy event attachments stored by relative path.
+        'root_path' => 'D:/wamp64/www/BHS-PA-Cashbox/bhs-pa-cashbox',
+    ],
     'db' => [
         'host' => 'localhost',
         'port' => 3306,
