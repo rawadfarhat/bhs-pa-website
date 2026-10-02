@@ -4,7 +4,7 @@ require __DIR__ . '/includes/bootstrap.php';
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 if (!$id) { http_response_code(404); exit; }
 try {
-    $stmt = db()->prepare("SELECT file_blob,mime_type,file_path FROM attachments WHERE id=:id AND entity_type='user_profile' LIMIT 1");
+    $stmt = db()->prepare("SELECT file_blob,mime_type,file_path FROM attachments WHERE id=:id AND entity_type='pa_member_profile' LIMIT 1");
     $stmt->execute(['id' => $id]);
     $photo = $stmt->fetch();
     if (!$photo) { throw new RuntimeException('Not found'); }
