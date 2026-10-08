@@ -19,7 +19,7 @@ $nav = [
     <meta name="theme-color" content="#123f4a">
     <title><?= e($pageTitle) ?></title>
     <link rel="icon" href="<?= e(url('assets/images/favicon.png')) ?>">
-    <link rel="stylesheet" href="<?= e(url('assets/styles.css?v=1')) ?>">
+    <link rel="stylesheet" href="<?= e(url('assets/styles.css?v=2')) ?>">
     <script src="<?= e(url('assets/site.js?v=1')) ?>" defer></script>
 </head>
 <body>
