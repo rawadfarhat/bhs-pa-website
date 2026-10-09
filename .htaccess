@@ -1,16 +1,23 @@
 DirectoryIndex index.php
-Options -Indexes
+Options -Indexes -MultiViews
 
 <FilesMatch "^(config\.php|config\.php\.example|README\.md)$">
     Require all denied
 </FilesMatch>
 
 RewriteEngine On
-RewriteRule ^index\.html$ index.php [R=301,L]
-RewriteRule ^pa_members\.html$ pa-members.php [R=301,L]
-RewriteRule ^subscribe\.html$ subscribe.php [R=301,L]
-RewriteRule ^terms\.html$ terms.php [R=301,L]
-RewriteRule ^festival_of_peace_2026\.html$ festival-of-peace-2026.php [R=301,L]
+# Redirect only browser requests, never internal PHP rewrites.
+RewriteCond %{THE_REQUEST} \s/+[^?\s]*index\.(?:php|html)(?:[?\s]) [NC]
+RewriteRule ^index\.(?:php|html)$ ./ [R=301,L]
+RewriteRule ^pa_members\.html$ pa-members [R=301,L]
+RewriteRule ^festival_of_peace_2026\.html$ festival-of-peace-2026 [R=301,L]
+RewriteCond %{THE_REQUEST} \s/+[^?\s]+\.(?:php|html)(?:[?\s]) [NC]
+RewriteRule ^(event|events|pa-members|subscribe|terms|festival-of-peace-2026)\.(?:php|html)$ $1 [R=301,L]
+
+# Keep assets and existing files intact; serve public pages without extensions.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(event|events|pa-members|subscribe|terms|festival-of-peace-2026)$ $1.php [END]
 
 <IfModule mod_headers.c>
     Header always set X-Content-Type-Options "nosniff"

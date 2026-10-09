@@ -51,6 +51,9 @@ function e(?string $value): string
 
 function url(string $path = ''): string
 {
+    // Public page links use clean routes; file and form endpoints keep their URLs.
+    $path = preg_replace('~^(event|events|pa-members|subscribe|terms|festival-of-peace-2026)\.(?:php|html)(?=[?#]|$)~', '$1', $path);
+    $path = preg_replace('~^index\.(?:php|html)(?=[?#]|$)~', '', $path);
     $configuredBasePath = trim((string) config('app.base_path', ''));
 
     if ($configuredBasePath !== '') {
@@ -199,7 +202,7 @@ function renderEventGallery(array $event, array $photos): string
             <div class="event-gallery-dialog-shell">
                 <button class="event-gallery-close" type="button" data-gallery-close aria-label="Close photo gallery">×</button>
                 <button class="event-gallery-nav event-gallery-previous" type="button" data-gallery-previous aria-label="Previous photo">‹</button>
-                <figure><img src="" alt=""><figcaption aria-live="polite"></figcaption></figure>
+                <figure><div class="event-gallery-photo"><img alt=""></div><figcaption aria-live="polite"></figcaption></figure>
                 <button class="event-gallery-nav event-gallery-next" type="button" data-gallery-next aria-label="Next photo">›</button>
                 <div class="event-gallery-dialog-thumbs" aria-label="Choose a photo">
                     <?php foreach ($photos as $index => $photo): $base = 'event-photo.php?id=' . (int) $photo['id'] . '&variant='; ?>

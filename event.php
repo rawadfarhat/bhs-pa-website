@@ -17,5 +17,5 @@ require __DIR__ . '/includes/header.php';
 <section class="page-hero"><div class="shell"><p class="eyebrow"><?= !empty($event['event_date']) ? e(date('F j, Y', strtotime($event['event_date']))) : 'Community event' ?></p><h1><?= e($event['name']) ?></h1><?php if (!empty($event['description'])): ?><p><?= e($event['description']) ?></p><?php endif; ?></div></section>
 <?php if ($content !== ''): ?><section class="section"><div class="shell narrow prose"><?= $content ?></div></section><?php endif; ?>
 <?php if ($galleryHtml !== '' && !$galleryPlaced): ?><section class="section section-tint"><div class="shell"><?= $galleryHtml ?></div></section><?php endif; ?>
-<script src="<?= e(url('assets/event-gallery.js?v=1')) ?>" defer></script>
+<script src="<?= e(url('assets/event-gallery.js?v=2')) ?>" defer></script>
 <?php require __DIR__ . '/includes/footer.php'; ?>
