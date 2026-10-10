@@ -72,6 +72,7 @@ function renderEventCollectionForm(array $event, array $configuration): string
     <input id="collect-<?= e($key) ?>" name="<?= e($key) ?>" type="<?= $type ?>" <?= $type === 'number' ? 'step="any"' : 'maxlength="190"' ?> <?= in_array($key, ['email','name'], true) ? 'autocomplete="' . $key . '"' : '' ?> <?= $field['required'] ? 'required' : '' ?>>
     <?php endif; endforeach; ?>
     <?php if ($configuration['consent']): ?><label class="event-collection-consent"><input type="checkbox" name="consent" value="1" required> <span>I agree to the use of this information as described in the <a href="<?= e(url('terms')) ?>" target="_blank" rel="noopener">Terms &amp; Conditions</a>.</span></label><?php endif; ?>
+    <p class="event-collection-privacy">Your information is used to administer this event and communicate about it. Individual submissions are accessible only to authorized PA staff, including administrators. Read our <a href="<?= e(url('privacy')) ?>" target="_blank" rel="noopener">Privacy Policy</a> and <a href="<?= e(url('terms')) ?>" target="_blank" rel="noopener">Terms &amp; Conditions</a>. For correction or deletion requests, contact <a href="mailto:weserve@bhs-pa.com?subject=Event%20data%20privacy%20request">weserve@bhs-pa.com</a>.</p>
     <button type="submit" class="button"><?= e($configuration['submit_label']) ?></button>
   </form>
   <p id="event-collection-message" role="status" aria-live="polite" tabindex="-1"></p>

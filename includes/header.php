@@ -19,7 +19,7 @@ $nav = [
     <meta name="theme-color" content="#123f4a">
     <title><?= e($pageTitle) ?></title>
     <link rel="icon" href="<?= e(url('assets/images/favicon.png')) ?>">
-    <link rel="stylesheet" href="<?= e(url('assets/styles.css?v=14')) ?>">
+    <link rel="stylesheet" href="<?= e(url('assets/styles.css?v=15')) ?>">
     <script src="<?= e(url('assets/site.js?v=1')) ?>" defer></script>
 </head>
 <body>
@@ -37,6 +37,7 @@ $nav = [
             <?php endforeach; ?>
             <?php if ($publishedEvents !== []): ?><div class="nav-dropdown"><a href="<?= e(url('events.php')) ?>"<?= $activePage === 'events' ? ' aria-current="page"' : '' ?>>Events <span aria-hidden="true">▾</span></a><div class="nav-submenu"><?php foreach ($publishedEvents as $navEvent): ?><a href="<?= e(url('event.php?id=' . (int) $navEvent['id'])) ?>"><?= e($navEvent['name']) ?></a><?php endforeach; ?></div></div><?php endif; ?>
             <a class="button button-small" href="<?= e(url('subscribe.php')) ?>">Register your details</a>
+            <a class="portal-link" href="https://portal.bhs-pa.com" target="_blank" rel="noopener noreferrer" aria-label="Portal (opens in a new tab)">Portal <svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true" focusable="false"><path d="M14 4h6v6M20 4l-9 9M10 4H4v16h16v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </nav>
     </div>
 </header>

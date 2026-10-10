@@ -52,7 +52,7 @@ function e(?string $value): string
 function url(string $path = ''): string
 {
     // Public page links use clean routes; file and form endpoints keep their URLs.
-    $path = preg_replace('~^(event|events|pa-members|subscribe|terms|festival-of-peace-2026)\.(?:php|html)(?=[?#]|$)~', '$1', $path);
+    $path = preg_replace('~^(event|events|pa-members|subscribe|terms|privacy|festival-of-peace-2026)\.(?:php|html)(?=[?#]|$)~', '$1', $path);
     $path = preg_replace('~^index\.(?:php|html)(?=[?#]|$)~', '', $path);
     $configuredBasePath = trim((string) config('app.base_path', ''));
 
@@ -118,6 +118,21 @@ function publicEvents(): array
         error_log('Public event query failed: ' . $error->getMessage());
         $events = [];
     }
+    return $events;
+}
+
+/** Filter published events by their calendar date, including all of today. */
+function upcomingEvents(array $events, ?DateTimeImmutable $today = null): array
+{
+    $today ??= new DateTimeImmutable('today', new DateTimeZone('Asia/Beirut'));
+    $date = $today->format('Y-m-d');
+    $events = array_values(array_filter($events, static function (array $event) use ($date): bool {
+        $eventDate = substr((string) ($event['event_date'] ?? ''), 0, 10);
+        return $eventDate !== '' && $eventDate >= $date;
+    }));
+    usort($events, static fn(array $a, array $b): int =>
+        strcmp((string) $a['event_date'], (string) $b['event_date']) ?: (int) $a['id'] <=> (int) $b['id']
+    );
     return $events;
 }
 

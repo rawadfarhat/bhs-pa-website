@@ -5,6 +5,16 @@ declare(strict_types=1);
 require_once __DIR__ . '/../includes/bootstrap.php';
 
 function websiteEventAssert(bool $condition, string $message): void { if (!$condition) throw new RuntimeException($message); }
+$upcoming = upcomingEvents([
+    ['id' => 4, 'event_date' => '2026-10-12'],
+    ['id' => 1, 'event_date' => '2026-10-09'],
+    ['id' => 3, 'event_date' => null],
+    ['id' => 2, 'event_date' => '2026-10-10'],
+    ['id' => 5, 'event_date' => '2026-10-11'],
+    ['id' => 6, 'event_date' => ''],
+], new DateTimeImmutable('2026-10-10 23:59:59', new DateTimeZone('Asia/Beirut')));
+websiteEventAssert(array_column($upcoming, 'id') === [2, 5, 4], 'Upcoming events must include today through the end of the day, exclude past and undated events, and sort nearest first.');
+websiteEventAssert(upcomingEvents([], new DateTimeImmutable('2026-10-10')) === [], 'No published events should produce no upcoming events.');
 $header = file_get_contents(__DIR__ . '/../includes/header.php');
 $detail = file_get_contents(__DIR__ . '/../event.php');
 $endpoint = file_get_contents(__DIR__ . '/../event-photo.php');

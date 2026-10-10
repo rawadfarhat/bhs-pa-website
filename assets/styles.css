@@ -78,3 +78,9 @@
 .event-progress progress::-webkit-progress-value{background:var(--theme-primary);border-radius:999px}
 .event-progress progress::-moz-progress-bar{background:var(--theme-primary);border-radius:999px}
 @media(max-width:640px){.prose .event-columns{grid-template-columns:minmax(0,1fr);gap:18px}}
+
+/* Portal remains the final navigation item on desktop and mobile. */
+.site-nav>a.portal-link{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--theme-primary);border-radius:8px;background:transparent;color:var(--theme-primary);text-decoration:none;white-space:nowrap}
+.site-nav>a.portal-link:hover{background:var(--theme-surface-alt);color:var(--theme-primary-strong)}
+.site-nav>a.portal-link:focus-visible{outline:3px solid var(--theme-focus);outline-offset:3px}
+.portal-link svg{flex-shrink:0}
