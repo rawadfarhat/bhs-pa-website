@@ -124,7 +124,7 @@ function publicEvents(): array
 function publicEvent(int $id): ?array
 {
     try {
-        $stmt = db()->prepare("SELECT id,name,event_date,description,events_page_content_html,publish_photos FROM events WHERE id=:id AND deleted_at IS NULL AND status='active' AND publish_to_website=1 LIMIT 1");
+        $stmt = db()->prepare("SELECT id,name,event_date,description,events_page_content_html,publish_photos,data_collection_config FROM events WHERE id=:id AND deleted_at IS NULL AND status='active' AND publish_to_website=1 LIMIT 1");
         $stmt->execute(['id' => $id]);
         return $stmt->fetch() ?: null;
     } catch (Throwable $error) {
@@ -167,6 +167,30 @@ function publicEventAttachments(int $eventId): array
     }
 }
 
+/** Replace only text nodes, never attributes or executable markup. */
+function replaceEventText(string $html, string $pattern, callable $render): string
+{
+    $doc = new DOMDocument();
+    libxml_use_internal_errors(true);
+    $doc->loadHTML('<?xml encoding="utf-8" ?><div id="replacement-root">' . $html . '</div>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+    libxml_clear_errors();
+    $root = $doc->getElementById('replacement-root');
+    if (!$root) return '';
+    $xpath = new DOMXPath($doc);
+    foreach (iterator_to_array($xpath->query('.//text()', $root)) as $node) {
+        $text = $node->nodeValue;
+        if (!preg_match($pattern, $text)) continue;
+        $replaced = preg_replace_callback($pattern, $render, htmlspecialchars($text, ENT_NOQUOTES | ENT_SUBSTITUTE, 'UTF-8'));
+        $fragmentDoc = new DOMDocument();
+        $fragmentDoc->loadHTML('<?xml encoding="utf-8" ?><div id="fragment-root">' . $replaced . '</div>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        $fragmentRoot = $fragmentDoc->getElementById('fragment-root');
+        if ($fragmentRoot) foreach (iterator_to_array($fragmentRoot->childNodes) as $child) $node->parentNode->insertBefore($doc->importNode($child, true), $node);
+        $node->parentNode->removeChild($node);
+    }
+    $output = '';
+    foreach ($root->childNodes as $child) $output .= $doc->saveHTML($child);
+    return $output;
+}
 function replaceEventAttachmentPlaceholders(string $html, array $attachments): string
 {
     foreach ($attachments as $attachment) {
@@ -174,12 +198,24 @@ function replaceEventAttachmentPlaceholders(string $html, array $attachments): s
         if ($name === '') continue;
         $safeName = str_replace(['{', '}'], '', $name);
         $filePatterns = array_unique([preg_quote($safeName, '/'), preg_quote(e($safeName), '/')]);
-        $pattern = '/\{attachment:\s*(?:' . implode('|', $filePatterns) . ')\s*(?:;\s*name\s*:\s*([^{}]*?))?\s*\}/iu';
-        $html = preg_replace_callback($pattern, static function (array $match) use ($attachment, $name): string {
-            $customLabel = html_entity_decode(trim((string) ($match[1] ?? '')), ENT_QUOTES | ENT_HTML5, 'UTF-8');
-            $label = $customLabel !== '' ? $customLabel : $name;
-            return '<a href="' . e(url('event-attachment.php?id=' . (int) $attachment['id'])) . '">' . e($label) . '</a>';
-        }, $html) ?? $html;
+        $pattern = '/\{attachment:\s*(?:' . implode('|', $filePatterns) . ')\s*((?:;[^{}]*)?)\}/iu';
+        $html = replaceEventText($html, $pattern, static function (array $match) use ($attachment, $name): string {
+            $options = [];
+            foreach (explode(';', html_entity_decode($match[1] ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8')) as $option) {
+                $parts = explode(':', $option, 2);
+                if (count($parts) === 2) $options[strtolower(trim($parts[0]))] = trim($parts[1]);
+            }
+            $label = ($options['name'] ?? '') ?: $name;
+            $source = e(url('event-attachment.php?id=' . (int) $attachment['id']));
+            $link = '<a href="' . $source . '&amp;download=1">' . e($label) . '</a>';
+            if (($options['display'] ?? '') !== 'embed') return $link;
+            $mime = strtolower((string) ($attachment['mime_type'] ?? ''));
+            $preview = '';
+            if (in_array($mime, ['image/jpeg','image/png','image/webp','image/gif'], true)) $preview = '<img src="' . $source . '" alt="' . e($label) . '" loading="lazy">';
+            elseif (in_array($mime, ['video/mp4','video/webm','video/ogg'], true)) $preview = '<video src="' . $source . '" controls preload="metadata" aria-label="' . e($label) . '"></video>';
+            elseif ($mime === 'application/pdf') $preview = '<iframe src="' . $source . '" title="' . e($label) . '" loading="lazy"></iframe>';
+            return $preview === '' ? $link : '<span class="event-attachment-embed">' . $preview . $link . '</span>';
+        });
     }
     return $html;
 }
@@ -219,7 +255,7 @@ function renderEventGallery(array $event, array $photos): string
 /** @return array{html:string,gallery_placed:bool} */
 function renderPublicEventContent(?string $html, array $attachments, string $galleryHtml): array
 {
-    $content = safeEventHtml(replaceEventAttachmentPlaceholders((string) $html, $attachments));
+    $content = replaceEventAttachmentPlaceholders(safeEventHtml((string) $html), $attachments);
     $galleryPlaced = false;
     if ($galleryHtml !== '') {
         $content = preg_replace('/<p>\s*\{image_gallery\}\s*<\/p>|\{image_gallery\}/i', '__EVENT_IMAGE_GALLERY__', $content) ?? $content;
@@ -253,6 +289,10 @@ function safeEventHtml(?string $html): string
         }
         foreach (iterator_to_array($node->attributes) as $attribute) {
             $name = strtolower($attribute->name);
+            if ($name === 'class') {
+                $classes = array_intersect(preg_split('/\s+/', trim($attribute->value)), ['event-columns', 'event-stack', 'event-card', 'event-highlight', 'event-muted', 'event-accent', 'event-center', 'event-eyebrow', 'event-stat']);
+                if ($classes) { $node->setAttribute('class', implode(' ', array_unique($classes))); continue; }
+            }
             if ($node->tagName === 'a' && $name === 'href') {
                 $href = html_entity_decode(trim($attribute->value), ENT_QUOTES | ENT_HTML5, 'UTF-8');
                 $scheme = parse_url($href, PHP_URL_SCHEME);

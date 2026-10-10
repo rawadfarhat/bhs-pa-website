@@ -23,7 +23,9 @@ try {
     $downloadName = str_replace(['"', "\r", "\n"], '', basename((string) $attachment['file_name']));
     header('Content-Type: ' . $mime);
     header('Content-Length: ' . strlen($content));
-    header('Content-Disposition: inline; filename="' . $downloadName . '"; filename*=UTF-8\'\'' . rawurlencode($downloadName));
+    $safeInline = in_array($mime, ['image/jpeg','image/png','image/webp','image/gif','video/mp4','video/webm','video/ogg','application/pdf'], true);
+    $disposition = empty($_GET['download']) && $safeInline ? 'inline' : 'attachment';
+    header('Content-Disposition: ' . $disposition . '; filename="' . $downloadName . '"; filename*=UTF-8\'\'' . rawurlencode($downloadName));
     header('Cache-Control: public, max-age=3600');
     header('ETag: ' . $etag);
     header('X-Content-Type-Options: nosniff');

@@ -8,8 +8,8 @@ try {
     $stmt = db()->prepare("SELECT a.id,a.file_name,a.file_blob source_blob,a.mime_type source_mime,a.created_at,v.file_blob variant_blob,v.mime_type variant_mime,v.byte_size,v.sha256
         FROM attachments a INNER JOIN events e ON e.id=a.entity_id
         LEFT JOIN attachment_image_variants v ON v.attachment_id=a.id AND v.variant=:variant
-        WHERE a.id=:id AND a.entity_type='event_photo' AND a.mime_type IN ('image/jpeg','image/png','image/webp')
-          AND e.deleted_at IS NULL AND e.status='active' AND e.publish_to_website=1 AND e.publish_photos=1 LIMIT 1");
+        WHERE a.id=:id AND a.entity_type IN ('event_photo','event_banner') AND a.mime_type IN ('image/jpeg','image/png','image/webp')
+          AND e.deleted_at IS NULL AND e.status='active' AND e.publish_to_website=1 AND (a.entity_type='event_banner' OR e.publish_photos=1) LIMIT 1");
     $stmt->execute(['variant' => $variant, 'id' => $id]);
     $photo = $stmt->fetch();
     if (!$photo) { http_response_code(404); exit; }

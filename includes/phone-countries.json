@@ -1,0 +1,3073 @@
+{
+  "AF": {
+    "name": "Afghanistan",
+    "code": "93",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "[2-7]\\d{8}",
+    "lengths": [
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "AL": {
+    "name": "Albania",
+    "code": "355",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "(?:700\\d\\d|900)\\d{3}|8\\d{5,7}|(?:[2-5]|6\\d)\\d{7}",
+    "lengths": [
+      6,
+      7,
+      8,
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "DZ": {
+    "name": "Algeria",
+    "code": "213",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "(?:[1-4]|[5-79]\\d|80)\\d{7}",
+    "lengths": [
+      8,
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "AS": {
+    "name": "American Samoa",
+    "code": "1",
+    "prefix": "([267]\\d{6})$|1",
+    "transform": "684\\1",
+    "pattern": "(?:[58]\\d\\d|684|900)\\d{7}",
+    "lengths": [
+      10
+    ],
+    "international_prefix": "011"
+  },
+  "AD": {
+    "name": "Andorra",
+    "code": "376",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:1|6\\d)\\d{7}|[135-9]\\d{5}",
+    "lengths": [
+      6,
+      8,
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "AO": {
+    "name": "Angola",
+    "code": "244",
+    "prefix": "",
+    "transform": "",
+    "pattern": "[29]\\d{8}",
+    "lengths": [
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "AI": {
+    "name": "Anguilla",
+    "code": "1",
+    "prefix": "([2457]\\d{6})$|1",
+    "transform": "264\\1",
+    "pattern": "(?:264|[58]\\d\\d|900)\\d{7}",
+    "lengths": [
+      10
+    ],
+    "international_prefix": "011"
+  },
+  "AG": {
+    "name": "Antigua & Barbuda",
+    "code": "1",
+    "prefix": "([457]\\d{6})$|1",
+    "transform": "268\\1",
+    "pattern": "(?:268|[58]\\d\\d|900)\\d{7}",
+    "lengths": [
+      10
+    ],
+    "international_prefix": "011"
+  },
+  "AR": {
+    "name": "Argentina",
+    "code": "54",
+    "prefix": "0?(?:(11|2(?:2(?:02?|[13]|2[13-79]|4[1-6]|5[2457]|6[124-8]|7[1-4]|8[13-6]|9[1267])|3(?:02?|1[467]|2[03-6]|3[13-8]|[49][2-6]|5[2-8]|[67])|4(?:7[3-578]|9)|6(?:[0136]|2[24-6]|4[6-8]?|5[15-8])|80|9(?:0[1-3]|[19]|2\\d|3[1-6]|4[02568]?|5[2-4]|6[2-46]|72?|8[23]?))|3(?:3(?:2[79]|6|8[2578])|4(?:0[0-24-9]|[12]|3[5-8]?|4[24-7]|5[4-68]?|6[02-9]|7[126]|8[2379]?|9[1-36-8])|5(?:1|2[1245]|3[237]?|4[1-46-9]|6[2-4]|7[1-6]|8[2-5]?)|6[24]|7(?:[069]|1[1568]|2[15]|3[145]|4[13]|5[14-8]|7[2-57]|8[126])|8(?:[01]|2[15-7]|3[2578]?|4[13-6]|5[4-8]?|6[1-357-9]|7[36-8]?|8[5-8]?|9[124])))15)?",
+    "transform": "9\\1",
+    "pattern": "(?:11|[89]\\d\\d)\\d{8}|[2368]\\d{9}",
+    "lengths": [
+      10,
+      11
+    ],
+    "international_prefix": "00"
+  },
+  "AM": {
+    "name": "Armenia",
+    "code": "374",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "(?:[1-489]\\d|55|60|77)\\d{6}",
+    "lengths": [
+      8
+    ],
+    "international_prefix": "00"
+  },
+  "AW": {
+    "name": "Aruba",
+    "code": "297",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:[25-79]\\d\\d|800)\\d{4}",
+    "lengths": [
+      7
+    ],
+    "international_prefix": "00"
+  },
+  "AC": {
+    "name": "Ascension Island",
+    "code": "247",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:[01589]\\d|[2-467])\\d{4}",
+    "lengths": [
+      5,
+      6
+    ],
+    "international_prefix": "00"
+  },
+  "AU": {
+    "name": "Australia",
+    "code": "61",
+    "prefix": "(183[12])|0",
+    "transform": "",
+    "pattern": "1(?:[0-79]\\d{7}(?:\\d(?:\\d{2})?)?|8[0-24-9]\\d{7})|[2-478]\\d{8}|1\\d{4,7}",
+    "lengths": [
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      12
+    ],
+    "international_prefix": "001[14-689]|14(?:1[14]|34|4[17]|[56]6|7[47]|88)0011"
+  },
+  "AT": {
+    "name": "Austria",
+    "code": "43",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "1\\d{3,12}|2\\d{6,12}|43(?:(?:0\\d|5[02-9])\\d{3,9}|2\\d{4,5}|[3467]\\d{4}|8\\d{4,6}|9\\d{4,7})|5\\d{4,12}|8\\d{7,12}|9\\d{8,12}|(?:[367]\\d|4[0-24-9])\\d{4,11}",
+    "lengths": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13
+    ],
+    "international_prefix": "00"
+  },
+  "AZ": {
+    "name": "Azerbaijan",
+    "code": "994",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "365\\d{6}|(?:[124579]\\d|60|88)\\d{7}",
+    "lengths": [
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "BS": {
+    "name": "Bahamas",
+    "code": "1",
+    "prefix": "([3-8]\\d{6})$|1",
+    "transform": "242\\1",
+    "pattern": "(?:242|[58]\\d\\d|900)\\d{7}",
+    "lengths": [
+      10
+    ],
+    "international_prefix": "011"
+  },
+  "BH": {
+    "name": "Bahrain",
+    "code": "973",
+    "prefix": "",
+    "transform": "",
+    "pattern": "[136-9]\\d{7}",
+    "lengths": [
+      8
+    ],
+    "international_prefix": "00"
+  },
+  "BD": {
+    "name": "Bangladesh",
+    "code": "880",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "[1-469]\\d{9}|8[0-79]\\d{7,8}|[2-79]\\d{8}|[2-9]\\d{7}|[3-9]\\d{6}|[57-9]\\d{5}",
+    "lengths": [
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "international_prefix": "00"
+  },
+  "BB": {
+    "name": "Barbados",
+    "code": "1",
+    "prefix": "([2-9]\\d{6})$|1",
+    "transform": "246\\1",
+    "pattern": "(?:246|[58]\\d\\d|900)\\d{7}",
+    "lengths": [
+      10
+    ],
+    "international_prefix": "011"
+  },
+  "BY": {
+    "name": "Belarus",
+    "code": "375",
+    "prefix": "0|80?",
+    "transform": "",
+    "pattern": "(?:[12]\\d|33|44|902)\\d{7}|8(?:0[0-79]\\d{5,7}|[1-7]\\d{9})|8(?:1[0-489]|[5-79]\\d)\\d{7}|8[1-79]\\d{6,7}|8[0-79]\\d{5}|8\\d{5}",
+    "lengths": [
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "international_prefix": "810"
+  },
+  "BE": {
+    "name": "Belgium",
+    "code": "32",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "4\\d{8}|[1-9]\\d{7}",
+    "lengths": [
+      8,
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "BZ": {
+    "name": "Belize",
+    "code": "501",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:0800\\d|[2-8])\\d{6}",
+    "lengths": [
+      7,
+      11
+    ],
+    "international_prefix": "00"
+  },
+  "BJ": {
+    "name": "Benin",
+    "code": "229",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:01\\d|8)\\d{7}",
+    "lengths": [
+      8,
+      10
+    ],
+    "international_prefix": "00"
+  },
+  "BM": {
+    "name": "Bermuda",
+    "code": "1",
+    "prefix": "([2-9]\\d{6})$|1",
+    "transform": "441\\1",
+    "pattern": "(?:441|[58]\\d\\d|900)\\d{7}",
+    "lengths": [
+      10
+    ],
+    "international_prefix": "011"
+  },
+  "BT": {
+    "name": "Bhutan",
+    "code": "975",
+    "prefix": "",
+    "transform": "",
+    "pattern": "[178]\\d{7}|[2-8]\\d{6}",
+    "lengths": [
+      7,
+      8
+    ],
+    "international_prefix": "00"
+  },
+  "BO": {
+    "name": "Bolivia",
+    "code": "591",
+    "prefix": "0(1\\d)?",
+    "transform": "",
+    "pattern": "(?:[2-7]\\d\\d|8001)\\d{5}",
+    "lengths": [
+      8,
+      9
+    ],
+    "international_prefix": "00(?:1\\d)?"
+  },
+  "BA": {
+    "name": "Bosnia & Herzegovina",
+    "code": "387",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "6\\d{8}|(?:[35689]\\d|49|70)\\d{6}",
+    "lengths": [
+      8,
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "BW": {
+    "name": "Botswana",
+    "code": "267",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:0800|(?:[37]|800)\\d)\\d{6}|(?:[2-6]\\d|90)\\d{5}",
+    "lengths": [
+      7,
+      8,
+      10
+    ],
+    "international_prefix": "00"
+  },
+  "BR": {
+    "name": "Brazil",
+    "code": "55",
+    "prefix": "(?:0|90)(?:(1[245]|2[1-35]|31|4[13]|[56]5|99)(\\d{10,11}))?",
+    "transform": "\\2",
+    "pattern": "[1-467]\\d{9,10}|55[0-46-9]\\d{8}|[34]\\d{7}|55\\d{7,8}|(?:5[0-46-9]|[89]\\d)\\d{7,9}",
+    "lengths": [
+      8,
+      9,
+      10,
+      11
+    ],
+    "international_prefix": "00(?:1[245]|2[1-35]|31|4[13]|[56]5|99)"
+  },
+  "IO": {
+    "name": "British Indian Ocean Territory",
+    "code": "246",
+    "prefix": "",
+    "transform": "",
+    "pattern": "3\\d{6}",
+    "lengths": [
+      7
+    ],
+    "international_prefix": "00"
+  },
+  "VG": {
+    "name": "British Virgin Islands",
+    "code": "1",
+    "prefix": "([2-578]\\d{6})$|1",
+    "transform": "284\\1",
+    "pattern": "(?:284|[58]\\d\\d|900)\\d{7}",
+    "lengths": [
+      10
+    ],
+    "international_prefix": "011"
+  },
+  "BN": {
+    "name": "Brunei",
+    "code": "673",
+    "prefix": "",
+    "transform": "",
+    "pattern": "[2-578]\\d{6}",
+    "lengths": [
+      7
+    ],
+    "international_prefix": "00"
+  },
+  "BG": {
+    "name": "Bulgaria",
+    "code": "359",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "00800\\d{7}|[2-7]\\d{6,7}|[89]\\d{6,8}|2\\d{5}",
+    "lengths": [
+      6,
+      7,
+      8,
+      9,
+      12
+    ],
+    "international_prefix": "00"
+  },
+  "BF": {
+    "name": "Burkina Faso",
+    "code": "226",
+    "prefix": "",
+    "transform": "",
+    "pattern": "[024-7]\\d{7}",
+    "lengths": [
+      8
+    ],
+    "international_prefix": "00"
+  },
+  "BI": {
+    "name": "Burundi",
+    "code": "257",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:[267]\\d|31)\\d{6}",
+    "lengths": [
+      8
+    ],
+    "international_prefix": "00"
+  },
+  "KH": {
+    "name": "Cambodia",
+    "code": "855",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "1\\d{9}|[1-9]\\d{7,8}",
+    "lengths": [
+      8,
+      9,
+      10
+    ],
+    "international_prefix": "00[14-9]"
+  },
+  "CM": {
+    "name": "Cameroon",
+    "code": "237",
+    "prefix": "",
+    "transform": "",
+    "pattern": "[26]\\d{8}|88\\d{6,7}",
+    "lengths": [
+      8,
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "CA": {
+    "name": "Canada",
+    "code": "1",
+    "prefix": "1",
+    "transform": "",
+    "pattern": "[2-9]\\d{9}|3\\d{6}",
+    "lengths": [
+      7,
+      10
+    ],
+    "international_prefix": "011"
+  },
+  "CV": {
+    "name": "Cape Verde",
+    "code": "238",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:[2-59]\\d\\d|800)\\d{4}",
+    "lengths": [
+      7
+    ],
+    "international_prefix": "0"
+  },
+  "BQ": {
+    "name": "Caribbean Netherlands",
+    "code": "599",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:[34]1|7\\d)\\d{5}",
+    "lengths": [
+      7
+    ],
+    "international_prefix": "00"
+  },
+  "KY": {
+    "name": "Cayman Islands",
+    "code": "1",
+    "prefix": "([2-9]\\d{6})$|1",
+    "transform": "345\\1",
+    "pattern": "(?:345|[58]\\d\\d|900)\\d{7}",
+    "lengths": [
+      10
+    ],
+    "international_prefix": "011"
+  },
+  "CF": {
+    "name": "Central African Republic",
+    "code": "236",
+    "prefix": "",
+    "transform": "",
+    "pattern": "8776\\d{4}|(?:[27]\\d|61)\\d{6}",
+    "lengths": [
+      8
+    ],
+    "international_prefix": "00"
+  },
+  "TD": {
+    "name": "Chad",
+    "code": "235",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:22|[3689]\\d|77)\\d{6}",
+    "lengths": [
+      8
+    ],
+    "international_prefix": "00|16"
+  },
+  "CL": {
+    "name": "Chile",
+    "code": "56",
+    "prefix": "",
+    "transform": "",
+    "pattern": "12300\\d{6}|6\\d{9,10}|[2-9]\\d{8}",
+    "lengths": [
+      9,
+      10,
+      11
+    ],
+    "international_prefix": "(?:0|1(?:1[0-69]|2[02-5]|5[13-58]|69|7[0167]|8[018]))0"
+  },
+  "CN": {
+    "name": "China",
+    "code": "86",
+    "prefix": "(1(?:[12]\\d|79)\\d\\d)|0",
+    "transform": "",
+    "pattern": "(?:(?:1[03-689]|2\\d)\\d\\d|6)\\d{8}|1\\d{10}|[126]\\d{6}(?:\\d(?:\\d{2})?)?|86\\d{5,6}|(?:[3-579]\\d|8[0-57-9])\\d{5,9}",
+    "lengths": [
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "international_prefix": "00|1(?:[12]\\d|79)\\d\\d00"
+  },
+  "CX": {
+    "name": "Christmas Island",
+    "code": "61",
+    "prefix": "([59]\\d{7})$|0",
+    "transform": "8\\1",
+    "pattern": "1(?:[0-79]\\d{8}(?:\\d{2})?|8[0-24-9]\\d{7})|[148]\\d{8}|1\\d{5,7}",
+    "lengths": [
+      6,
+      7,
+      8,
+      9,
+      10,
+      12
+    ],
+    "international_prefix": "001[14-689]|14(?:1[14]|34|4[17]|[56]6|7[47]|88)0011"
+  },
+  "CC": {
+    "name": "Cocos (Keeling) Islands",
+    "code": "61",
+    "prefix": "([59]\\d{7})$|0",
+    "transform": "8\\1",
+    "pattern": "1(?:[0-79]\\d{8}(?:\\d{2})?|8[0-24-9]\\d{7})|[148]\\d{8}|1\\d{5,7}",
+    "lengths": [
+      6,
+      7,
+      8,
+      9,
+      10,
+      12
+    ],
+    "international_prefix": "001[14-689]|14(?:1[14]|34|4[17]|[56]6|7[47]|88)0011"
+  },
+  "CO": {
+    "name": "Colombia",
+    "code": "57",
+    "prefix": "0([3579]|4(?:[14]4|56))?",
+    "transform": "",
+    "pattern": "(?:46|60\\d\\d)\\d{6}|(?:1\\d|[39])\\d{9}",
+    "lengths": [
+      8,
+      10,
+      11
+    ],
+    "international_prefix": "00(?:4(?:[14]4|56)|[579])"
+  },
+  "KM": {
+    "name": "Comoros",
+    "code": "269",
+    "prefix": "",
+    "transform": "",
+    "pattern": "[3478]\\d{6}",
+    "lengths": [
+      7
+    ],
+    "international_prefix": "00"
+  },
+  "CG": {
+    "name": "Congo - Brazzaville",
+    "code": "242",
+    "prefix": "",
+    "transform": "",
+    "pattern": "222\\d{6}|(?:0\\d|80)\\d{7}",
+    "lengths": [
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "CD": {
+    "name": "Congo - Kinshasa",
+    "code": "243",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "(?:(?:[189]|5\\d)\\d|2)\\d{7}|[1-68]\\d{6}",
+    "lengths": [
+      7,
+      8,
+      9,
+      10
+    ],
+    "international_prefix": "00"
+  },
+  "CK": {
+    "name": "Cook Islands",
+    "code": "682",
+    "prefix": "",
+    "transform": "",
+    "pattern": "[2-578]\\d{4}",
+    "lengths": [
+      5
+    ],
+    "international_prefix": "00"
+  },
+  "CR": {
+    "name": "Costa Rica",
+    "code": "506",
+    "prefix": "(19(?:0[0-2468]|1[09]|20|66|77|99))",
+    "transform": "",
+    "pattern": "(?:8\\d|90)\\d{8}|(?:[24-8]\\d{3}|3005)\\d{4}",
+    "lengths": [
+      8,
+      10
+    ],
+    "international_prefix": "00"
+  },
+  "HR": {
+    "name": "Croatia",
+    "code": "385",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "[2-69]\\d{8}|80\\d{5,7}|[1-79]\\d{7}|6\\d{6}",
+    "lengths": [
+      7,
+      8,
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "CU": {
+    "name": "Cuba",
+    "code": "53",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "(?:[2-7]|8\\d\\d)\\d{7}|[2-47]\\d{6}|[34]\\d{5}",
+    "lengths": [
+      6,
+      7,
+      8,
+      10
+    ],
+    "international_prefix": "119"
+  },
+  "CW": {
+    "name": "Curaçao",
+    "code": "599",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:[34]1|60|(?:7|9\\d)\\d)\\d{5}",
+    "lengths": [
+      7,
+      8
+    ],
+    "international_prefix": "00"
+  },
+  "CY": {
+    "name": "Cyprus",
+    "code": "357",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:[279]\\d|[58]0)\\d{6}",
+    "lengths": [
+      8
+    ],
+    "international_prefix": "00"
+  },
+  "CZ": {
+    "name": "Czechia",
+    "code": "420",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:[2-578]\\d|60)\\d{7}|9\\d{8,11}",
+    "lengths": [
+      9,
+      10,
+      11,
+      12
+    ],
+    "international_prefix": "00"
+  },
+  "CI": {
+    "name": "Côte d’Ivoire",
+    "code": "225",
+    "prefix": "",
+    "transform": "",
+    "pattern": "[02]\\d{9}",
+    "lengths": [
+      10
+    ],
+    "international_prefix": "00"
+  },
+  "DK": {
+    "name": "Denmark",
+    "code": "45",
+    "prefix": "",
+    "transform": "",
+    "pattern": "[2-9]\\d{7}",
+    "lengths": [
+      8
+    ],
+    "international_prefix": "00"
+  },
+  "DJ": {
+    "name": "Djibouti",
+    "code": "253",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:2\\d|77)\\d{6}",
+    "lengths": [
+      8
+    ],
+    "international_prefix": "00"
+  },
+  "DM": {
+    "name": "Dominica",
+    "code": "1",
+    "prefix": "([2-7]\\d{6})$|1",
+    "transform": "767\\1",
+    "pattern": "(?:[58]\\d\\d|767|900)\\d{7}",
+    "lengths": [
+      10
+    ],
+    "international_prefix": "011"
+  },
+  "DO": {
+    "name": "Dominican Republic",
+    "code": "1",
+    "prefix": "1",
+    "transform": "",
+    "pattern": "(?:[58]\\d\\d|900)\\d{7}",
+    "lengths": [
+      10
+    ],
+    "international_prefix": "011"
+  },
+  "EC": {
+    "name": "Ecuador",
+    "code": "593",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "1\\d{9,10}|(?:[2-7]|9\\d)\\d{7}",
+    "lengths": [
+      8,
+      9,
+      10,
+      11
+    ],
+    "international_prefix": "00"
+  },
+  "EG": {
+    "name": "Egypt",
+    "code": "20",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "[189]\\d{8,9}|[24-6]\\d{8}|[135]\\d{7}",
+    "lengths": [
+      8,
+      9,
+      10
+    ],
+    "international_prefix": "00"
+  },
+  "SV": {
+    "name": "El Salvador",
+    "code": "503",
+    "prefix": "",
+    "transform": "",
+    "pattern": "[25-7]\\d{7}|(?:80\\d|900)\\d{4}(?:\\d{4})?",
+    "lengths": [
+      7,
+      8,
+      11
+    ],
+    "international_prefix": "00"
+  },
+  "GQ": {
+    "name": "Equatorial Guinea",
+    "code": "240",
+    "prefix": "",
+    "transform": "",
+    "pattern": "222\\d{6}|(?:3\\d|55|[89]0)\\d{7}",
+    "lengths": [
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "ER": {
+    "name": "Eritrea",
+    "code": "291",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "[178]\\d{6}",
+    "lengths": [
+      7
+    ],
+    "international_prefix": "00"
+  },
+  "EE": {
+    "name": "Estonia",
+    "code": "372",
+    "prefix": "",
+    "transform": "",
+    "pattern": "8\\d{9}|[4578]\\d{7}|(?:[3-8]\\d|90)\\d{5}",
+    "lengths": [
+      7,
+      8,
+      10
+    ],
+    "international_prefix": "00"
+  },
+  "SZ": {
+    "name": "Eswatini",
+    "code": "268",
+    "prefix": "",
+    "transform": "",
+    "pattern": "0800\\d{4}|(?:[237]\\d|900)\\d{6}",
+    "lengths": [
+      8,
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "ET": {
+    "name": "Ethiopia",
+    "code": "251",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "(?:11|[2-57-9]\\d)\\d{7}",
+    "lengths": [
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "FK": {
+    "name": "Falkland Islands",
+    "code": "500",
+    "prefix": "",
+    "transform": "",
+    "pattern": "[2-7]\\d{4}",
+    "lengths": [
+      5
+    ],
+    "international_prefix": "00"
+  },
+  "FO": {
+    "name": "Faroe Islands",
+    "code": "298",
+    "prefix": "(10(?:01|[12]0|88))",
+    "transform": "",
+    "pattern": "[2-9]\\d{5}",
+    "lengths": [
+      6
+    ],
+    "international_prefix": "00"
+  },
+  "FJ": {
+    "name": "Fiji",
+    "code": "679",
+    "prefix": "",
+    "transform": "",
+    "pattern": "45\\d{5}|(?:0800\\d|[235-9])\\d{6}",
+    "lengths": [
+      7,
+      11
+    ],
+    "international_prefix": "0(?:0|52)"
+  },
+  "FI": {
+    "name": "Finland",
+    "code": "358",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "[1-35689]\\d{4}|7\\d{10,11}|(?:[124-7]\\d|3[0-46-9])\\d{8}|[1-9]\\d{5,8}",
+    "lengths": [
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "international_prefix": "00|99(?:[01469]|5(?:[14]1|3[23]|5[59]|77|88|9[09]))"
+  },
+  "FR": {
+    "name": "France",
+    "code": "33",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "[1-9]\\d{8}",
+    "lengths": [
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "GF": {
+    "name": "French Guiana",
+    "code": "594",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "(?:694\\d|7093)\\d{5}|(?:59|[89]\\d)\\d{7}",
+    "lengths": [
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "PF": {
+    "name": "French Polynesia",
+    "code": "689",
+    "prefix": "",
+    "transform": "",
+    "pattern": "4\\d{5}(?:\\d{2})?|8\\d{7,8}",
+    "lengths": [
+      6,
+      8,
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "GA": {
+    "name": "Gabon",
+    "code": "241",
+    "prefix": "0(11\\d{6}|60\\d{6}|61\\d{6}|6[256]\\d{6}|7[467]\\d{6})",
+    "transform": "\\1",
+    "pattern": "(?:[067]\\d|11)\\d{6}|[2-7]\\d{6}",
+    "lengths": [
+      7,
+      8
+    ],
+    "international_prefix": "00"
+  },
+  "GM": {
+    "name": "Gambia",
+    "code": "220",
+    "prefix": "",
+    "transform": "",
+    "pattern": "[48]\\d{8}|[2-9]\\d{6}",
+    "lengths": [
+      7,
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "GE": {
+    "name": "Georgia",
+    "code": "995",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "(?:[3-57]\\d\\d|800)\\d{6}",
+    "lengths": [
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "DE": {
+    "name": "Germany",
+    "code": "49",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "[2579]\\d{5,14}|49(?:[34]0|69|8\\d)\\d\\d?|49(?:37|49|60|7[089]|9\\d)\\d{1,3}|49(?:2[024-9]|3[2-689]|7[1-7])\\d{1,8}|(?:1|[368]\\d|4[0-8])\\d{3,13}|49(?:[015]\\d|2[13]|31|[46][1-8])\\d{1,9}",
+    "lengths": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "international_prefix": "00"
+  },
+  "GH": {
+    "name": "Ghana",
+    "code": "233",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "[235]\\d{8}|800\\d{5,6}",
+    "lengths": [
+      8,
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "GI": {
+    "name": "Gibraltar",
+    "code": "350",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:[25]\\d|60)\\d{6}",
+    "lengths": [
+      8
+    ],
+    "international_prefix": "00"
+  },
+  "GR": {
+    "name": "Greece",
+    "code": "30",
+    "prefix": "",
+    "transform": "",
+    "pattern": "5005000\\d{3}|8\\d{9,11}|(?:[269]\\d|70)\\d{8}",
+    "lengths": [
+      10,
+      11,
+      12
+    ],
+    "international_prefix": "00"
+  },
+  "GL": {
+    "name": "Greenland",
+    "code": "299",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:19|[2-689]\\d|70)\\d{4}",
+    "lengths": [
+      6
+    ],
+    "international_prefix": "00"
+  },
+  "GD": {
+    "name": "Grenada",
+    "code": "1",
+    "prefix": "([2-9]\\d{6})$|1",
+    "transform": "473\\1",
+    "pattern": "(?:473|[58]\\d\\d|900)\\d{7}",
+    "lengths": [
+      10
+    ],
+    "international_prefix": "011"
+  },
+  "GP": {
+    "name": "Guadeloupe",
+    "code": "590",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "7090\\d{5}|(?:[56]9|[89]\\d)\\d{7}",
+    "lengths": [
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "GU": {
+    "name": "Guam",
+    "code": "1",
+    "prefix": "([2-9]\\d{6})$|1",
+    "transform": "671\\1",
+    "pattern": "(?:[58]\\d\\d|671|900)\\d{7}",
+    "lengths": [
+      10
+    ],
+    "international_prefix": "011"
+  },
+  "GT": {
+    "name": "Guatemala",
+    "code": "502",
+    "prefix": "",
+    "transform": "",
+    "pattern": "80\\d{6}|(?:1\\d{3}|[2-7])\\d{7}",
+    "lengths": [
+      8,
+      11
+    ],
+    "international_prefix": "00"
+  },
+  "GG": {
+    "name": "Guernsey",
+    "code": "44",
+    "prefix": "([25-9]\\d{5})$|0|180020",
+    "transform": "1481\\1",
+    "pattern": "(?:1481|[357-9]\\d{3})\\d{6}|8\\d{6}(?:\\d{2})?",
+    "lengths": [
+      7,
+      9,
+      10
+    ],
+    "international_prefix": "00"
+  },
+  "GN": {
+    "name": "Guinea",
+    "code": "224",
+    "prefix": "",
+    "transform": "",
+    "pattern": "722\\d{6}|(?:3|6\\d)\\d{7}",
+    "lengths": [
+      8,
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "GW": {
+    "name": "Guinea-Bissau",
+    "code": "245",
+    "prefix": "",
+    "transform": "",
+    "pattern": "[49]\\d{8}|4\\d{6}",
+    "lengths": [
+      7,
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "GY": {
+    "name": "Guyana",
+    "code": "592",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:[2-8]\\d{3}|9008)\\d{3}",
+    "lengths": [
+      7
+    ],
+    "international_prefix": "001"
+  },
+  "HT": {
+    "name": "Haiti",
+    "code": "509",
+    "prefix": "",
+    "transform": "",
+    "pattern": "[2-589]\\d{7}",
+    "lengths": [
+      8
+    ],
+    "international_prefix": "00"
+  },
+  "HN": {
+    "name": "Honduras",
+    "code": "504",
+    "prefix": "",
+    "transform": "",
+    "pattern": "8\\d{10}|[237-9]\\d{7}",
+    "lengths": [
+      8,
+      11
+    ],
+    "international_prefix": "00"
+  },
+  "HK": {
+    "name": "Hong Kong SAR China",
+    "code": "852",
+    "prefix": "",
+    "transform": "",
+    "pattern": "8[0-46-9]\\d{6,7}|9\\d{4,7}|(?:[2-7]|9\\d{3})\\d{7}",
+    "lengths": [
+      5,
+      6,
+      7,
+      8,
+      9,
+      11
+    ],
+    "international_prefix": "00(?:30|5[09]|[126-9]?)"
+  },
+  "HU": {
+    "name": "Hungary",
+    "code": "36",
+    "prefix": "06",
+    "transform": "",
+    "pattern": "[235-7]\\d{8}|[1-9]\\d{7}",
+    "lengths": [
+      8,
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "IS": {
+    "name": "Iceland",
+    "code": "354",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:38\\d|[4-9])\\d{6}",
+    "lengths": [
+      7,
+      9
+    ],
+    "international_prefix": "00|1(?:0(?:01|[12]0)|100)"
+  },
+  "IN": {
+    "name": "India",
+    "code": "91",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "(?:000800|[2-9]\\d\\d)\\d{7}|1\\d{7,12}",
+    "lengths": [
+      8,
+      9,
+      10,
+      11,
+      12,
+      13
+    ],
+    "international_prefix": "00"
+  },
+  "ID": {
+    "name": "Indonesia",
+    "code": "62",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "00[1-9]\\d{9,14}|(?:[1-36]|8\\d{5})\\d{6}|00\\d{9}|[1-9]\\d{8,10}|[2-9]\\d{7}",
+    "lengths": [
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17
+    ],
+    "international_prefix": "00[89]"
+  },
+  "IR": {
+    "name": "Iran",
+    "code": "98",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "[1-9]\\d{9}|(?:[1-8]\\d\\d|9)\\d{3,4}",
+    "lengths": [
+      4,
+      5,
+      6,
+      7,
+      10
+    ],
+    "international_prefix": "00"
+  },
+  "IQ": {
+    "name": "Iraq",
+    "code": "964",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "(?:1|7\\d\\d)\\d{7}|[2-6]\\d{7,8}",
+    "lengths": [
+      8,
+      9,
+      10
+    ],
+    "international_prefix": "00"
+  },
+  "IE": {
+    "name": "Ireland",
+    "code": "353",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "(?:1\\d|[2569])\\d{6,8}|4\\d{6,9}|7\\d{8}|8\\d{8,9}",
+    "lengths": [
+      7,
+      8,
+      9,
+      10
+    ],
+    "international_prefix": "00"
+  },
+  "IM": {
+    "name": "Isle of Man",
+    "code": "44",
+    "prefix": "([25-8]\\d{5})$|0|180020",
+    "transform": "1624\\1",
+    "pattern": "1624\\d{6}|(?:[3578]\\d|90)\\d{8}",
+    "lengths": [
+      10
+    ],
+    "international_prefix": "00"
+  },
+  "IL": {
+    "name": "Israel",
+    "code": "972",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "1\\d{6}(?:\\d{3,5})?|[57]\\d{8}|[1-489]\\d{7}",
+    "lengths": [
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "international_prefix": "0(?:0|1(?:05|[2-9]))"
+  },
+  "IT": {
+    "name": "Italy",
+    "code": "39",
+    "prefix": "",
+    "transform": "",
+    "pattern": "0\\d{5,11}|1\\d{8,10}|3(?:[0-8]\\d{7,10}|9\\d{7,8})|(?:43|55|70)\\d{8}|8\\d{5}(?:\\d{2,4})?",
+    "lengths": [
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "international_prefix": "00"
+  },
+  "JM": {
+    "name": "Jamaica",
+    "code": "1",
+    "prefix": "1",
+    "transform": "",
+    "pattern": "(?:[58]\\d\\d|658|900)\\d{7}",
+    "lengths": [
+      10
+    ],
+    "international_prefix": "011"
+  },
+  "JP": {
+    "name": "Japan",
+    "code": "81",
+    "prefix": "(000[2569]\\d{4,6})$|(?:(?:003768)0?)|0",
+    "transform": "\\1",
+    "pattern": "00[1-9]\\d{6,14}|[25-9]\\d{9}|(?:00|[1-9]\\d\\d)\\d{6}",
+    "lengths": [
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17
+    ],
+    "international_prefix": "010"
+  },
+  "JE": {
+    "name": "Jersey",
+    "code": "44",
+    "prefix": "([0-24-8]\\d{5})$|0|180020",
+    "transform": "1534\\1",
+    "pattern": "1534\\d{6}|(?:[3578]\\d|90)\\d{8}",
+    "lengths": [
+      10
+    ],
+    "international_prefix": "00"
+  },
+  "JO": {
+    "name": "Jordan",
+    "code": "962",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "(?:(?:[2689]|7\\d)\\d|32|427|53)\\d{6}",
+    "lengths": [
+      8,
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "KZ": {
+    "name": "Kazakhstan",
+    "code": "7",
+    "prefix": "8",
+    "transform": "",
+    "pattern": "8\\d{13}|[78]\\d{9}",
+    "lengths": [
+      10,
+      14
+    ],
+    "international_prefix": "810"
+  },
+  "KE": {
+    "name": "Kenya",
+    "code": "254",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "(?:[17]\\d\\d|900)\\d{6}|(?:2|80)0\\d{6,7}|[4-6]\\d{6,8}",
+    "lengths": [
+      7,
+      8,
+      9,
+      10
+    ],
+    "international_prefix": "000"
+  },
+  "KI": {
+    "name": "Kiribati",
+    "code": "686",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "(?:[37]\\d|6[0-79])\\d{6}|(?:[2-48]\\d|50)\\d{3}",
+    "lengths": [
+      5,
+      8
+    ],
+    "international_prefix": "00"
+  },
+  "XK": {
+    "name": "Kosovo",
+    "code": "383",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "2\\d{7,8}|3\\d{7,11}|(?:4\\d\\d|[89]00)\\d{5}",
+    "lengths": [
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "international_prefix": "00"
+  },
+  "KW": {
+    "name": "Kuwait",
+    "code": "965",
+    "prefix": "",
+    "transform": "",
+    "pattern": "18\\d{5}|(?:[2569]\\d|41)\\d{6}",
+    "lengths": [
+      7,
+      8
+    ],
+    "international_prefix": "00"
+  },
+  "KG": {
+    "name": "Kyrgyzstan",
+    "code": "996",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "8\\d{9}|[235-9]\\d{8}",
+    "lengths": [
+      9,
+      10
+    ],
+    "international_prefix": "00"
+  },
+  "LA": {
+    "name": "Laos",
+    "code": "856",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "[23]\\d{9}|3\\d{8}|(?:[235-8]\\d|41)\\d{6}",
+    "lengths": [
+      8,
+      9,
+      10
+    ],
+    "international_prefix": "00"
+  },
+  "LV": {
+    "name": "Latvia",
+    "code": "371",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:[268]\\d|78|90)\\d{6}",
+    "lengths": [
+      8
+    ],
+    "international_prefix": "00"
+  },
+  "LB": {
+    "name": "Lebanon",
+    "code": "961",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "[27-9]\\d{7}|[13-9]\\d{6}",
+    "lengths": [
+      7,
+      8
+    ],
+    "international_prefix": "00"
+  },
+  "LS": {
+    "name": "Lesotho",
+    "code": "266",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:[256]\\d\\d|800)\\d{5}",
+    "lengths": [
+      8
+    ],
+    "international_prefix": "00"
+  },
+  "LR": {
+    "name": "Liberia",
+    "code": "231",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "(?:[2457]\\d|33|88)\\d{7}|(?:2\\d|[4-6])\\d{6}",
+    "lengths": [
+      7,
+      8,
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "LY": {
+    "name": "Libya",
+    "code": "218",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "[2-9]\\d{8}",
+    "lengths": [
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "LI": {
+    "name": "Liechtenstein",
+    "code": "423",
+    "prefix": "(1001)|0",
+    "transform": "",
+    "pattern": "[68]\\d{8}|(?:[2378]\\d|90)\\d{5}",
+    "lengths": [
+      7,
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "LT": {
+    "name": "Lithuania",
+    "code": "370",
+    "prefix": "[08]",
+    "transform": "",
+    "pattern": "(?:[3469]\\d|52|[78]0)\\d{6}",
+    "lengths": [
+      8
+    ],
+    "international_prefix": "00"
+  },
+  "LU": {
+    "name": "Luxembourg",
+    "code": "352",
+    "prefix": "(15(?:0[06]|1[12]|[35]5|4[04]|6[26]|77|88|99)\\d)",
+    "transform": "",
+    "pattern": "35[013-9]\\d{4,8}|6\\d{8}|35\\d{2,4}|(?:[2457-9]\\d|3[0-46-9])\\d{2,9}",
+    "lengths": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "international_prefix": "00"
+  },
+  "MO": {
+    "name": "Macao SAR China",
+    "code": "853",
+    "prefix": "",
+    "transform": "",
+    "pattern": "0800\\d{3}|(?:28|[68]\\d)\\d{6}",
+    "lengths": [
+      7,
+      8
+    ],
+    "international_prefix": "00"
+  },
+  "MG": {
+    "name": "Madagascar",
+    "code": "261",
+    "prefix": "([24-9]\\d{6})$|0",
+    "transform": "20\\1",
+    "pattern": "[23]\\d{8}",
+    "lengths": [
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "MW": {
+    "name": "Malawi",
+    "code": "265",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "(?:[1289]\\d|31|77)\\d{7}|1\\d{6}",
+    "lengths": [
+      7,
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "MY": {
+    "name": "Malaysia",
+    "code": "60",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "1\\d{8,9}|(?:3\\d|[4-9])\\d{7}",
+    "lengths": [
+      8,
+      9,
+      10
+    ],
+    "international_prefix": "00"
+  },
+  "MV": {
+    "name": "Maldives",
+    "code": "960",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:800|9[0-57-9]\\d)\\d{7}|[34679]\\d{6}",
+    "lengths": [
+      7,
+      10
+    ],
+    "international_prefix": "0(?:0|19)"
+  },
+  "ML": {
+    "name": "Mali",
+    "code": "223",
+    "prefix": "",
+    "transform": "",
+    "pattern": "[24-9]\\d{7}",
+    "lengths": [
+      8
+    ],
+    "international_prefix": "00"
+  },
+  "MT": {
+    "name": "Malta",
+    "code": "356",
+    "prefix": "",
+    "transform": "",
+    "pattern": "3550\\d{4}|(?:[2579]\\d\\d|800)\\d{5}",
+    "lengths": [
+      8
+    ],
+    "international_prefix": "00"
+  },
+  "MH": {
+    "name": "Marshall Islands",
+    "code": "692",
+    "prefix": "1",
+    "transform": "",
+    "pattern": "329\\d{4}|(?:[256]\\d|45)\\d{5}",
+    "lengths": [
+      7
+    ],
+    "international_prefix": "011"
+  },
+  "MQ": {
+    "name": "Martinique",
+    "code": "596",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "7091\\d{5}|(?:[56]9|[89]\\d)\\d{7}",
+    "lengths": [
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "MR": {
+    "name": "Mauritania",
+    "code": "222",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:[2-4]\\d\\d|800)\\d{5}",
+    "lengths": [
+      8
+    ],
+    "international_prefix": "00"
+  },
+  "MU": {
+    "name": "Mauritius",
+    "code": "230",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:[57]|8\\d\\d)\\d{7}|[2-468]\\d{6}",
+    "lengths": [
+      7,
+      8,
+      10
+    ],
+    "international_prefix": "0(?:0|[24-7]0|3[03])"
+  },
+  "YT": {
+    "name": "Mayotte",
+    "code": "262",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "(?:639\\d|7093)\\d{5}|(?:26|80|9\\d)\\d{7}",
+    "lengths": [
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "MX": {
+    "name": "Mexico",
+    "code": "52",
+    "prefix": "",
+    "transform": "",
+    "pattern": "[2-9]\\d{9}",
+    "lengths": [
+      10
+    ],
+    "international_prefix": "0[09]"
+  },
+  "FM": {
+    "name": "Micronesia",
+    "code": "691",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:[39]\\d\\d|820)\\d{4}",
+    "lengths": [
+      7
+    ],
+    "international_prefix": "00"
+  },
+  "MD": {
+    "name": "Moldova",
+    "code": "373",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "(?:[235-7]\\d|[89]0)\\d{6}",
+    "lengths": [
+      8
+    ],
+    "international_prefix": "00"
+  },
+  "MC": {
+    "name": "Monaco",
+    "code": "377",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "(?:[3489]|[67]\\d)\\d{7}",
+    "lengths": [
+      8,
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "MN": {
+    "name": "Mongolia",
+    "code": "976",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "[12]\\d{7,9}|[5-9]\\d{7}",
+    "lengths": [
+      8,
+      9,
+      10
+    ],
+    "international_prefix": "001"
+  },
+  "ME": {
+    "name": "Montenegro",
+    "code": "382",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "(?:20|[3-79]\\d)\\d{6}|80\\d{6,7}",
+    "lengths": [
+      8,
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "MS": {
+    "name": "Montserrat",
+    "code": "1",
+    "prefix": "([34]\\d{6})$|1",
+    "transform": "664\\1",
+    "pattern": "(?:[58]\\d\\d|664|900)\\d{7}",
+    "lengths": [
+      10
+    ],
+    "international_prefix": "011"
+  },
+  "MA": {
+    "name": "Morocco",
+    "code": "212",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "[5-8]\\d{8}",
+    "lengths": [
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "MZ": {
+    "name": "Mozambique",
+    "code": "258",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:2|8\\d)\\d{7}",
+    "lengths": [
+      8,
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "MM": {
+    "name": "Myanmar (Burma)",
+    "code": "95",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "1\\d{5,7}|95\\d{6}|(?:[4-7]|9[0-46-9])\\d{6,8}|(?:2|8\\d)\\d{5,8}",
+    "lengths": [
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "international_prefix": "00"
+  },
+  "NA": {
+    "name": "Namibia",
+    "code": "264",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "[68]\\d{7,8}",
+    "lengths": [
+      8,
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "NR": {
+    "name": "Nauru",
+    "code": "674",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:222|444|(?:55|8\\d)\\d|666|777|999)\\d{4}",
+    "lengths": [
+      7
+    ],
+    "international_prefix": "00"
+  },
+  "NP": {
+    "name": "Nepal",
+    "code": "977",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "(?:1\\d|9)\\d{9}|[1-9]\\d{7}",
+    "lengths": [
+      8,
+      10,
+      11
+    ],
+    "international_prefix": "00"
+  },
+  "NL": {
+    "name": "Netherlands",
+    "code": "31",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "(?:[124-7]\\d\\d|3(?:[02-9]\\d|1[0-8]))\\d{6}|8\\d{6,9}|9\\d{6,10}|1\\d{4,5}",
+    "lengths": [
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "international_prefix": "00"
+  },
+  "NC": {
+    "name": "New Caledonia",
+    "code": "687",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:050|[2-57-9]\\d\\d)\\d{3}",
+    "lengths": [
+      6
+    ],
+    "international_prefix": "00"
+  },
+  "NZ": {
+    "name": "New Zealand",
+    "code": "64",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "[1289]\\d{9}|50\\d{5}(?:\\d{2,3})?|[27-9]\\d{7,8}|(?:[34]\\d|6[0-35-9])\\d{6}|8\\d{4,6}",
+    "lengths": [
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "international_prefix": "0(?:0|161)"
+  },
+  "NI": {
+    "name": "Nicaragua",
+    "code": "505",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:1800|[25-8]\\d{3})\\d{4}",
+    "lengths": [
+      8
+    ],
+    "international_prefix": "00"
+  },
+  "NE": {
+    "name": "Niger",
+    "code": "227",
+    "prefix": "",
+    "transform": "",
+    "pattern": "[027-9]\\d{7}",
+    "lengths": [
+      8
+    ],
+    "international_prefix": "00"
+  },
+  "NG": {
+    "name": "Nigeria",
+    "code": "234",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "(?:20|9\\d)\\d{8}|[78]\\d{9,13}",
+    "lengths": [
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "international_prefix": "009"
+  },
+  "NU": {
+    "name": "Niue",
+    "code": "683",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:[4-7]|888\\d)\\d{3}",
+    "lengths": [
+      4,
+      7
+    ],
+    "international_prefix": "00"
+  },
+  "NF": {
+    "name": "Norfolk Island",
+    "code": "672",
+    "prefix": "([0-258]\\d{4})$",
+    "transform": "3\\1",
+    "pattern": "[13]\\d{5}",
+    "lengths": [
+      6
+    ],
+    "international_prefix": "00"
+  },
+  "KP": {
+    "name": "North Korea",
+    "code": "850",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "85\\d{6}|(?:19\\d|[2-7])\\d{7}",
+    "lengths": [
+      8,
+      10
+    ],
+    "international_prefix": "00|99"
+  },
+  "MK": {
+    "name": "North Macedonia",
+    "code": "389",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "[2-578]\\d{7}",
+    "lengths": [
+      8
+    ],
+    "international_prefix": "00"
+  },
+  "MP": {
+    "name": "Northern Mariana Islands",
+    "code": "1",
+    "prefix": "([2-9]\\d{6})$|1",
+    "transform": "670\\1",
+    "pattern": "[58]\\d{9}|(?:67|90)0\\d{7}",
+    "lengths": [
+      10
+    ],
+    "international_prefix": "011"
+  },
+  "NO": {
+    "name": "Norway",
+    "code": "47",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:0|[2-9]\\d{3})\\d{4}",
+    "lengths": [
+      5,
+      8
+    ],
+    "international_prefix": "00"
+  },
+  "OM": {
+    "name": "Oman",
+    "code": "968",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:1505|[279]\\d{3}|500)\\d{4}|800\\d{5,6}",
+    "lengths": [
+      7,
+      8,
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "PK": {
+    "name": "Pakistan",
+    "code": "92",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "122\\d{6}|[24-8]\\d{10,11}|9(?:[013-9]\\d{8,10}|2(?:[01]\\d\\d|2(?:[06-8]\\d|1[01]))\\d{7})|(?:[2-8]\\d{3}|92(?:[0-7]\\d|8[1-9]))\\d{6}|[24-9]\\d{8}|[89]\\d{7}",
+    "lengths": [
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "international_prefix": "00"
+  },
+  "PW": {
+    "name": "Palau",
+    "code": "680",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:[24-8]\\d\\d|345|900)\\d{4}",
+    "lengths": [
+      7
+    ],
+    "international_prefix": "01[12]"
+  },
+  "PS": {
+    "name": "Palestinian Territories",
+    "code": "970",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "[2489]2\\d{6}|(?:1\\d|5)\\d{8}",
+    "lengths": [
+      8,
+      9,
+      10
+    ],
+    "international_prefix": "00"
+  },
+  "PA": {
+    "name": "Panama",
+    "code": "507",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:00800|8\\d{3})\\d{6}|[68]\\d{7}|[1-57-9]\\d{6}",
+    "lengths": [
+      7,
+      8,
+      10,
+      11
+    ],
+    "international_prefix": "00"
+  },
+  "PG": {
+    "name": "Papua New Guinea",
+    "code": "675",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:180|[78]\\d{3})\\d{4}|(?:[2-589]\\d|64)\\d{5}",
+    "lengths": [
+      7,
+      8
+    ],
+    "international_prefix": "00|140[1-3]"
+  },
+  "PY": {
+    "name": "Paraguay",
+    "code": "595",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "[36-8]\\d{5,8}|4\\d{6,8}|59\\d{6}|9\\d{5,10}|(?:2\\d|5[0-8])\\d{6,7}",
+    "lengths": [
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "international_prefix": "00"
+  },
+  "PE": {
+    "name": "Peru",
+    "code": "51",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "(?:[14-8]|9\\d)\\d{7}",
+    "lengths": [
+      8,
+      9
+    ],
+    "international_prefix": "00|19(?:1[124]|77|90)00"
+  },
+  "PH": {
+    "name": "Philippines",
+    "code": "63",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "(?:[2-7]|9\\d)\\d{8}|2\\d{5}|(?:1800|8)\\d{7,9}",
+    "lengths": [
+      6,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13
+    ],
+    "international_prefix": "00"
+  },
+  "PL": {
+    "name": "Poland",
+    "code": "48",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:6|8\\d\\d)\\d{7}|[1-9]\\d{6}(?:\\d{2})?|[26]\\d{5}",
+    "lengths": [
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "international_prefix": "00"
+  },
+  "PT": {
+    "name": "Portugal",
+    "code": "351",
+    "prefix": "",
+    "transform": "",
+    "pattern": "1693\\d{5}|(?:[26-9]\\d|30)\\d{7}",
+    "lengths": [
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "PR": {
+    "name": "Puerto Rico",
+    "code": "1",
+    "prefix": "1",
+    "transform": "",
+    "pattern": "(?:[589]\\d\\d|787)\\d{7}",
+    "lengths": [
+      10
+    ],
+    "international_prefix": "011"
+  },
+  "QA": {
+    "name": "Qatar",
+    "code": "974",
+    "prefix": "",
+    "transform": "",
+    "pattern": "800\\d{4}|(?:2|800)\\d{6}|(?:0080|[3-7])\\d{7}",
+    "lengths": [
+      7,
+      8,
+      9,
+      11
+    ],
+    "international_prefix": "00"
+  },
+  "RO": {
+    "name": "Romania",
+    "code": "40",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "(?:[236-8]\\d|90)\\d{7}|[23]\\d{5}",
+    "lengths": [
+      6,
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "RU": {
+    "name": "Russia",
+    "code": "7",
+    "prefix": "8",
+    "transform": "",
+    "pattern": "8\\d{13}|[347-9]\\d{9}",
+    "lengths": [
+      10,
+      14
+    ],
+    "international_prefix": "810"
+  },
+  "RW": {
+    "name": "Rwanda",
+    "code": "250",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "(?:06|[27]\\d\\d|[89]00)\\d{6}",
+    "lengths": [
+      8,
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "RE": {
+    "name": "Réunion",
+    "code": "262",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "709\\d{6}|(?:26|[689]\\d)\\d{7}",
+    "lengths": [
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "WS": {
+    "name": "Samoa",
+    "code": "685",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:[2-6]|8\\d{5})\\d{4}|[78]\\d{6}|[68]\\d{5}",
+    "lengths": [
+      5,
+      6,
+      7,
+      10
+    ],
+    "international_prefix": "0"
+  },
+  "SM": {
+    "name": "San Marino",
+    "code": "378",
+    "prefix": "([89]\\d{5})$",
+    "transform": "0549\\1",
+    "pattern": "(?:0549|[5-7]\\d)\\d{6}",
+    "lengths": [
+      8,
+      10
+    ],
+    "international_prefix": "00"
+  },
+  "SA": {
+    "name": "Saudi Arabia",
+    "code": "966",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "(?:[15]\\d|800|92)\\d{7}",
+    "lengths": [
+      9,
+      10
+    ],
+    "international_prefix": "00"
+  },
+  "SN": {
+    "name": "Senegal",
+    "code": "221",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:[378]\\d|93)\\d{7}",
+    "lengths": [
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "RS": {
+    "name": "Serbia",
+    "code": "381",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "38[02-9]\\d{6,9}|6\\d{7,9}|90\\d{4,8}|38\\d{5,6}|(?:7\\d\\d|800)\\d{3,9}|(?:[12]\\d|3[0-79])\\d{5,10}",
+    "lengths": [
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "international_prefix": "00"
+  },
+  "SC": {
+    "name": "Seychelles",
+    "code": "248",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:[2489]\\d|64)\\d{5}",
+    "lengths": [
+      7
+    ],
+    "international_prefix": "010|0[0-2]"
+  },
+  "SL": {
+    "name": "Sierra Leone",
+    "code": "232",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "(?:[237-9]\\d|66)\\d{6}",
+    "lengths": [
+      8
+    ],
+    "international_prefix": "00"
+  },
+  "SG": {
+    "name": "Singapore",
+    "code": "65",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:(?:1\\d|8)\\d\\d|7000)\\d{7}|[3689]\\d{7}",
+    "lengths": [
+      8,
+      10,
+      11
+    ],
+    "international_prefix": "0[0-3]\\d"
+  },
+  "SX": {
+    "name": "Sint Maarten",
+    "code": "1",
+    "prefix": "(5\\d{6})$|1",
+    "transform": "721\\1",
+    "pattern": "7215\\d{6}|(?:[58]\\d\\d|900)\\d{7}",
+    "lengths": [
+      10
+    ],
+    "international_prefix": "011"
+  },
+  "SK": {
+    "name": "Slovakia",
+    "code": "421",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "[2-689]\\d{8}|[2-59]\\d{6}|[2-5]\\d{5}",
+    "lengths": [
+      6,
+      7,
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "SI": {
+    "name": "Slovenia",
+    "code": "386",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "[1-7]\\d{7}|8\\d{4,7}|90\\d{4,6}",
+    "lengths": [
+      5,
+      6,
+      7,
+      8
+    ],
+    "international_prefix": "00|10(?:22|66|88|99)"
+  },
+  "SB": {
+    "name": "Solomon Islands",
+    "code": "677",
+    "prefix": "",
+    "transform": "",
+    "pattern": "[6-9]\\d{6}|[1-6]\\d{4}",
+    "lengths": [
+      5,
+      7
+    ],
+    "international_prefix": "0[01]"
+  },
+  "SO": {
+    "name": "Somalia",
+    "code": "252",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "[346-9]\\d{8}|[12679]\\d{7}|[1-5]\\d{6}|[1348]\\d{5}",
+    "lengths": [
+      6,
+      7,
+      8,
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "ZA": {
+    "name": "South Africa",
+    "code": "27",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "[1-79]\\d{8}|8\\d{4,9}",
+    "lengths": [
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "international_prefix": "00"
+  },
+  "KR": {
+    "name": "South Korea",
+    "code": "82",
+    "prefix": "0(8(?:[1-46-8]|5\\d\\d))?",
+    "transform": "",
+    "pattern": "00[1-9]\\d{8,11}|(?:[12]|5\\d{3})\\d{7}|[13-6]\\d{9}|(?:[1-6]\\d|80)\\d{7}|[3-6]\\d{4,5}|(?:00|7)0\\d{8}",
+    "lengths": [
+      5,
+      6,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "international_prefix": "00(?:[125689]|3(?:[46]5|91)|7(?:00|27|3|55|6[126]))"
+  },
+  "SS": {
+    "name": "South Sudan",
+    "code": "211",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "[19]\\d{8}",
+    "lengths": [
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "ES": {
+    "name": "Spain",
+    "code": "34",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:400|[5-9]\\d\\d)\\d{6}",
+    "lengths": [
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "LK": {
+    "name": "Sri Lanka",
+    "code": "94",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "[1-9]\\d{8}",
+    "lengths": [
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "BL": {
+    "name": "St. Barthélemy",
+    "code": "590",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "7090\\d{5}|(?:[56]9|[89]\\d)\\d{7}",
+    "lengths": [
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "SH": {
+    "name": "St. Helena",
+    "code": "290",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:[256]\\d|8)\\d{3}",
+    "lengths": [
+      4,
+      5
+    ],
+    "international_prefix": "00"
+  },
+  "KN": {
+    "name": "St. Kitts & Nevis",
+    "code": "1",
+    "prefix": "([2-7]\\d{6})$|1",
+    "transform": "869\\1",
+    "pattern": "(?:[58]\\d\\d|900)\\d{7}",
+    "lengths": [
+      10
+    ],
+    "international_prefix": "011"
+  },
+  "LC": {
+    "name": "St. Lucia",
+    "code": "1",
+    "prefix": "([2-8]\\d{6})$|1",
+    "transform": "758\\1",
+    "pattern": "(?:[58]\\d\\d|758|900)\\d{7}",
+    "lengths": [
+      10
+    ],
+    "international_prefix": "011"
+  },
+  "MF": {
+    "name": "St. Martin",
+    "code": "590",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "7090\\d{5}|(?:[56]9|[89]\\d)\\d{7}",
+    "lengths": [
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "PM": {
+    "name": "St. Pierre & Miquelon",
+    "code": "508",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "[78]\\d{8}|[2-9]\\d{5}",
+    "lengths": [
+      6,
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "VC": {
+    "name": "St. Vincent & Grenadines",
+    "code": "1",
+    "prefix": "([2-7]\\d{6})$|1",
+    "transform": "784\\1",
+    "pattern": "(?:[58]\\d\\d|784|900)\\d{7}",
+    "lengths": [
+      10
+    ],
+    "international_prefix": "011"
+  },
+  "SD": {
+    "name": "Sudan",
+    "code": "249",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "[19]\\d{8}",
+    "lengths": [
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "SR": {
+    "name": "Suriname",
+    "code": "597",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:[2-5]|[6-9]\\d)\\d{5}",
+    "lengths": [
+      6,
+      7
+    ],
+    "international_prefix": "00"
+  },
+  "SJ": {
+    "name": "Svalbard & Jan Mayen",
+    "code": "47",
+    "prefix": "",
+    "transform": "",
+    "pattern": "0\\d{4}|(?:[489]\\d|79)\\d{6}",
+    "lengths": [
+      5,
+      8
+    ],
+    "international_prefix": "00"
+  },
+  "SE": {
+    "name": "Sweden",
+    "code": "46",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "(?:[26]\\d\\d|9)\\d{9}|[1-9]\\d{8}|[1-689]\\d{7}|[1-4689]\\d{6}|2\\d{5}",
+    "lengths": [
+      6,
+      7,
+      8,
+      9,
+      10,
+      12
+    ],
+    "international_prefix": "00"
+  },
+  "CH": {
+    "name": "Switzerland",
+    "code": "41",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "8\\d{11}|[2-9]\\d{8}",
+    "lengths": [
+      9,
+      12
+    ],
+    "international_prefix": "00"
+  },
+  "SY": {
+    "name": "Syria",
+    "code": "963",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "[1-359]\\d{8}|[1-5]\\d{7}",
+    "lengths": [
+      8,
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "ST": {
+    "name": "São Tomé & Príncipe",
+    "code": "239",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:22|9\\d)\\d{5}",
+    "lengths": [
+      7
+    ],
+    "international_prefix": "00"
+  },
+  "TW": {
+    "name": "Taiwan",
+    "code": "886",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "[2-689]\\d{8}|7\\d{9,10}|[2-8]\\d{7}|2\\d{6}",
+    "lengths": [
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "international_prefix": "0(?:0[25-79]|19)"
+  },
+  "TJ": {
+    "name": "Tajikistan",
+    "code": "992",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:[0-57-9]\\d|66)\\d{7}",
+    "lengths": [
+      9
+    ],
+    "international_prefix": "810"
+  },
+  "TZ": {
+    "name": "Tanzania",
+    "code": "255",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "(?:[25-8]\\d|41|90)\\d{7}",
+    "lengths": [
+      9
+    ],
+    "international_prefix": "00[056]"
+  },
+  "TH": {
+    "name": "Thailand",
+    "code": "66",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "(?:001800|[2-57]|[689]\\d)\\d{7}|1\\d{7,9}",
+    "lengths": [
+      8,
+      9,
+      10,
+      13
+    ],
+    "international_prefix": "00[1-9]"
+  },
+  "TL": {
+    "name": "Timor-Leste",
+    "code": "670",
+    "prefix": "",
+    "transform": "",
+    "pattern": "7\\d{7}|(?:[2-47]\\d|[89]0)\\d{5}",
+    "lengths": [
+      7,
+      8
+    ],
+    "international_prefix": "00"
+  },
+  "TG": {
+    "name": "Togo",
+    "code": "228",
+    "prefix": "",
+    "transform": "",
+    "pattern": "[279]\\d{7}",
+    "lengths": [
+      8
+    ],
+    "international_prefix": "00"
+  },
+  "TK": {
+    "name": "Tokelau",
+    "code": "690",
+    "prefix": "",
+    "transform": "",
+    "pattern": "[2-47]\\d{3,6}",
+    "lengths": [
+      4,
+      5,
+      6,
+      7
+    ],
+    "international_prefix": "00"
+  },
+  "TO": {
+    "name": "Tonga",
+    "code": "676",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:0800|(?:[5-8]\\d\\d|999)\\d)\\d{3}|[2-8]\\d{4}",
+    "lengths": [
+      5,
+      7
+    ],
+    "international_prefix": "00"
+  },
+  "TT": {
+    "name": "Trinidad & Tobago",
+    "code": "1",
+    "prefix": "([2-46-8]\\d{6})$|1",
+    "transform": "868\\1",
+    "pattern": "(?:[58]\\d\\d|900)\\d{7}",
+    "lengths": [
+      10
+    ],
+    "international_prefix": "011"
+  },
+  "TA": {
+    "name": "Tristan da Cunha",
+    "code": "290",
+    "prefix": "",
+    "transform": "",
+    "pattern": "8\\d{3}",
+    "lengths": [
+      4
+    ],
+    "international_prefix": "00"
+  },
+  "TN": {
+    "name": "Tunisia",
+    "code": "216",
+    "prefix": "",
+    "transform": "",
+    "pattern": "[2-57-9]\\d{7}",
+    "lengths": [
+      8
+    ],
+    "international_prefix": "00"
+  },
+  "TR": {
+    "name": "Turkey",
+    "code": "90",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "4\\d{6}|8\\d{11,12}|(?:[2-58]\\d\\d|900)\\d{7}",
+    "lengths": [
+      7,
+      10,
+      12,
+      13
+    ],
+    "international_prefix": "00"
+  },
+  "TM": {
+    "name": "Turkmenistan",
+    "code": "993",
+    "prefix": "8",
+    "transform": "",
+    "pattern": "[1-7]\\d{7}",
+    "lengths": [
+      8
+    ],
+    "international_prefix": "810"
+  },
+  "TC": {
+    "name": "Turks & Caicos Islands",
+    "code": "1",
+    "prefix": "([2-479]\\d{6})$|1",
+    "transform": "649\\1",
+    "pattern": "(?:[58]\\d\\d|649|900)\\d{7}",
+    "lengths": [
+      10
+    ],
+    "international_prefix": "011"
+  },
+  "TV": {
+    "name": "Tuvalu",
+    "code": "688",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:2|7\\d\\d|90)\\d{4}",
+    "lengths": [
+      5,
+      6,
+      7
+    ],
+    "international_prefix": "00"
+  },
+  "VI": {
+    "name": "U.S. Virgin Islands",
+    "code": "1",
+    "prefix": "([2-9]\\d{6})$|1",
+    "transform": "340\\1",
+    "pattern": "[58]\\d{9}|(?:34|90)0\\d{7}",
+    "lengths": [
+      10
+    ],
+    "international_prefix": "011"
+  },
+  "UG": {
+    "name": "Uganda",
+    "code": "256",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "800\\d{6}|(?:[29]0|[347]\\d)\\d{7}",
+    "lengths": [
+      9
+    ],
+    "international_prefix": "00[057]"
+  },
+  "UA": {
+    "name": "Ukraine",
+    "code": "380",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "[89]\\d{9}|[3-9]\\d{8}",
+    "lengths": [
+      9,
+      10
+    ],
+    "international_prefix": "00"
+  },
+  "AE": {
+    "name": "United Arab Emirates",
+    "code": "971",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "(?:[4-7]\\d|9[0-689])\\d{7}|800\\d{2,9}|[2-4679]\\d{7}",
+    "lengths": [
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "international_prefix": "00"
+  },
+  "GB": {
+    "name": "United Kingdom",
+    "code": "44",
+    "prefix": "0|180020",
+    "transform": "",
+    "pattern": "[1-357-9]\\d{9}|[18]\\d{8}|8\\d{6}",
+    "lengths": [
+      7,
+      9,
+      10
+    ],
+    "international_prefix": "00"
+  },
+  "US": {
+    "name": "United States",
+    "code": "1",
+    "prefix": "1",
+    "transform": "",
+    "pattern": "[2-9]\\d{9}|3\\d{6}",
+    "lengths": [
+      10
+    ],
+    "international_prefix": "011"
+  },
+  "UY": {
+    "name": "Uruguay",
+    "code": "598",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "0004\\d{2,9}|[1249]\\d{7}|2\\d{3,4}|(?:[49]\\d|80)\\d{5}",
+    "lengths": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13
+    ],
+    "international_prefix": "0(?:0|1[3-9]\\d)"
+  },
+  "UZ": {
+    "name": "Uzbekistan",
+    "code": "998",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:20|33|[5-9]\\d)\\d{7}",
+    "lengths": [
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "VU": {
+    "name": "Vanuatu",
+    "code": "678",
+    "prefix": "",
+    "transform": "",
+    "pattern": "[57-9]\\d{6}|(?:[238]\\d|48)\\d{3}",
+    "lengths": [
+      5,
+      7
+    ],
+    "international_prefix": "00"
+  },
+  "VA": {
+    "name": "Vatican City",
+    "code": "39",
+    "prefix": "",
+    "transform": "",
+    "pattern": "0\\d{5,10}|3[0-8]\\d{7,10}|55\\d{8}|8\\d{5}(?:\\d{2,4})?|(?:1\\d|39)\\d{7,8}",
+    "lengths": [
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "international_prefix": "00"
+  },
+  "VE": {
+    "name": "Venezuela",
+    "code": "58",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "[68]00\\d{7}|(?:[24]\\d|[59]0)\\d{8}",
+    "lengths": [
+      10
+    ],
+    "international_prefix": "00"
+  },
+  "VN": {
+    "name": "Vietnam",
+    "code": "84",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "[12]\\d{9}|[135-9]\\d{8}|[16]\\d{6,7}|7\\d{6}",
+    "lengths": [
+      7,
+      8,
+      9,
+      10
+    ],
+    "international_prefix": "00"
+  },
+  "WF": {
+    "name": "Wallis & Futuna",
+    "code": "681",
+    "prefix": "",
+    "transform": "",
+    "pattern": "(?:40|72|8\\d{4})\\d{4}|[89]\\d{5}",
+    "lengths": [
+      6,
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "EH": {
+    "name": "Western Sahara",
+    "code": "212",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "[5-8]\\d{8}",
+    "lengths": [
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "YE": {
+    "name": "Yemen",
+    "code": "967",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "(?:1|7\\d)\\d{7}|[1-7]\\d{6}",
+    "lengths": [
+      7,
+      8,
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "ZM": {
+    "name": "Zambia",
+    "code": "260",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "800\\d{6}|(?:21|[579]\\d|63)\\d{7}",
+    "lengths": [
+      9
+    ],
+    "international_prefix": "00"
+  },
+  "ZW": {
+    "name": "Zimbabwe",
+    "code": "263",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "(?:13|8\\d{4})\\d{5}|[235-8]\\d{8}|[23568]\\d{6}",
+    "lengths": [
+      7,
+      9,
+      10
+    ],
+    "international_prefix": "00"
+  },
+  "AX": {
+    "name": "Åland Islands",
+    "code": "358",
+    "prefix": "0",
+    "transform": "",
+    "pattern": "2\\d{4,9}|35\\d{4,5}|(?:60\\d\\d|800)\\d{4,6}|7\\d{5,11}|(?:[14]\\d|3[0-46-9]|50)\\d{4,8}",
+    "lengths": [
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "international_prefix": "00|99(?:[01469]|5(?:[14]1|3[23]|5[59]|77|88|9[09]))"
+  }
+}
