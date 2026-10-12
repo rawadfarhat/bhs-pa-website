@@ -104,7 +104,7 @@ final class EventDataCollectionService
                 if (!filter_var($value, FILTER_VALIDATE_EMAIL)) throw new InvalidArgumentException('Enter a valid email address.');
             }
             if ($key === 'phone') $value = self::phone($value, self::text($input['phone_country'] ?? 'LB', 2), $countries);
-            if (str_starts_with($key, 'number_') && !preg_match('/^-?\d{1,15}(?:\.\d{1,6})?$/D', $value)) throw new InvalidArgumentException($field['label'] . ' must be a number (up to six decimal places).');
+            if (str_starts_with($key, 'number_') && !preg_match('/^[0-9]{1,15}$/D', $value)) throw new InvalidArgumentException($field['label'] . ' must be a whole number of zero or greater (up to 15 digits).');
             $values[$key] = $value;
         }
         if ($configuration['consent'] && ($input['consent'] ?? '') !== '1') throw new InvalidArgumentException('Please agree to the use of your information.');
