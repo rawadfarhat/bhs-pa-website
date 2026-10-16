@@ -4,12 +4,23 @@ declare(strict_types=1);
 
 return [
     'app' => [
+        'env' => 'staging',
         'base_path' => '',
         'debug' => false,
     ],
     'portal' => [
         // Only needed for legacy event attachments stored by relative path.
         'root_path' => 'D:/wamp64/www/BHS-PA-Cashbox/bhs-pa-cashbox',
+    ],
+    'community' => [
+        'enabled' => false,
+        'portal_public_api_base_url' => '', // HTTPS origin + optional base path + /api/v1/community/public
+        'website_origin' => '', // Exact scheme://host[:port], no path
+        'allow_loopback_http' => false, // Staging-only local tests; false in production
+    ],
+    'debug' => [
+        'error' => false, 'warning' => false, 'info' => false, 'level' => 1,
+        'entities' => ['community-api-client' => true, 'app' => true, 'browser' => true],
     ],
     'db' => [
         'host' => 'localhost',

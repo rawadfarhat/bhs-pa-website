@@ -52,7 +52,7 @@ function e(?string $value): string
 function url(string $path = ''): string
 {
     // Public page links use clean routes; file and form endpoints keep their URLs.
-    $path = preg_replace('~^(event|events|pa-members|subscribe|terms|privacy|festival-of-peace-2026)\.(?:php|html)(?=[?#]|$)~', '$1', $path);
+    $path = preg_replace('~^(community|community-detail|event|events|pa-members|subscribe|terms|privacy|festival-of-peace-2026)\.(?:php|html)(?=[?#]|$)~', '$1', $path);
     $path = preg_replace('~^index\.(?:php|html)(?=[?#]|$)~', '', $path);
     $configuredBasePath = trim((string) config('app.base_path', ''));
 
@@ -325,4 +325,3 @@ function safeEventHtml(?string $html): string
     if ($root) foreach ($root->childNodes as $child) $output .= $document->saveHTML($child);
     return $output;
 }
-

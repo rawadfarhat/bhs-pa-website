@@ -9,6 +9,7 @@ $nav = [
     'connect' => ['Stay Connected', 'subscribe.php'],
     'terms' => ['Terms', 'terms.php'],
 ];
+if(config('community.enabled',false)===true)$nav['community']=['Community','community.php'];
 ?>
 <!doctype html>
 <html lang="en">
@@ -42,4 +43,3 @@ $nav = [
     </div>
 </header>
 <main id="main-content">
-
