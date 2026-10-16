@@ -15,10 +15,10 @@ final class CommunityApiClient
     public function request(string $path,array $query=[],?array $event=null,bool $image=false): array|string
     {
         LoggingService::info('community-api-client','request.start',[],1);
-        if(!preg_match('~^/(?:businesses|promotions)(?:/[a-f0-9]{32}(?:/image/[a-f0-9]{64})?)?$~D',$path)&&$path!=='/events')throw new RuntimeException('Invalid Community route',400);
+        if(!preg_match('~^/(?:businesses|promotions)(?:/[a-f0-9]{32}(?:/image/[a-f0-9]{64})?)?$~D',$path)&&!in_array($path,['/events','/concerns'],true))throw new RuntimeException('Invalid Community route',400);
         if(array_diff(array_keys($query),['page','page_size','search','category','locality','has_offers','business_public_id']))throw new RuntimeException('Invalid filters',400);
         foreach($query as $v)if(!is_string($v)&&!is_int($v))throw new RuntimeException('Invalid filters',400);
-        if($event!==null&&$path!=='/events')throw new RuntimeException('Invalid event route',400);
+        if($event!==null&&!in_array($path,['/events','/concerns'],true))throw new RuntimeException('Invalid event route',400);
         if(!function_exists('curl_init'))throw new RuntimeException('Community unavailable',503);
         $limit=$image?6291456:1048576;$bytes='';$handle=curl_init(rtrim($this->base,'/').$path.($query?'?'.http_build_query($query):''));
         try{
@@ -31,7 +31,7 @@ final class CommunityApiClient
             if($image){LoggingService::trace('community-api-client','image.validate',__LINE__,10);if(!str_starts_with($type,'image/png')||!str_starts_with($bytes,"\x89PNG\r\n\x1a\n"))throw new RuntimeException('Image unavailable',503);LoggingService::info('community-api-client','image.complete',[],1);return $bytes;}
             if(!str_starts_with($type,'application/json'))throw new RuntimeException('Community unavailable',503);
             $result=json_decode($bytes,true,16,JSON_THROW_ON_ERROR);if(!is_array($result))throw new RuntimeException('Community unavailable',503);
-            if($path!=='/events')self::validate($result,str_starts_with($path,'/businesses')?'businesses':'promotions',substr_count($path,'/')>1);
+            if(!in_array($path,['/events','/concerns'],true))self::validate($result,str_starts_with($path,'/businesses')?'businesses':'promotions',substr_count($path,'/')>1);
             LoggingService::info('community-api-client','request.complete',[],1);return $result;
         }catch(\Throwable $error){LoggingService::caught('community-api-client','request.failed',__LINE__,'error',$error);throw new RuntimeException($error instanceof RuntimeException&&$error->getCode()===404?'Listing unavailable':'Community unavailable',$error instanceof RuntimeException&&$error->getCode()===404?404:503);}
         finally{curl_close($handle);}
