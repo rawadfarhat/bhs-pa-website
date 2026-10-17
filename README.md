@@ -28,3 +28,47 @@ The checked-in `config.php` is for the current local WAMP environment and is ign
 
 The public event renderer requires PHP's built-in DOM extension. The gallery
 uses native browser APIs and has no Composer or JavaScript package dependency.
+
+## GitHub deployment to GoDaddy
+
+`.github/workflows/deploy-bhs-pa-website.yml` deploys pushes on `staging` to the
+staging website folder and pushes on `main` to the production website folder.
+It can also be run manually against either branch. Keep the workflow on both
+branches. GitHub environments are named `staging` and `production`; configure
+any desired approval rules in repository Settings > Environments.
+
+In this website repository, open Settings > Secrets and variables > Actions and
+create these **repository secrets** (portal repository secrets are not inherited):
+
+| Secret | Value |
+| --- | --- |
+| `CPANEL_HOST` | Same GoDaddy SSH hostname or server IP used by the portal, without `https://` or a path. |
+| `CPANEL_PORT` | Same SSH port used by the portal; use the actual hosting SSH port, not the cPanel web interface port. |
+| `CPANEL_USERNAME` | Same cPanel SSH account username used by the portal. |
+| `CPANEL_PASSWORD` | That account's SSH/cPanel password, as used by the portal workflow. |
+| `CPANEL_SSH_KNOWN_HOSTS` | Verified OpenSSH known_hosts entry for this host and port; see below. |
+| `CPANEL_DEPLOY_PATH` | Absolute production **website** document root, without a trailing slash. For example `/home/YOUR_CPANEL_USERNAME/public_html` if that is the live website's document root. Do not use the portal's deployment path. |
+| `CPANEL_STAGING_DEPLOY_PATH` | Absolute staging **website** document root, without a trailing slash. For example `/home/YOUR_CPANEL_USERNAME/public_html/website_staging` only if that is the staging domain's configured document root. Do not use `portal_staging`. |
+
+Confirm the two actual document roots in cPanel Domains before setting the path
+secrets. The workflow requires distinct paths under `/home/USER/public_html`.
+Examples above are placeholders, not detected hosting values.
+
+To obtain the known_hosts entry from a trusted machine with OpenSSH, run
+`ssh-keyscan -p YOUR_SSH_PORT YOUR_SSH_HOST`. Verify the returned key's fingerprint
+against a trusted existing SSH connection or hosting support before saving the
+complete entry (or entries) as `CPANEL_SSH_KNOWN_HOSTS`. For a nonstandard port,
+the host field normally looks like `[hostname]:port`. The workflow rejects
+unknown or changed host keys.
+
+Before the first run, create each destination folder and place its own
+`config.php` there, based on `config.php.example`. Production must use the
+production portal database and portal root path; staging must use the staging
+portal database and portal root path. Set `app.base_path` to the website URL's
+subdirectory, or an empty string when served from the domain root. Ensure the
+hosting account supports SSH, password authentication and remote `rsync`.
+
+Deployment preserves server `config.php`, logs, storage and portal folders. It
+uploads tracked website files, including `.htaccess`, without deleting remote
+files. Consequently, files removed or renamed in Git need separate remote
+cleanup. It does not run database migrations or change hosting configuration.

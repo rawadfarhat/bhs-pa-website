@@ -1,0 +1,115 @@
+name: Deploy BHS PA Website to GoDaddy
+
+on:
+  push:
+    branches: [main, staging]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Serialize deployments even when the website folders share a hosting account.
+concurrency:
+  group: bhs-pa-website-godaddy-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
+    env:
+      SSH_HOST: ${{ secrets.CPANEL_HOST }}
+      SSH_PORT: ${{ secrets.CPANEL_PORT }}
+      SSH_USER: ${{ secrets.CPANEL_USERNAME }}
+      SSHPASS: ${{ secrets.CPANEL_PASSWORD }}
+      SSH_KNOWN_HOSTS: ${{ secrets.CPANEL_SSH_KNOWN_HOSTS }}
+      PRODUCTION_PATH: ${{ secrets.CPANEL_DEPLOY_PATH }}
+      STAGING_PATH: ${{ secrets.CPANEL_STAGING_DEPLOY_PATH }}
+
+    steps:
+      - name: Checkout selected branch
+        uses: actions/checkout@v4
+
+      - name: Validate credentials and select destination
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${SSH_HOST:?Set CPANEL_HOST}"
+          : "${SSH_PORT:?Set CPANEL_PORT}"
+          : "${SSH_USER:?Set CPANEL_USERNAME}"
+          : "${SSHPASS:?Set CPANEL_PASSWORD}"
+          : "${SSH_KNOWN_HOSTS:?Set CPANEL_SSH_KNOWN_HOSTS}"
+          : "${PRODUCTION_PATH:?Set CPANEL_DEPLOY_PATH}"
+          : "${STAGING_PATH:?Set CPANEL_STAGING_DEPLOY_PATH}"
+          [[ "$SSH_HOST" =~ ^[a-zA-Z0-9.-]+$ ]] || { echo 'Invalid SSH hostname.' >&2; exit 1; }
+          [[ "$SSH_USER" =~ ^[a-zA-Z0-9_-]+$ ]] || { echo 'Invalid SSH username.' >&2; exit 1; }
+          [[ "$SSH_PORT" =~ ^[0-9]{1,5}$ ]] && (( 10#$SSH_PORT > 0 && 10#$SSH_PORT <= 65535 )) || { echo 'Invalid SSH port.' >&2; exit 1; }
+          for path in "$PRODUCTION_PATH" "$STAGING_PATH"; do
+            [[ "$path" =~ ^/home/[a-zA-Z0-9_-]+/public_html(/[a-zA-Z0-9_-]+)*$ ]] || {
+              echo 'Website paths must be absolute /home/USER/public_html paths, optionally with subfolders, without a trailing slash.' >&2
+              exit 1
+            }
+            case "$path/" in
+              */portal/*|*/portal_staging/*) echo 'Do not target a portal folder.' >&2; exit 1 ;;
+            esac
+          done
+          [[ "$PRODUCTION_PATH" != "$STAGING_PATH" ]] || { echo 'Production and staging paths must differ.' >&2; exit 1; }
+          case "$GITHUB_REF_NAME" in
+            main) deploy_path="$PRODUCTION_PATH" ;;
+            staging) deploy_path="$STAGING_PATH" ;;
+            *) exit 1 ;;
+          esac
+          echo "DEPLOY_PATH=$deploy_path" >> "$GITHUB_ENV"
+
+      - name: Install SSH deployment tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y sshpass rsync
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Confirm remote website folder and config
+        shell: bash
+        run: |
+          set -euo pipefail
+          sshpass -e ssh -p "$SSH_PORT" -o StrictHostKeyChecking=yes \
+            "$SSH_USER@$SSH_HOST" \
+            "test -d '$DEPLOY_PATH' && test -f '$DEPLOY_PATH/config.php' && command -v rsync >/dev/null"
+
+      - name: Deploy website files
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Export tracked files only; never upload a local config or credentials.
+          mkdir -p "$RUNNER_TEMP/website-deploy"
+          git archive HEAD | tar -x -C "$RUNNER_TEMP/website-deploy"
+          # No --delete: preserve hosting files, portal folders and runtime data.
+          sshpass -e rsync -az --no-perms --no-owner --no-group \
+            --exclude='/.git/' \
+            --exclude='/.github/' \
+            --exclude='/.agents/' \
+            --exclude='/.codex/' \
+            --exclude='/.aws/' \
+            --exclude='/config.php' \
+            --exclude='/config.php.example' \
+            --exclude='/logs/' \
+            --exclude='/storage/' \
+            --exclude='/portal/' \
+            --exclude='/portal_staging/' \
+            --exclude='/tests/' \
+            --exclude='/docs/' \
+            --exclude='/diagnose-event-page.php' \
+            --exclude='/AGENTS.md' \
+            --exclude='/README.md' \
+            --exclude='/.gitignore' \
+            --exclude='/.gitattributes' \
+            --exclude='/.env*' \
+            --exclude='*.code-workspace' \
+            --exclude='.DS_Store' \
+            -e "ssh -p $SSH_PORT -o StrictHostKeyChecking=yes" \
+            "$RUNNER_TEMP/website-deploy/" "$SSH_USER@$SSH_HOST:$DEPLOY_PATH/"
