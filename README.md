@@ -46,7 +46,6 @@ create these **repository secrets** (portal repository secrets are not inherited
 | `CPANEL_PORT` | Same SSH port used by the portal; use the actual hosting SSH port, not the cPanel web interface port. |
 | `CPANEL_USERNAME` | Same cPanel SSH account username used by the portal. |
 | `CPANEL_PASSWORD` | That account's SSH/cPanel password, as used by the portal workflow. |
-| `CPANEL_SSH_KNOWN_HOSTS` | Verified OpenSSH known_hosts entry for this host and port; see below. |
 | `CPANEL_DEPLOY_PATH` | Absolute production **website** document root, without a trailing slash. For example `/home/YOUR_CPANEL_USERNAME/public_html` if that is the live website's document root. Do not use the portal's deployment path. |
 | `CPANEL_STAGING_DEPLOY_PATH` | Absolute staging **website** document root, without a trailing slash. For example `/home/YOUR_CPANEL_USERNAME/public_html/website_staging` only if that is the staging domain's configured document root. Do not use `portal_staging`. |
 
@@ -54,12 +53,8 @@ Confirm the two actual document roots in cPanel Domains before setting the path
 secrets. The workflow requires distinct paths under `/home/USER/public_html`.
 Examples above are placeholders, not detected hosting values.
 
-To obtain the known_hosts entry from a trusted machine with OpenSSH, run
-`ssh-keyscan -p YOUR_SSH_PORT YOUR_SSH_HOST`. Verify the returned key's fingerprint
-against a trusted existing SSH connection or hosting support before saving the
-complete entry (or entries) as `CPANEL_SSH_KNOWN_HOSTS`. For a nonstandard port,
-the host field normally looks like `[hostname]:port`. The workflow rejects
-unknown or changed host keys.
+SSH uses username/password authentication with `StrictHostKeyChecking=no`,
+matching the portal deployment workflow. No known-hosts secret is required.
 
 Before the first run, create each destination folder and place its own
 `config.php` there, based on `config.php.example`. Production must use the

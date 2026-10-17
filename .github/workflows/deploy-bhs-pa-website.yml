@@ -24,7 +24,6 @@ jobs:
       SSH_PORT: ${{ secrets.CPANEL_PORT }}
       SSH_USER: ${{ secrets.CPANEL_USERNAME }}
       SSHPASS: ${{ secrets.CPANEL_PASSWORD }}
-      SSH_KNOWN_HOSTS: ${{ secrets.CPANEL_SSH_KNOWN_HOSTS }}
       PRODUCTION_PATH: ${{ secrets.CPANEL_DEPLOY_PATH }}
       STAGING_PATH: ${{ secrets.CPANEL_STAGING_DEPLOY_PATH }}
 
@@ -40,7 +39,6 @@ jobs:
           : "${SSH_PORT:?Set CPANEL_PORT}"
           : "${SSH_USER:?Set CPANEL_USERNAME}"
           : "${SSHPASS:?Set CPANEL_PASSWORD}"
-          : "${SSH_KNOWN_HOSTS:?Set CPANEL_SSH_KNOWN_HOSTS}"
           : "${PRODUCTION_PATH:?Set CPANEL_DEPLOY_PATH}"
           : "${STAGING_PATH:?Set CPANEL_STAGING_DEPLOY_PATH}"
           [[ "$SSH_HOST" =~ ^[a-zA-Z0-9.-]+$ ]] || { echo 'Invalid SSH hostname.' >&2; exit 1; }
@@ -69,15 +67,12 @@ jobs:
           set -euo pipefail
           sudo apt-get update
           sudo apt-get install -y sshpass rsync
-          install -m 700 -d ~/.ssh
-          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
-          chmod 600 ~/.ssh/known_hosts
 
       - name: Confirm remote website folder and config
         shell: bash
         run: |
           set -euo pipefail
-          sshpass -e ssh -p "$SSH_PORT" -o StrictHostKeyChecking=yes \
+          sshpass -e ssh -p "$SSH_PORT" -o StrictHostKeyChecking=no \
             "$SSH_USER@$SSH_HOST" \
             "test -d '$DEPLOY_PATH' && test -f '$DEPLOY_PATH/config.php' && command -v rsync >/dev/null"
 
@@ -111,5 +106,5 @@ jobs:
             --exclude='/.env*' \
             --exclude='*.code-workspace' \
             --exclude='.DS_Store' \
-            -e "ssh -p $SSH_PORT -o StrictHostKeyChecking=yes" \
+            -e "ssh -p $SSH_PORT -o StrictHostKeyChecking=no" \
             "$RUNNER_TEMP/website-deploy/" "$SSH_USER@$SSH_HOST:$DEPLOY_PATH/"
