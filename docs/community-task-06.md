@@ -1,3 +1,5 @@
+> **SUPERSEDED — 17 October 2026.** This document records the rejected BHS Community design/implementation. Its tasks, completion claims, configuration, migration and deployment instructions are historical only. The implementation has been reverted. Do not resume these tasks or enable this design; await the user's replacement requirements.
+
 # Community Task 06 website handoff
 
 Business/offer reports now accept category, bounded details, optional consented email and honeypot. Same-origin JSON posts to fixed `community-concerns.php`, which uses the narrow public portal `/concerns` API; no portal DB/private credentials or forwarded visitor IPs. Responses contain accepted/error only. Theme tokens, no-store and safe text insertion remain.
