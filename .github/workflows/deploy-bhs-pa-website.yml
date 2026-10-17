@@ -20,6 +20,7 @@ jobs:
     timeout-minutes: 30
     environment: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
     env:
+      TERM: dumb
       SSH_HOST: ${{ secrets.CPANEL_HOST }}
       SSH_PORT: ${{ secrets.CPANEL_PORT }}
       SSH_USER: ${{ secrets.CPANEL_USERNAME }}
@@ -72,9 +73,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          sshpass -e ssh -p "$SSH_PORT" -o StrictHostKeyChecking=no \
+          sshpass -e ssh -T -p "$SSH_PORT" -o StrictHostKeyChecking=no -o SendEnv=TERM \
             "$SSH_USER@$SSH_HOST" \
-            "test -d '$DEPLOY_PATH' && test -f '$DEPLOY_PATH/config.php' && command -v rsync >/dev/null"
+            "export TERM=dumb; \
+             test -d '$DEPLOY_PATH' || { echo 'Website destination folder does not exist.' >&2; exit 1; }; \
+             test -f '$DEPLOY_PATH/config.php' || { echo 'Website config.php is missing from the destination folder.' >&2; exit 1; }; \
+             command -v rsync >/dev/null || { echo 'rsync is unavailable on the hosting account.' >&2; exit 1; }; \
+             echo 'Remote website checks passed.'"
 
       - name: Deploy website files
         shell: bash
@@ -85,6 +90,7 @@ jobs:
           git archive HEAD | tar -x -C "$RUNNER_TEMP/website-deploy"
           # No --delete: preserve hosting files, portal folders and runtime data.
           sshpass -e rsync -az --no-perms --no-owner --no-group \
+            --rsync-path='env TERM=dumb rsync' \
             --exclude='/.git/' \
             --exclude='/.github/' \
             --exclude='/.agents/' \
@@ -106,5 +112,5 @@ jobs:
             --exclude='/.env*' \
             --exclude='*.code-workspace' \
             --exclude='.DS_Store' \
-            -e "ssh -p $SSH_PORT -o StrictHostKeyChecking=no" \
+            -e "ssh -T -p $SSH_PORT -o StrictHostKeyChecking=no -o SendEnv=TERM" \
             "$RUNNER_TEMP/website-deploy/" "$SSH_USER@$SSH_HOST:$DEPLOY_PATH/"
