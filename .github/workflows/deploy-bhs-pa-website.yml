@@ -4,6 +4,20 @@ on:
   push:
     branches: [main, staging]
   workflow_dispatch:
+    inputs:
+      target_branch:
+        description: Branch and GoDaddy destination to deploy
+        required: true
+        type: choice
+        default: staging
+        options:
+          - staging
+          - main
+      push_all_files:
+        description: Force upload all deployable files (unchecked uploads changed files only)
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -15,11 +29,13 @@ concurrency:
 
 jobs:
   deploy:
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging'
+    if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging'
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    environment: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
+    environment: ${{ (inputs.target_branch || github.ref_name) == 'main' && 'production' || 'staging' }}
     env:
+      TARGET_BRANCH: ${{ inputs.target_branch || github.ref_name }}
+      PUSH_ALL_FILES: ${{ github.event_name == 'push' || inputs.push_all_files }}
       TERM: dumb
       SSH_HOST: ${{ secrets.CPANEL_HOST }}
       SSH_PORT: ${{ secrets.CPANEL_PORT }}
@@ -31,6 +47,8 @@ jobs:
     steps:
       - name: Checkout selected branch
         uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.target_branch || github.ref_name }}
 
       - name: Validate credentials and select destination
         shell: bash
@@ -55,7 +73,7 @@ jobs:
             esac
           done
           [[ "$PRODUCTION_PATH" != "$STAGING_PATH" ]] || { echo 'Production and staging paths must differ.' >&2; exit 1; }
-          case "$GITHUB_REF_NAME" in
+          case "$TARGET_BRANCH" in
             main) deploy_path="$PRODUCTION_PATH" ;;
             staging) deploy_path="$STAGING_PATH" ;;
             *) exit 1 ;;
@@ -88,8 +106,16 @@ jobs:
           # Export tracked files only; never upload a local config or credentials.
           mkdir -p "$RUNNER_TEMP/website-deploy"
           git archive HEAD | tar -x -C "$RUNNER_TEMP/website-deploy"
+          upload_options=(--checksum)
+          if [[ "$PUSH_ALL_FILES" == 'true' ]]; then
+            upload_options=(--ignore-times)
+            echo "Deploying $TARGET_BRANCH: force upload all deployable files."
+          else
+            echo "Deploying $TARGET_BRANCH: upload files with changed contents only."
+          fi
           # No --delete: preserve hosting files, portal folders and runtime data.
           sshpass -e rsync -az --no-perms --no-owner --no-group \
+            "${upload_options[@]}" \
             --rsync-path='env TERM=dumb rsync' \
             --exclude='/.git/' \
             --exclude='/.github/' \

@@ -33,8 +33,16 @@ uses native browser APIs and has no Composer or JavaScript package dependency.
 
 `.github/workflows/deploy-bhs-pa-website.yml` deploys pushes on `staging` to the
 staging website folder and pushes on `main` to the production website folder.
-It can also be run manually against either branch. Keep the workflow on both
-branches. GitHub environments are named `staging` and `production`; configure
+For a manual deployment, open Actions > Deploy BHS PA Website to GoDaddy > Run
+workflow. Select `target_branch` (`staging` or `main`); this controls both the
+checked-out website code and the server destination. Check `push_all_files` to
+force-upload every deployable file. Leave it unchecked to compare file contents
+with the server using rsync checksums and upload only new or changed files.
+Automatic pushes force-upload all deployable files. All modes retain the same
+config/runtime/portal exclusions and never delete remote files.
+
+Keep this workflow on the default branch so GitHub offers manual runs, and on
+both deployment branches. GitHub environments are named `staging` and `production`; configure
 any desired approval rules in repository Settings > Environments.
 
 In this website repository, open Settings > Secrets and variables > Actions and
