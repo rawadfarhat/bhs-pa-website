@@ -164,3 +164,10 @@ Playwright module, PHP executable and optional Chrome executable as its argument
 
 
 Task 10 production handoff: [deployment/configuration/manual acceptance guide](community-production-deployment.md). Website documentation changed only in Task 10; portal also includes approved-only Admin restoration. No deployment, config change, migration, commit/push or activation. Review staging acceptance and both guides before separately authorizing coordinated production delivery.
+
+
+## Home-page Community section — 18 October 2026
+
+The home page now shows a clickable Community panel after Upcoming Events and before the introduction. Its short copy follows the Community page introduction. It reuses the header's request-scoped availability result: hidden when disabled, no visible published businesses exist, or the connector is unavailable. No extra request, positive cross-request cache, configuration, migration or worker is introduced. The complete panel links to the clean Community route and uses existing responsive action-panel/button styles plus semantic hover/focus colors.
+
+Verified PHP syntax, Community unit regression and a rendered-PHP Chrome fixture: available/false/unavailable visibility, 360/390/820/1440px overflow and CTA bounds, custom semantic colors, keyboard focus and Enter navigation. No real hosting check was performed. Website changed only (`index.php`, versioned shared stylesheet/header and this note); portal unchanged. After staging delivery, check the home panel and destination with Community available, then confirm it disappears when unavailable.

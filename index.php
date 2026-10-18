@@ -26,6 +26,18 @@ require __DIR__ . '/includes/header.php';
     </div>
 </div></section>
 <?php endif; ?>
+<?php
+CommunityClient::diagnostic('website.home.community.start', 3);
+if ($communityAvailable):
+    CommunityClient::diagnostic('website.home.community.shown', 1);
+?>
+<section class="section" aria-labelledby="home-community-heading"><div class="shell">
+    <a class="action-panel home-community" href="<?= e(url('community')) ?>" aria-labelledby="home-community-heading" aria-describedby="home-community-description">
+        <div><p class="eyebrow">BHS Parents Community</p><h2 id="home-community-heading">Connect with our parent community</h2><p id="home-community-description">Discover businesses owned by BHS parents, explore special offers for our parent community, and support one another.</p></div>
+        <span class="button">Explore Community <span aria-hidden="true">&nbsp;→</span></span>
+    </a>
+</div></section>
+<?php else: CommunityClient::diagnostic('website.home.community.hidden', 1); endif; ?>
 <section class="section intro-section"><div class="shell split"><div><p class="eyebrow">Who we are</p><h2>A parent voice with a practical purpose</h2></div><div class="lead"><p>The BHS Parents Association brings families and the school closer together. We listen, communicate, and help create initiatives that make school life richer for every student.</p><p>Our work is guided by openness, cooperation, and the Quaker values at the heart of Broummana High School.</p></div></div></section>
 <section class="section section-tint"><div class="shell"><div class="section-heading"><div><p class="eyebrow">The team</p><h2>Meet your PA representatives</h2></div><a class="text-link" href="<?= e(url('pa-members.php')) ?>">View every member <span aria-hidden="true">→</span></a></div><div class="member-grid"><?php renderMemberCards($featuredMembers); ?></div></div></section>
 <section class="section"><div class="shell action-panel"><div><p class="eyebrow">Stay in the loop</p><h2>Make sure PA updates reach your family</h2><p>Share or update your preferred contact details securely. It only takes a minute.</p></div><a class="button" href="<?= e(url('subscribe.php')) ?>">Register your details</a></div></section>
