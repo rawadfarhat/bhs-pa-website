@@ -17,7 +17,7 @@ try{
 }catch(Throwable $error){if(ob_get_level()>0)ob_end_clean();$code=in_array($error->getCode(),[404,422],true)?$error->getCode():503;http_response_code($code);if($code===503)$GLOBALS['community_connector_failed']=true;$failure=$code===422?'Invalid Community filters.':($code===404?'This Community page is unavailable.':'Community is temporarily unavailable. Please try again.');CommunityClient::diagnostic('website.page.failed',1,$code===503?'error':'warning');}
 require __DIR__.'/includes/header.php';
 ?>
-<link rel="stylesheet" href="<?= e(url('assets/community.css?v=1')) ?>">
+<link rel="stylesheet" href="<?= e(url('assets/community.css?v=2')) ?>">
 <section class="page-hero"><div class="shell"><p class="eyebrow">BHS Parents Community</p><h1>Community</h1><p>Discover businesses and offers from our parent community.</p></div></section>
 <section class="section community-section" data-community-page data-status="<?= http_response_code() ?: 200 ?>"><div class="shell" id="communityContent" aria-live="polite">
 <?php if($failure): ?>
@@ -36,6 +36,12 @@ elseif($business&&!$promotion&&($state['from']??'')==='offer'&&isset($state['ori
 <?php else: ?><h2>Promotions at <?= e($business['name']) ?></h2><?= $filters ?><?php communityCards($data,$state,'promotions',(int)$business['id']); ?><?php endif; ?>
 <p class="community-back"><a class="text-link" href="<?= e($back) ?>">← <?= e($backLabel) ?></a></p>
 <?php else: ?>
+<section class="community-intro" aria-labelledby="communityIntroTitle">
+    <h2 id="communityIntroTitle">Discover. Connect. Support our community.</h2>
+    <p>BHS Community brings together businesses owned by BHS parents, helping families discover local services and support one another. Browse the businesses below or explore special offers for our parent community.</p>
+    <p>To redeem an offer, present your BHS Community Card at the participating business. You can access your card through the PA Portal. Each promotion’s terms and availability apply.</p>
+    <p>Are you a BHS parent with a business? Log in to the PA Portal to submit your business and promotions for review.</p>
+</section>
 <nav class="community-tabs" aria-label="Browse Community"><a href="<?= e(communityLink($root,['view'=>'businesses','page'=>1])) ?>"<?= $kind==='businesses'?' aria-current="page"':'' ?>>Businesses</a><a href="<?= e(communityLink($root,['view'=>'promotions','page'=>1])) ?>"<?= $kind==='promotions'?' aria-current="page"':'' ?>>Promotions</a></nav>
 <h2><?= ucfirst($kind) ?></h2><?= $filters ?><?php communityCards($data,$state,$kind); ?>
 <?php endif; endif; ?>
