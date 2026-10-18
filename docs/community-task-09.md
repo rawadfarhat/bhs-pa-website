@@ -161,3 +161,6 @@ and `assets/community.css`. No configuration, migration or worker changes.
 `tests/community-images-browser.js` covers delayed/cached/lazy/success/error states,
 dynamic navigation, reserved geometry, reduced motion and responsive bounds; pass the
 Playwright module, PHP executable and optional Chrome executable as its arguments.
+
+
+Task 10 production handoff: [deployment/configuration/manual acceptance guide](community-production-deployment.md). Website documentation changed only in Task 10; portal also includes approved-only Admin restoration. No deployment, config change, migration, commit/push or activation. Review staging acceptance and both guides before separately authorizing coordinated production delivery.
