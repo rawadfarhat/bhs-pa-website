@@ -52,7 +52,7 @@ function e(?string $value): string
 function url(string $path = ''): string
 {
     // Public page links use clean routes; file and form endpoints keep their URLs.
-    $path = preg_replace('~^(event|events|pa-members|subscribe|terms|privacy|festival-of-peace-2026)\.(?:php|html)(?=[?#]|$)~', '$1', $path);
+    $path = preg_replace('~^(community|event|events|pa-members|subscribe|terms|privacy|festival-of-peace-2026)\.(?:php|html)(?=[?#]|$)~', '$1', $path);
     $path = preg_replace('~^index\.(?:php|html)(?=[?#]|$)~', '', $path);
     $configuredBasePath = trim((string) config('app.base_path', ''));
 
@@ -363,3 +363,5 @@ function eventCollectionDisplayTotals(array $totals): array
     if ($logger) App\Services\LoggingService::error('event-data-collection', 'website.displayTotals.failed');
     throw new RuntimeException('Portal event total configuration is unavailable.');
 }
+
+require_once __DIR__ . '/community-client.php';

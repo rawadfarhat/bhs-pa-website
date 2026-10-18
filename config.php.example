@@ -7,6 +7,14 @@ return [
         'base_path' => '',
         'debug' => false,
     ],
+    // Public catalog connector only; no token or database credentials. Keep blank until pilot setup.
+    'community' => [
+        'portal_base_url' => '', // Canonical HTTPS portal URL, including its base path.
+        'connect_timeout_ms' => 2000,
+        'timeout_ms' => 5000,
+        'json_max_bytes' => 1048576,
+        'image_max_bytes' => 8388608,
+    ],
     'portal' => [
         // Only needed for legacy event attachments stored by relative path.
         'root_path' => 'D:/wamp64/www/BHS-PA-Cashbox/bhs-pa-cashbox',

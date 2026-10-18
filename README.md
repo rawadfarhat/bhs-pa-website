@@ -75,3 +75,6 @@ Deployment preserves server `config.php`, logs, storage and portal folders. It
 uploads tracked website files, including `.htaccess`, without deleting remote
 files. Consequently, files removed or renamed in Git need separate remote
 cleanup. It does not run database migrations or change hosting configuration.
+
+
+Community public directory configuration and staging acceptance: [Task 09 guide](docs/community-task-09.md). Public availability defaults off in the portal; implementation does not authorize activation or deployment.

@@ -3,6 +3,9 @@ declare(strict_types=1);
 $pageTitle = $pageTitle ?? 'BHS Parents Association';
 $activePage = $activePage ?? '';
 $publishedEvents = publicEvents();
+$communityAvailable = communityAvailability() === true;
+// Navigation containing the Community link must not be served from a stale page cache.
+communityNoStore();
 $nav = [
     'home' => ['Home', 'index.php'],
     'members' => ['Our PA', 'pa-members.php'],
@@ -36,6 +39,7 @@ $nav = [
                 <a href="<?= e(url($href)) ?>"<?= $activePage === $key ? ' aria-current="page"' : '' ?>><?= e($label) ?></a>
             <?php endforeach; ?>
             <?php if ($publishedEvents !== []): ?><div class="nav-dropdown"><a href="<?= e(url('events.php')) ?>"<?= $activePage === 'events' ? ' aria-current="page"' : '' ?>>Events <span aria-hidden="true">▾</span></a><div class="nav-submenu"><?php foreach ($publishedEvents as $navEvent): ?><a href="<?= e(url('event.php?id=' . (int) $navEvent['id'])) ?>"><?= e($navEvent['name']) ?></a><?php endforeach; ?></div></div><?php endif; ?>
+            <?php if ($communityAvailable): ?><a href="<?= e(url('community')) ?>"<?= $activePage === 'community' ? ' aria-current="page"' : '' ?>>Community</a><?php endif; ?>
             <a class="button button-small" href="<?= e(url('subscribe.php')) ?>">Register your details</a>
             <a class="portal-link" href="https://portal.bhs-pa.com" target="_blank" rel="noopener noreferrer" aria-label="Portal (opens in a new tab)">Portal <svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true" focusable="false"><path d="M14 4h6v6M20 4l-9 9M10 4H4v16h16v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </nav>
