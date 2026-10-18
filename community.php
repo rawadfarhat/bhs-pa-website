@@ -17,7 +17,7 @@ try{
 }catch(Throwable $error){if(ob_get_level()>0)ob_end_clean();$code=in_array($error->getCode(),[404,422],true)?$error->getCode():503;http_response_code($code);if($code===503)$GLOBALS['community_connector_failed']=true;$failure=$code===422?'Invalid Community filters.':($code===404?'This Community page is unavailable.':'Community is temporarily unavailable. Please try again.');CommunityClient::diagnostic('website.page.failed',1,$code===503?'error':'warning');}
 require __DIR__.'/includes/header.php';
 ?>
-<link rel="stylesheet" href="<?= e(url('assets/community.css?v=2')) ?>">
+<link rel="stylesheet" href="<?= e(url('assets/community.css?v=3')) ?>">
 <section class="page-hero"><div class="shell"><p class="eyebrow">BHS Parents Community</p><h1>Community</h1><p>Discover businesses and offers from our parent community.</p></div></section>
 <section class="section community-section" data-community-page data-status="<?= http_response_code() ?: 200 ?>"><div class="shell" id="communityContent" aria-live="polite">
 <?php if($failure): ?>
@@ -46,5 +46,5 @@ elseif($business&&!$promotion&&($state['from']??'')==='offer'&&isset($state['ori
 <h2><?= ucfirst($kind) ?></h2><?= $filters ?><?php communityCards($data,$state,$kind); ?>
 <?php endif; endif; ?>
 </div></section>
-<script src="<?= e(url('assets/community.js?v=1')) ?>" defer></script>
+<script src="<?= e(url('assets/community.js?v=2')) ?>" defer></script>
 <?php require __DIR__.'/includes/footer.php'; ?>

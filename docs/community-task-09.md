@@ -144,3 +144,20 @@ receipt or business data is removed. Do not restore a stale catalog as an outage
 Next: Task 10 coordinated release evidence and production handoff, only when authorized.
 
 After changing PHP/configuration on a host that caches opcodes, use the supported host invalidation/restart process if needed; a browser/PWA refresh cannot refresh PHP opcodes. No public cache-reset endpoint is added.
+
+
+## Community image loading feedback
+
+Business logos and promotion images reserve their existing image space and display
+an inline themed spinner with “Loading image…” while loading. Success removes it;
+failure shows “Image unavailable” without hiding the record text or leaving a spinner.
+This applies to initial/lazy images and content replaced by filters, navigation or
+refresh. Cached images settle immediately. Reduced-motion preferences disable rotation.
+JavaScript-disabled browsing retains normal image rendering. Existing page-content
+loading feedback and public media visibility/no-store checks are unchanged.
+
+Deploy matching `community.php`, `includes/community-view.php`, `assets/community.js`
+and `assets/community.css`. No configuration, migration or worker changes.
+`tests/community-images-browser.js` covers delayed/cached/lazy/success/error states,
+dynamic navigation, reserved geometry, reduced motion and responsive bounds; pass the
+Playwright module, PHP executable and optional Chrome executable as its arguments.

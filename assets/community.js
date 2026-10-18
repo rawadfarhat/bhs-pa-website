@@ -3,6 +3,23 @@
   const log=(event,level=3)=>window.AppDebug?.info('browser',event,level);
   let controller=null,sequence=0,searchTimer=null,refreshTimer=null;
   const progress=document.createElement('p');progress.className='community-progress';progress.hidden=true;progress.setAttribute('role','status');document.body.append(progress);
+  function prepareImages(root=document){
+    log('community.website.images.prepare',8);
+    root.querySelectorAll('[data-community-image]').forEach(frame=>{
+      if(frame.dataset.loadingBound)return;frame.dataset.loadingBound='1';
+      const image=frame.querySelector('img'),status=frame.querySelector('.community-image-status');if(!image||!status)return;
+      frame.classList.add('is-loading');frame.setAttribute('aria-busy','true');log('community.website.image.loading',10);
+      const settle=()=>{
+        image.removeEventListener('load',settle);image.removeEventListener('error',settle);
+        const failed=image.naturalWidth===0;frame.classList.remove('is-loading');frame.classList.toggle('has-error',failed);frame.setAttribute('aria-busy','false');
+        status.textContent=failed?'Image unavailable':'';
+        if(failed)window.AppDebug?.warning('browser','community.website.image.unavailable');else log('community.website.image.ready',5);
+      };
+      image.addEventListener('load',settle);image.addEventListener('error',settle);
+      if(image.complete)settle();
+    });
+    log('community.website.images.prepared',8);
+  }
   function schedule(){log('community.website.refresh.schedule',8);clearTimeout(refreshTimer);if(!document.hidden)refreshTimer=setTimeout(()=>void load(location.href,{refresh:true}),30000);}
   async function load(value,{replace=false,refresh=false,lookup=null,restoredScroll=null}={}){
     log('community.website.load.start',1);const url=new URL(value,location.href);if(url.origin!==location.origin)return;
@@ -14,7 +31,7 @@
       const response=await fetch(url,{cache:'no-store',credentials:'omit',redirect:'error',signal:controller.signal,headers:{Accept:'text/html'}});
       const html=await response.text();if(current!==sequence)return;const parsed=new DOMParser().parseFromString(html,'text/html'),next=parsed.getElementById('communityContent');
       if(!next)throw new Error('Community unavailable');
-      content.replaceChildren(...Array.from(next.childNodes));
+      content.replaceChildren(...Array.from(next.childNodes));prepareImages(content);
       // Reconcile the shared navigation using the server's fresh availability gate.
       for(const nav of ['#site-nav','[aria-label="Footer navigation"]']){
         const old=document.querySelector(nav),fresh=parsed.querySelector(nav);if(old&&fresh)old.replaceChildren(...Array.from(fresh.childNodes));
@@ -39,5 +56,5 @@
   window.addEventListener('pageshow',event=>{if(event.persisted){document.getElementById('communityContent')?.replaceChildren();void load(location.href,{refresh:true});}});
   document.addEventListener('visibilitychange',()=>{clearTimeout(refreshTimer);if(document.hidden){controller?.abort();document.getElementById('communityContent')?.setAttribute('inert','');}else{document.getElementById('communityContent')?.removeAttribute('inert');document.getElementById('communityContent')?.replaceChildren();void load(location.href,{refresh:true});}});
   window.addEventListener('pagehide',()=>{controller?.abort();clearTimeout(searchTimer);clearTimeout(refreshTimer);});
-  schedule();log('community.website.ready',1);
+  prepareImages();schedule();log('community.website.ready',1);
 })();

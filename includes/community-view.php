@@ -25,7 +25,7 @@ function communityRoot(array $state): array
 }
 function communityImage(array $row,string $kind): string
 {
-    CommunityClient::diagnostic('website.image.link',10);return !empty($row['has_image'])?'<img class="community-image" src="'.e(url('community-image.php?kind='.$kind.'&id='.(int)$row['id'])).'" alt="'.e($row['name']).'" loading="lazy" decoding="async">':'';
+    CommunityClient::diagnostic('website.image.link',10);return !empty($row['has_image'])?'<span class="community-image-frame" data-community-image><img class="community-image" src="'.e(url('community-image.php?kind='.$kind.'&id='.(int)$row['id'])).'" alt="'.e($row['name']).'" loading="lazy" decoding="async"><span class="community-image-status" role="status">Loading image…</span></span>':'';
 }
 function communityCounters(array $row): string
 {
