@@ -16,7 +16,13 @@ $renderedContent = renderPublicEventContent($event['events_page_content_html'] ?
 $collection = App\Services\EventDataCollectionService::configuration($event['data_collection_config'] ?? null);
 $content = replaceEventFormPlaceholder($renderedContent['html'], $collection);
 if (preg_match('/\{count\}|\{sum\s*;\s*field\s*:\s*number_0[12]\s*\}|\{progress\s*;/iu', $content)) {
-    $content = renderEventCollectionTotals($content, eventCollectionDisplayTotals(App\Services\EventDataCollectionService::totals(db(), $eventId)));
+    try {
+        $content = renderEventCollectionTotals($content, eventCollectionDisplayTotals(App\Services\EventDataCollectionService::totals(db(), $eventId)));
+    } catch (Throwable $error) {
+        if (class_exists(App\Services\LoggingService::class)) App\Services\LoggingService::caught('event-data-collection', 'website.event.totals_unavailable', __LINE__, 'error', $error);
+        // Keep the event and its form usable; never reveal raw totals when ceiling settings cannot be read.
+        $content = renderEventCollectionTotals($content, ['count' => '—', 'number_01' => '—', 'number_02' => '—']);
+    }
 }
 $galleryPlaced = $renderedContent['gallery_placed'];
 $pageTitle = $event['name'] . ' | BHS Parents Association';

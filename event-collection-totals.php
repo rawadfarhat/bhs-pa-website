@@ -18,7 +18,7 @@ try {
     }
     echo json_encode(['data' => eventCollectionDisplayTotals(App\Services\EventDataCollectionService::totals(db(), $eventId))]);
 } catch (Throwable $error) {
-    error_log('Event collection totals failed: ' . $error->getMessage());
+    if (class_exists(App\Services\LoggingService::class)) App\Services\LoggingService::caught('event-data-collection', 'website.totals.failed', __LINE__, 'error', $error);
     http_response_code(503);
     echo json_encode(['message' => 'Totals unavailable.']);
 }
