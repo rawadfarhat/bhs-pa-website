@@ -326,3 +326,15 @@ function safeEventHtml(?string $html): string
     return $output;
 }
 
+
+/** Event totals use the portal's configuration as their single source of settings. */
+function eventCollectionDisplayTotals(array $totals): array
+{
+    $portalRoot = rtrim((string) config('portal.root_path', ''), '/\\');
+    $settingsFile = $portalRoot . '/config/config.php';
+    if ($portalRoot === '' || !is_file($settingsFile)) {
+        throw new RuntimeException('Portal event total configuration is unavailable.');
+    }
+    $settings = require $settingsFile;
+    return App\Services\EventDataCollectionService::displayTotals($totals, $settings['max_total'] ?? null, $settings['max_total_number_02'] ?? null);
+}

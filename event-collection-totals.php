@@ -16,7 +16,7 @@ try {
         echo json_encode(['message' => 'Event unavailable.']);
         exit;
     }
-    echo json_encode(['data' => App\Services\EventDataCollectionService::totals(db(), $eventId)]);
+    echo json_encode(['data' => eventCollectionDisplayTotals(App\Services\EventDataCollectionService::totals(db(), $eventId))]);
 } catch (Throwable $error) {
     error_log('Event collection totals failed: ' . $error->getMessage());
     http_response_code(503);

@@ -16,7 +16,7 @@ $renderedContent = renderPublicEventContent($event['events_page_content_html'] ?
 $collection = App\Services\EventDataCollectionService::configuration($event['data_collection_config'] ?? null);
 $content = replaceEventFormPlaceholder($renderedContent['html'], $collection);
 if (preg_match('/\{count\}|\{sum\s*;\s*field\s*:\s*number_0[12]\s*\}|\{progress\s*;/iu', $content)) {
-    $content = renderEventCollectionTotals($content, App\Services\EventDataCollectionService::totals(db(), $eventId));
+    $content = renderEventCollectionTotals($content, eventCollectionDisplayTotals(App\Services\EventDataCollectionService::totals(db(), $eventId)));
 }
 $galleryPlaced = $renderedContent['gallery_placed'];
 $pageTitle = $event['name'] . ' | BHS Parents Association';
