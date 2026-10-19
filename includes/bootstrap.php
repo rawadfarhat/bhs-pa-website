@@ -52,7 +52,7 @@ function e(?string $value): string
 function url(string $path = ''): string
 {
     // Public page links use clean routes; file and form endpoints keep their URLs.
-    $path = preg_replace('~^(event|events|pa-members|subscribe|terms|privacy|festival-of-peace-2026)\.(?:php|html)(?=[?#]|$)~', '$1', $path);
+    $path = preg_replace('~^(community|event|events|pa-members|subscribe|terms|privacy|festival-of-peace-2026)\.(?:php|html)(?=[?#]|$)~', '$1', $path);
     $path = preg_replace('~^index\.(?:php|html)(?=[?#]|$)~', '', $path);
     $configuredBasePath = trim((string) config('app.base_path', ''));
 
@@ -326,3 +326,42 @@ function safeEventHtml(?string $html): string
     return $output;
 }
 
+
+/** Event totals use the portal's configuration as their single source of settings. */
+function eventCollectionDisplayTotals(array $totals): array
+{
+    $logger = class_exists(App\Services\LoggingService::class);
+    if ($logger) App\Services\LoggingService::info('event-data-collection', 'website.displayTotals.start', [], 3);
+    $websiteRoot = dirname(__DIR__);
+    $portalRoot = rtrim((string) config('portal.root_path', ''), '/\\');
+    $candidates = $portalRoot !== '' ? [$portalRoot] : [];
+    $basePath = trim((string) config('app.base_path', ''), '/');
+    // These are the repository's deployment destinations. Never fall back from staging to production.
+    if ($basePath === 'staging' || in_array(basename($websiteRoot), ['staging', 'website_staging'], true)) {
+        if ($logger) App\Services\LoggingService::info('event-data-collection', 'website.displayTotals.staging', [], 10);
+        $candidates[] = dirname($websiteRoot) . '/portal_staging';
+    } elseif ($basePath === '') {
+        if ($logger) App\Services\LoggingService::info('event-data-collection', 'website.displayTotals.production', [], 10);
+        $candidates[] = $websiteRoot . '/portal';
+    }
+    foreach (array_unique($candidates) as $candidate) {
+        if ($logger) App\Services\LoggingService::info('event-data-collection', 'website.displayTotals.candidate', [], 10);
+        $settingsFile = $candidate . '/config/config.php';
+        if (!is_file($settingsFile) || !is_readable($settingsFile)) {
+            if ($logger) App\Services\LoggingService::warning('event-data-collection', 'website.displayTotals.settings_unavailable');
+            continue;
+        }
+        $settings = require $settingsFile;
+        if (!is_array($settings) || ($settings['db']['database'] ?? null) !== config('db.database')) {
+            if ($logger) App\Services\LoggingService::warning('event-data-collection', 'website.displayTotals.database_mismatch');
+            continue;
+        }
+        $result = App\Services\EventDataCollectionService::displayTotals($totals, $settings['max_total'] ?? null, $settings['max_total_number_02'] ?? null);
+        if ($logger) App\Services\LoggingService::info('event-data-collection', 'website.displayTotals.complete', [], 3);
+        return $result;
+    }
+    if ($logger) App\Services\LoggingService::error('event-data-collection', 'website.displayTotals.failed');
+    throw new RuntimeException('Portal event total configuration is unavailable.');
+}
+
+require_once __DIR__ . '/community-client.php';
