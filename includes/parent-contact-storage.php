@@ -3,8 +3,9 @@ declare(strict_types=1);
 require_once __DIR__ . '/user-child-storage.php';
 
 /** Save contact and child pairs atomically in the portal database. */
-function savePublicParentContact(PDO $pdo, array $contact, array $children): int
+function savePublicParentContact(PDO $pdo, array $contact, array $children, string $source = 'public_website'): int
 {
+    if (!in_array($source, ['public_website', 'portal_registration'], true)) throw new InvalidArgumentException('Invalid contact source.');
     // A shared lock also serializes submissions that change email but share a
     // BHS ID. A lock on email+BHS alone would not protect those overlaps.
     $lockName = 'bhs_pa_public_parent_contacts';
@@ -43,8 +44,8 @@ function savePublicParentContact(PDO $pdo, array $contact, array $children): int
         $linkedUserId = $linkedUserId ?: $emailUserId;
         $studentNames = implode(', ', array_column($children, 'name'));
         $grades = implode(', ', array_column($children, 'grade'));
-        $payload = json_encode(['parent' => $contact, 'children' => $children], JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
-        $diagnostics = json_encode(['source' => 'public_website', 'submitted_at' => gmdate(DATE_ATOM), 'child_count' => count($children)], JSON_THROW_ON_ERROR);
+        $payload = json_encode(['parent' => $contact, 'children' => $children, 'source' => $source], JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
+        $diagnostics = json_encode(['source' => $source, 'submitted_at' => gmdate(DATE_ATOM), 'child_count' => count($children)], JSON_THROW_ON_ERROR);
         $values = [$contact['name'],$contact['first_name'],$contact['last_name'],$contact['email'],$contact['phone'],$studentNames,$grades,$contact['channel'],
             $contact['name'],$contact['first_name'],$contact['last_name'],$contact['email'],$contact['phone'],$contact['bhs_id'],$studentNames,$grades,$contact['channel'],$diagnostics,$linkedUserId ?: null];
         if ($existing) {
