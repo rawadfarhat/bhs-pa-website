@@ -85,3 +85,5 @@
 .site-nav>a.portal-link:hover{background:var(--theme-surface-alt);color:var(--theme-primary-strong)}
 .site-nav>a.portal-link:focus-visible{outline:3px solid var(--theme-focus);outline-offset:3px}
 .portal-link svg{flex-shrink:0}
+
+.page-hero.event-banner-only{padding:0;aspect-ratio:16/5}.event-body-introduction{margin-bottom:2rem}.event-body-introduction h1{color:var(--theme-primary-strong);font-size:clamp(2rem,4vw,3rem);line-height:1.1}.event-body-introduction .eyebrow{color:var(--theme-primary)}.event-body-introduction .event-description{color:var(--theme-text-muted)}

@@ -49,3 +49,19 @@ websiteEventAssert(!str_contains($renderedContent['html'], '{image_gallery}'), '
 $safeHtml = safeEventHtml('<p onclick="bad()">Welcome <strong>families</strong><script>alert(1)</script><a href="javascript:bad()">link</a></p>');
 websiteEventAssert(str_contains($safeHtml, '<strong>families</strong>') && !str_contains($safeHtml, 'onclick') && !str_contains($safeHtml, '<script') && !str_contains($safeHtml, 'javascript:'), 'Published event HTML must be sanitized.');
 fwrite(STDOUT, "public event website checks passed\n");
+
+$introEvent = ['name' => '<Autumn Fair>', 'event_date' => '2026-10-29', 'description' => '<script>private</script>'];
+foreach (['banner', 'body', 'hidden'] as $placement) {
+    $intro = renderEventIntroduction($introEvent + ['description_placement' => $placement], 12);
+    websiteEventAssert(str_contains($intro['banner'], 'event-photo.php?id=12'), 'All placements retain the banner image.');
+    websiteEventAssert(str_contains($intro['banner'], 'linear-gradient') === ($placement === 'banner'), 'Only banner text needs an overlay.');
+    websiteEventAssert(str_contains($intro['banner'], '<h1>') === ($placement === 'banner'), 'Banner heading placement.');
+    websiteEventAssert(str_contains($intro['body'], '<h1>') === ($placement === 'body'), 'Body heading placement.');
+    websiteEventAssert(!str_contains(implode('', $intro), '<script>'), 'Introduction text is always escaped.');
+    if ($placement === 'hidden') websiteEventAssert(!str_contains(implode('', $intro), 'Autumn') && !str_contains(implode('', $intro), 'October'), 'Hidden omits date, title and description.');
+    $withoutPhoto = renderEventIntroduction($introEvent + ['description_placement' => $placement], 0);
+    websiteEventAssert(($withoutPhoto['banner'] !== '') === ($placement === 'banner'), 'No empty photo block when the banner has no text or photo.');
+}
+websiteEventAssert(renderEventIntroduction($introEvent, 12) === renderEventIntroduction($introEvent + ['description_placement' => 'banner'], 12), 'Missing placement retains existing layout.');
+websiteEventAssert(strpos($detail, "\$introduction['body'] ?>") < strpos($detail, '<?= $content ?>'), 'Body introduction precedes event HTML.');
+fwrite(STDOUT, "event introduction placement checks passed\n");

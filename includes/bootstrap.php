@@ -138,12 +138,16 @@ function upcomingEvents(array $events, ?DateTimeImmutable $today = null): array
 
 function publicEvent(int $id): ?array
 {
+    $logger = class_exists(App\Services\LoggingService::class);
+    if ($logger) App\Services\LoggingService::info('events', 'website.event.read.start', [], 3);
     try {
-        $stmt = db()->prepare("SELECT id,name,event_date,description,events_page_content_html,publish_photos,data_collection_config FROM events WHERE id=:id AND deleted_at IS NULL AND status='active' AND publish_to_website=1 LIMIT 1");
+        $stmt = db()->prepare("SELECT id,name,event_date,description,description_placement,events_page_content_html,publish_photos,data_collection_config FROM events WHERE id=:id AND deleted_at IS NULL AND status='active' AND publish_to_website=1 LIMIT 1");
         $stmt->execute(['id' => $id]);
-        return $stmt->fetch() ?: null;
+        $event = $stmt->fetch() ?: null;
+        if ($logger) App\Services\LoggingService::info('events', 'website.event.read.complete', ['found' => $event !== null], 3);
+        return $event;
     } catch (Throwable $error) {
-        error_log('Public event lookup failed: ' . $error->getMessage());
+        if ($logger) App\Services\LoggingService::caught('events', 'website.event.read.failed', __LINE__, 'error', $error);
         return null;
     }
 }
@@ -365,3 +369,4 @@ function eventCollectionDisplayTotals(array $totals): array
 }
 
 require_once __DIR__ . '/community-client.php';
+require_once __DIR__ . '/event-presentation.php';
