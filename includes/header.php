@@ -2,6 +2,9 @@
 declare(strict_types=1);
 $pageTitle = $pageTitle ?? 'BHS Parents Association';
 $activePage = $activePage ?? '';
+// File-content versions invalidate stale browser/CDN copies after every asset change.
+$styleVersion = substr(hash_file('sha256', __DIR__ . '/../assets/styles.css'), 0, 16);
+$scriptVersion = substr(hash_file('sha256', __DIR__ . '/../assets/site.js'), 0, 16);
 $publishedEvents = publicEvents();
 $communityAvailable = communityAvailability() === true;
 // Navigation containing the Community link must not be served from a stale page cache.
@@ -22,8 +25,8 @@ $nav = [
     <meta name="theme-color" content="#123f4a">
     <title><?= e($pageTitle) ?></title>
     <link rel="icon" href="<?= e(url('assets/images/favicon.png')) ?>">
-    <link rel="stylesheet" href="<?= e(url('assets/styles.css?v=17')) ?>">
-    <script src="<?= e(url('assets/site.js?v=1')) ?>" defer></script>
+    <link rel="stylesheet" href="<?= e(url('assets/styles.css?rev=' . $styleVersion)) ?>">
+    <script src="<?= e(url('assets/site.js?rev=' . $scriptVersion)) ?>" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>

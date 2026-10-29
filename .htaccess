@@ -26,3 +26,16 @@ RewriteRule ^(community|event|events|pa-members|subscribe|terms|privacy|festival
     Header always set X-Frame-Options "SAMEORIGIN"
 </IfModule>
 
+
+# Mutable code must be revalidated on ordinary navigation after deployment.
+<IfModule mod_headers.c>
+    <FilesMatch "\.(?:css|js|mjs|html)$">
+        Header always set Cache-Control "no-cache, max-age=0, must-revalidate"
+        Header always set Expires "0"
+    </FilesMatch>
+</IfModule>
+<IfModule mod_expires.c>
+    <FilesMatch "\.(?:css|js|mjs|html)$">
+        ExpiresActive Off
+    </FilesMatch>
+</IfModule>
