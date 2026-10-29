@@ -68,8 +68,41 @@ final class EventDataCollectionService
         foreach (self::FIELDS as $key => $label) {
             $field = is_array($input['fields'][$key] ?? null) ? $input['fields'][$key] : [];
             $result['fields'][$key] = ['enabled' => !empty($field['enabled']), 'required' => !empty($field['enabled']) && !empty($field['required']), 'label' => self::text($field['label'] ?? $label, 150) ?: $label];
+            if (str_starts_with($key, 'number_')) {
+                if (class_exists(LoggingService::class)) LoggingService::info('event-data-collection', 'limits.configuration.start', [], 3);
+                foreach (['min', 'max'] as $bound) {
+                    if (class_exists(LoggingService::class)) LoggingService::info('event-data-collection', 'limits.configuration.bound', [], 10);
+                    $value = self::text($field[$bound] ?? '', 190);
+                    if ($value !== '' && !preg_match('/^-?\d{1,15}(?:\.\d{1,6})?$/D', $value)) {
+                    if (class_exists(LoggingService::class)) LoggingService::warning('event-data-collection', 'limits.rejected');
+                    throw new InvalidArgumentException($label . ' limits must be numbers (up to six decimal places).');
+                }
+                    $result['fields'][$key][$bound] = $value === '' ? null : $value;
+                }
+                if (class_exists(LoggingService::class)) LoggingService::info('event-data-collection', 'limits.configuration.prepared', [], 3);
+                $limits = $result['fields'][$key];
+                if ($limits['min'] !== null && $limits['max'] !== null && self::compareNumbers($limits['min'], $limits['max']) > 0) {
+                    if (class_exists(LoggingService::class)) LoggingService::warning('event-data-collection', 'limits.rejected');
+                    throw new InvalidArgumentException($label . ' minimum must not exceed its maximum.');
+                }
+            }
         }
         if ($result['enabled'] && !array_filter($result['fields'], fn($field) => $field['enabled'])) throw new InvalidArgumentException('Select at least one field to collect.');
+        return $result;
+    }
+
+    /** Compare signed decimals exactly at database precision. */
+    private static function compareNumbers(string $a, string $b): int
+    {
+        if (class_exists(LoggingService::class)) LoggingService::info('event-data-collection', 'limits.compare.start', [], 8);
+        $negativeA = str_starts_with($a, '-') && trim($a, '-0.') !== '';
+        $negativeB = str_starts_with($b, '-') && trim($b, '-0.') !== '';
+        $partsA = explode('.', ltrim($a, '-'), 2);
+        $partsB = explode('.', ltrim($b, '-'), 2);
+        $left = str_pad($partsA[0], 15, '0', STR_PAD_LEFT) . str_pad($partsA[1] ?? '', 6, '0');
+        $right = str_pad($partsB[0], 15, '0', STR_PAD_LEFT) . str_pad($partsB[1] ?? '', 6, '0');
+        $result = $negativeA !== $negativeB ? ($negativeA ? -1 : 1) : (strcmp($left, $right) <=> 0) * ($negativeA ? -1 : 1);
+        if (class_exists(LoggingService::class)) LoggingService::info('event-data-collection', 'limits.compare.complete', [], 8);
         return $result;
     }
 
@@ -138,6 +171,14 @@ final class EventDataCollectionService
             }
             if ($key === 'phone') $value = self::phone($value, self::text($input['phone_country'] ?? 'LB', 2), $countries);
             if (str_starts_with($key, 'number_') && !preg_match('/^-?\d{1,15}(?:\.\d{1,6})?$/D', $value)) throw new InvalidArgumentException($field['label'] . ' must be a number (up to six decimal places).');
+            if (str_starts_with($key, 'number_')) {
+                foreach (['min' => -1, 'max' => 1] as $bound => $direction) {
+                    if (isset($field[$bound]) && self::compareNumbers($value, $field[$bound]) === $direction) {
+                    if (class_exists(LoggingService::class)) LoggingService::warning('event-data-collection', 'limits.rejected');
+                    throw new InvalidArgumentException($field['label'] . ($bound === 'min' ? ' must be at least ' : ' must be at most ') . $field[$bound] . '.');
+                }
+                }
+            }
             $values[$key] = $value;
         }
         if ($configuration['consent'] && ($input['consent'] ?? '') !== '1') throw new InvalidArgumentException('Please agree to the use of your information.');
