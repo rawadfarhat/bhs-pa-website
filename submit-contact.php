@@ -29,9 +29,9 @@ try {
 } catch (RuntimeException $error) {
     $message = $error->getMessage();
     if (str_starts_with($message, 'Multiple contacts') || str_starts_with($message, 'This contact is linked')) respond(409, $message);
-    error_log('Public contact submission failed: ' . $message);
+    if(class_exists(\App\Services\LoggingService::class))\App\Services\LoggingService::caught('public-registration-review','website.registration.failed',__LINE__,'error',$error);
     respond(500, 'We could not save your information right now. Please try again later.');
 } catch (Throwable $error) {
-    error_log('Public contact submission failed: ' . $error->getMessage());
+    if(class_exists(\App\Services\LoggingService::class))\App\Services\LoggingService::caught('public-registration-review','website.registration.failed',__LINE__,'error',$error);
     respond(500, 'We could not save your information right now. Please try again later.');
 }
