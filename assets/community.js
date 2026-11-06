@@ -26,11 +26,11 @@
     controller?.abort();controller=new AbortController();const current=++sequence,content=document.getElementById('communityContent');if(!content)return;
     const active=document.activeElement,focused=content.contains(active)&&active.id?{id:active.id,start:active.selectionStart,end:active.selectionEnd}:null;
     const open=focused?Array.from(content.querySelectorAll('details[open]')).map(item=>item.dataset.communityLookup):(lookup?[lookup]:[]);const scroll=scrollY;if(!refresh&&!replace)history.replaceState({community_scroll:scroll},'',location.href);
-    content.setAttribute('aria-busy','true');progress.textContent=refresh?'Updating Community…':'Loading Community…';progress.hidden=false;
+    content.setAttribute('aria-busy','true');progress.textContent=refresh?'Updating the Circle…':'Loading the Circle…';progress.hidden=false;
     try{
       const response=await fetch(url,{cache:'no-store',credentials:'omit',redirect:'error',signal:controller.signal,headers:{Accept:'text/html'}});
       const html=await response.text();if(current!==sequence)return;const parsed=new DOMParser().parseFromString(html,'text/html'),next=parsed.getElementById('communityContent');
-      if(!next)throw new Error('Community unavailable');
+      if(!next)throw new Error('Circle unavailable');
       content.replaceChildren(...Array.from(next.childNodes));prepareImages(content);
       // Reconcile the shared navigation using the server's fresh availability gate.
       for(const nav of ['#site-nav','[aria-label="Footer navigation"]']){
@@ -43,7 +43,7 @@
       log('community.website.load.complete',1);
     }catch(error){if(error.name==='AbortError')return;window.AppDebug?.error('browser','community.website.load.failed');
       // Fail closed: a transport error must not leave previously delivered catalog content visible.
-      const message=document.createElement('div');message.className='event-card';const title=document.createElement('h2');title.textContent='Community is temporarily unavailable. Please try again.';const retry=document.createElement('a');retry.href=location.pathname+location.search;retry.textContent='Retry Community';message.append(title,retry);content.replaceChildren(message);
+      const message=document.createElement('div');message.className='event-card';const title=document.createElement('h2');title.textContent='The Circle is temporarily unavailable. Please try again.';const retry=document.createElement('a');retry.href=location.pathname+location.search;retry.textContent='Retry the Circle';message.append(title,retry);content.replaceChildren(message);
       document.querySelectorAll('#site-nav a,[aria-label="Footer navigation"] a').forEach(link=>{if(new URL(link.href).pathname===location.pathname)link.remove();});
     }finally{if(current===sequence){content.removeAttribute('aria-busy');progress.hidden=true;schedule();}}
   }
