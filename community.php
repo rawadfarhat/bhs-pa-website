@@ -2,7 +2,7 @@
 declare(strict_types=1);
 require __DIR__.'/includes/bootstrap.php';
 require __DIR__.'/includes/community-view.php';
-communityNoStore();$pageTitle='BHS Circle | BHS Parents Association';$activePage='community';$failure=null;$filters='';$state=[];$clamped=false;$business=null;$promotion=null;$data=null;
+communityNoStore();$pageTitle='Parents Circle | BHS Parents Association';$activePage='community';$failure=null;$filters='';$state=[];$clamped=false;$business=null;$promotion=null;$data=null;
 try{
     CommunityClient::diagnostic('website.page.start',1);$available=communityAvailability();if($available!==true)throw new RuntimeException($available===false?'Circle is unavailable.':'The Circle is temporarily unavailable.',$available===false?404:503);
     $state=communityState($_GET);if(isset($state['promotion'])&&!isset($state['view']))$state['view']='promotions';$root=communityRoot($state);$kind=$state['view']??'businesses';
@@ -18,7 +18,7 @@ try{
 require __DIR__.'/includes/header.php';
 ?>
 <link rel="stylesheet" href="<?= e(url('assets/community.css?v=3')) ?>">
-<section class="page-hero"><div class="shell"><p class="eyebrow">BHS Circle</p><h1>Discover the Circle</h1><p>Discover businesses and offers from our Parents Circle.</p></div></section>
+<section class="page-hero"><div class="shell"><p class="eyebrow">Parents Circle</p><h1>Discover the Circle</h1><p>Discover businesses and offers from our Parents Circle.</p></div></section>
 <section class="section community-section" data-community-page data-status="<?= http_response_code() ?: 200 ?>"><div class="shell" id="communityContent" aria-live="polite">
 <?php if($failure): ?>
 <div class="event-card"><h2><?= e($failure) ?></h2><?php if(communityAvailability()===true): ?><a class="text-link" href="<?= e(communityLink(communityRoot($state))) ?>">← Back to <?= e(($state['view']??'businesses')==='promotions'?'promotions':'businesses') ?></a><?php endif; ?> <a class="text-link" href="<?= e(url()) ?>">Back to home</a></div>
@@ -38,8 +38,8 @@ elseif($business&&!$promotion&&($state['from']??'')==='offer'&&isset($state['ori
 <?php else: ?>
 <section class="community-intro" aria-labelledby="communityIntroTitle">
     <h2 id="communityIntroTitle">Discover. Connect. Support our Circle.</h2>
-    <p>BHS Circle brings together businesses owned by BHS parents, helping families discover local services and support one another. Browse the businesses below or explore special offers for our Parents Circle.</p>
-    <p>To redeem an offer, present your BHS Circle Card at the participating business. You can access your card through the PA Portal. Each promotion’s terms and availability apply.</p>
+    <p>Parents Circle brings together businesses owned by BHS parents, helping families discover local services and support one another. Browse the businesses below or explore special offers for our Parents Circle.</p>
+    <p>To redeem an offer, present your Parents Circle Card at the participating business. You can access your card through the PA Portal. Each promotion’s terms and availability apply.</p>
     <p>Are you a BHS parent with a business? Log in to the PA Portal to submit your business and promotions for review.</p>
 </section>
 <nav class="community-tabs" aria-label="Discover the Circle"><a href="<?= e(communityLink($root,['view'=>'businesses','page'=>1])) ?>"<?= $kind==='businesses'?' aria-current="page"':'' ?>>Businesses</a><a href="<?= e(communityLink($root,['view'=>'promotions','page'=>1])) ?>"<?= $kind==='promotions'?' aria-current="page"':'' ?>>Promotions</a></nav>

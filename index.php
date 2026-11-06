@@ -33,7 +33,7 @@ if ($communityAvailable):
 ?>
 <section class="section" aria-labelledby="home-community-heading"><div class="shell">
     <a class="action-panel home-community" href="<?= e(url('community')) ?>" aria-labelledby="home-community-heading" aria-describedby="home-community-description">
-        <div><p class="eyebrow">BHS Circle</p><h2 id="home-community-heading">Connect with our Parents Circle</h2><p id="home-community-description">Discover businesses owned by BHS parents, explore special offers for our Parents Circle, and support one another.</p></div>
+        <div><p class="eyebrow">Parents Circle</p><h2 id="home-community-heading">Connect with our Parents Circle</h2><p id="home-community-description">Discover businesses owned by BHS parents, explore special offers for our Parents Circle, and support one another.</p></div>
         <span class="button">Discover the Circle <span aria-hidden="true">&nbsp;→</span></span>
     </a>
 </div></section>
