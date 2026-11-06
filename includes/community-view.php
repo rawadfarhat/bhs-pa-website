@@ -5,13 +5,13 @@ function communityState(array $input): array
 {
     CommunityClient::diagnostic('website.state.validate',8);$state=[];
     $allowed=['view','q','category','locality','filter_business','page','page_size','business','promotion','from','origin_promotion','related_page','related_q','category_page','category_search','locality_page','locality_search'];
-    foreach($allowed as $key){if(!isset($input[$key])||$input[$key]==='')continue;if(!is_scalar($input[$key]))throw new RuntimeException('Invalid Community filters.',422);$value=(string)$input[$key];
-        if(in_array($key,['view','from'],true)){if(!in_array($value,$key==='view'?['businesses','promotions']:['business','offer'],true))throw new RuntimeException('Invalid Community view.',422);}
-        elseif(in_array($key,['q','locality','related_q','category_search','locality_search'],true)){if(mb_strlen($value)>150||preg_match('/[\x00-\x1f\x7f]/',$value))throw new RuntimeException('Invalid Community filters.',422);}
-        else{if(!preg_match('/^[1-9][0-9]{0,8}$/D',$value))throw new RuntimeException('Invalid Community filters.',422);if($key==='page_size'&&!in_array((int)$value,[25,50,100],true))throw new RuntimeException('Invalid page size.',422);}
+    foreach($allowed as $key){if(!isset($input[$key])||$input[$key]==='')continue;if(!is_scalar($input[$key]))throw new RuntimeException('Invalid Circle filters.',422);$value=(string)$input[$key];
+        if(in_array($key,['view','from'],true)){if(!in_array($value,$key==='view'?['businesses','promotions']:['business','offer'],true))throw new RuntimeException('Invalid Circle view.',422);}
+        elseif(in_array($key,['q','locality','related_q','category_search','locality_search'],true)){if(mb_strlen($value)>150||preg_match('/[\x00-\x1f\x7f]/',$value))throw new RuntimeException('Invalid Circle filters.',422);}
+        else{if(!preg_match('/^[1-9][0-9]{0,8}$/D',$value))throw new RuntimeException('Invalid Circle filters.',422);if($key==='page_size'&&!in_array((int)$value,[25,50,100],true))throw new RuntimeException('Invalid page size.',422);}
         $state[$key]=$value;
     }
-    if(isset($state['business'],$state['promotion']))throw new RuntimeException('Choose one Community record.',422);
+    if(isset($state['business'],$state['promotion']))throw new RuntimeException('Choose one Circle record.',422);
     return $state;
 }
 function communityLink(array $state,array $changes=[]): string
@@ -61,7 +61,7 @@ function communityBusiness(array $row): void
 function communityPager(array $data,array $state,string $key='page'): void
 {
     CommunityClient::diagnostic('website.pagination.render',8);$pages=max(1,(int)ceil($data['total']/$data['page_size']));if($pages<=1)return;$page=$data['page'];
-    echo '<nav class="community-pagination" aria-label="'.($key==='related_page'?'Business promotions':'Community').' pages">';
+    echo '<nav class="community-pagination" aria-label="'.($key==='related_page'?'Business promotions':'Circle').' pages">';
     if($page===1)echo '<span class="button button-secondary" aria-disabled="true">Previous</span>';else echo '<a class="button button-secondary" href="'.e(communityLink($state,[$key=>$page-1])).'">Previous</a>';
     echo '<span>Page '.$page.' of '.$pages.'</span>';if($page===$pages)echo '<span class="button button-secondary" aria-disabled="true">Next</span>';else echo '<a class="button button-secondary" href="'.e(communityLink($state,[$key=>$page+1])).'">Next</a>';echo '</nav>';
 }
@@ -87,7 +87,7 @@ function communityFilters(array $state,bool $related=false,bool $multiplePages=f
 {
     CommunityClient::diagnostic('website.filters.render',8);$q=$related?'related_q':'q';echo '<form id="communityFilters" class="community-filters" method="get" action="'.e(url('community')).'">';
     foreach($state as $key=>$value)if(!in_array($key,[$q,'page','related_page','page_size','category_search','locality_search','category_page','locality_page'],true))echo '<input type="hidden" name="'.e($key).'" value="'.e($value).'">';
-    echo '<label class="community-search">Search '.($related?'promotions':'Community').'<input id="communitySearch" type="search" maxlength="150" name="'.$q.'" value="'.e($state[$q]??'').'" placeholder="Search names, descriptions…"></label>';if($multiplePages){echo '<label>Per page<select name="page_size">';foreach([25,50,100] as $size)echo '<option'.((int)($state['page_size']??25)===$size?' selected':'').'>'.$size.'</option>';echo '</select></label>';}else echo '<input type="hidden" name="page_size" value="'.(int)($state['page_size']??25).'">';echo '<noscript><button class="button" type="submit">Search</button></noscript></form>';
+    echo '<label class="community-search">Search '.($related?'promotions':'the Circle').'<input id="communitySearch" type="search" maxlength="150" name="'.$q.'" value="'.e($state[$q]??'').'" placeholder="Search names, descriptions…"></label>';if($multiplePages){echo '<label>Per page<select name="page_size">';foreach([25,50,100] as $size)echo '<option'.((int)($state['page_size']??25)===$size?' selected':'').'>'.$size.'</option>';echo '</select></label>';}else echo '<input type="hidden" name="page_size" value="'.(int)($state['page_size']??25).'">';echo '<noscript><button class="button" type="submit">Search</button></noscript></form>';
     if(!$related){echo '<div class="community-lookups">';communityLookup('categories',$state);communityLookup('localities',$state);echo '</div>';}
     echo '<div class="community-filter-chips">';foreach(['q'=>'Search','category'=>'Category','locality'=>'Locality','filter_business'=>'Business','related_q'=>'Search promotions'] as $key=>$label)if(isset($state[$key]))echo '<a href="'.e(communityLink($state,[$key=>null,'page'=>1,'related_page'=>1])).'">'.e($label.': '.($GLOBALS['community_filter_labels'][$key]??$state[$key])).' <span aria-hidden="true">×</span><span class="sr-only"> Remove filter</span></a>';echo '</div>';
 }
