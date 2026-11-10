@@ -48,6 +48,42 @@ websiteEventAssert(str_contains($renderedContent['html'], 'event-attachment.php?
 websiteEventAssert(!str_contains($renderedContent['html'], '{image_gallery}'), 'Rendered event content must not retain the gallery placeholder.');
 $safeHtml = safeEventHtml('<p onclick="bad()">Welcome <strong>families</strong><script>alert(1)</script><a href="javascript:bad()">link</a></p>');
 websiteEventAssert(str_contains($safeHtml, '<strong>families</strong>') && !str_contains($safeHtml, 'onclick') && !str_contains($safeHtml, '<script') && !str_contains($safeHtml, 'javascript:'), 'Published event HTML must be sanitized.');
+
+$styled = renderPublicEventContent(<<<'HTML'
+<style>
+@import "https://example.test/unsafe.css";
+:root { --cell-color: grey; }
+body .tickets td:first-child, #summary { background: var(--cell-color); color: #fff; }
+@media (max-width: 600px) { .tickets td { padding: 4px; } }
+@font-face { font-family: Fake; src: url(https://example.test/font); }
++ footer { display: none; }
+.tickets td { background-image: u\72l(https://example.test/image); position: fixed; }
+</style>
+<table class="tickets" style="border-collapse:collapse;width:100%;margin:calc(8px * var(--app-component-scale, 1)) 0">
+<caption>Tickets</caption><tbody><tr><td colspan="2" style="background-color: grey; border:1px solid var(--theme-border);padding:calc(6px * var(--app-component-scale, 1));">Column</td></tr></tbody>
+</table><p id="summary">Summary</p><a href="#summary">See summary</a>
+<p>{event_form;label:Register}</p>
+<script id="event-content">bad()</script><img id="event-content" src="javascript:bad()" onerror="bad()">
+HTML, [], '');
+websiteEventAssert(str_contains($styled['html'], 'background-color: grey') && str_contains($styled['html'], 'border: 1px solid var(--theme-border)')
+    && str_contains($styled['html'], 'margin: calc(8px * var(--app-component-scale, 1)) 0') && str_contains($styled['html'], 'colspan="2"'),
+    'Published tables retain authored backgrounds, borders, dimensions and cell spans.');
+websiteEventAssert(str_contains($styled['html'], 'class="event-custom-tickets"') && str_contains($styled['html'], 'href="#event-custom-id-summary"')
+    && str_contains($styled['html'], '{event_form;label:Register}') && !str_contains($styled['html'], '<style'),
+    'Custom classes and anchors are isolated and stylesheet text stays separate from placeholders.');
+websiteEventAssert(str_contains($styled['styles'], '#event-authored-content{--event-custom-cell-color: grey}')
+    && str_contains($styled['styles'], '#event-authored-content .event-custom-tickets td:first-child, #event-authored-content #event-custom-id-summary')
+    && str_contains($styled['styles'], 'background: var(--event-custom-cell-color)')
+    && str_contains($styled['styles'], '@media (max-width: 600px){#event-authored-content .event-custom-tickets td{padding: 4px}}'),
+    'Stylesheets keep scoped selectors, custom variables and responsive rules.');
+websiteEventAssert(!preg_match('/@import|@font-face|position|example\.test|\+ footer/', $styled['styles'])
+    && !preg_match('/<script|javascript:|onerror=/', $styled['html']), 'Active markup, external CSS loads and selectors outside the event are rejected.');
+$fullDocument = renderPublicEventContent('<!doctype html><html><head><title>Private title</title><style>body .hero {color: blue}</style></head>'
+    . '<body style="background: grey"><section class="hero"><h2>Event heading</h2></section></body></html>', [], '');
+websiteEventAssert($fullDocument['html'] === '<section class="event-custom-hero"><h2>Event heading</h2></section>'
+    && str_contains($fullDocument['styles'], '#event-authored-content .event-custom-hero{color: blue}')
+    && str_contains($fullDocument['styles'], '#event-authored-content{background: grey}'),
+    'Complete documents contribute the body markup and scoped head and body styles.');
 fwrite(STDOUT, "public event website checks passed\n");
 
 $introEvent = ['name' => '<Autumn Fair>', 'event_date' => '2026-10-29', 'description' => '<script>private</script>'];

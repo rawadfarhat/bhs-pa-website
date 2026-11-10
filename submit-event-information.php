@@ -3,6 +3,7 @@ declare(strict_types=1);
 require __DIR__ . '/includes/bootstrap.php';
 require __DIR__ . '/includes/event-collection.php';
 use App\Services\EventDataCollectionService;
+use App\Services\LoggingService;
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 function collectionResponse(int $status, string $message): never {
@@ -23,6 +24,8 @@ if (!empty($_POST['website'])) collectionResponse(200, 'Thank you for submitting
 $eventId = filter_var($_POST['event_id'] ?? null, FILTER_VALIDATE_INT);
 if (!$eventId || $eventId < 1) collectionResponse(422, 'Invalid event.');
 $pdo = null;
+$log = class_exists(LoggingService::class);
+if ($log) LoggingService::info('event-data-collection', 'website.submit.start', [], 1);
 try {
     $pdo = db();
     $pdo->beginTransaction();
@@ -33,15 +36,18 @@ try {
     if (!$event) { $pdo->rollBack(); collectionResponse(404, 'This form is unavailable.'); }
     $configuration = EventDataCollectionService::configuration($event['data_collection_config']);
     if (!$configuration['enabled']) { $pdo->rollBack(); collectionResponse(404, 'This form is unavailable.'); }
+    if ($log) LoggingService::info('event-data-collection', 'website.submit.validate', [], 3);
     $values = EventDataCollectionService::values($configuration, $_POST, eventPhoneCountries());
     EventDataCollectionService::save($pdo, (int) $eventId, $values);
     $pdo->commit();
+    if ($log) LoggingService::info('event-data-collection', 'website.submit.committed', [], 1);
     collectionResponse(200, $configuration['success_message']);
 } catch (InvalidArgumentException $error) {
     if ($pdo && $pdo->inTransaction()) $pdo->rollBack();
+    if ($log) LoggingService::warning('event-data-collection', 'website.submit.rejected');
     collectionResponse(422, $error->getMessage());
 } catch (Throwable $error) {
     if ($pdo && $pdo->inTransaction()) $pdo->rollBack();
-    error_log('Event information submission failed: ' . $error->getMessage());
+    if ($log) LoggingService::caught('event-data-collection', 'website.submit.failed', __LINE__, 'error', $error);
     collectionResponse(503, 'Unable to submit at the moment. Please try again.');
 }

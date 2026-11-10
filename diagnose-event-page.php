@@ -28,7 +28,7 @@ try {
     describeEventMarkup('Built-in layout probe', $probe);
     $rendered = renderPublicEventContent($raw, publicEventAttachments((int) $id), '')['html'];
     $rendered = replaceEventFormPlaceholder($rendered, App\Services\EventDataCollectionService::configuration($event['data_collection_config'] ?? null));
-    describeEventMarkup('After placeholders', renderEventCollectionTotals($rendered, ['count'=>'0','number_01'=>'0','number_02'=>'0']));
+    describeEventMarkup('After placeholders', renderEventCollectionTotals($rendered, ['count'=>'0','number_01'=>'0','number_02'=>'0','number_03'=>'0']));
     foreach (['includes/bootstrap.php','includes/event-collection.php','event.php','assets/styles.css','assets/event-collection.js'] as $file) echo $file . ' SHA256: ' . hash_file('sha256', __DIR__ . '/' . $file) . "\n";
 } catch (Throwable $error) {
     fwrite(STDERR, 'Diagnostic failed (' . get_class($error) . "). Review the private PHP error log.\n");
