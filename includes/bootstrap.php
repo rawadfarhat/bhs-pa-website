@@ -271,10 +271,10 @@ function renderEventGallery(array $event, array $photos): string
     return (string) ob_get_clean();
 }
 
-/** @return array{html:string,gallery_placed:bool} */
+/** @return array{html:string,styles:string,gallery_placed:bool} */
 function renderPublicEventContent(?string $html, array $attachments, string $galleryHtml): array
 {
-    $content = replaceEventAttachmentPlaceholders(safeEventHtml((string) $html), $attachments);
+    $content = replaceEventAttachmentPlaceholders(safeEventHtml($html, $styles), $attachments);
     $galleryPlaced = false;
     if ($galleryHtml !== '') {
         $content = preg_replace('/<p>\s*\{image_gallery\}\s*<\/p>|\{image_gallery\}/i', '__EVENT_IMAGE_GALLERY__', $content) ?? $content;
@@ -286,47 +286,100 @@ function renderPublicEventContent(?string $html, array $attachments, string $gal
     } else {
         $content = preg_replace('/<p>\s*\{image_gallery\}\s*<\/p>|\{image_gallery\}/i', '', $content) ?? $content;
     }
-    return ['html' => $content, 'gallery_placed' => $galleryPlaced];
+    return ['html' => $content, 'styles' => $styles, 'gallery_placed' => $galleryPlaced];
 }
 
-function safeEventHtml(?string $html): string
+require_once __DIR__ . '/event-content-styles.php';
+
+function safeEventHtml(?string $html, ?string &$styles = null): string
 {
+    $log = class_exists(App\Services\LoggingService::class);
+    if ($log) App\Services\LoggingService::info('events', 'website.content.sanitize.start', [], 3);
+    $styles = '';
     $html = trim((string) $html);
     if ($html === '') return '';
     $document = new DOMDocument();
-    libxml_use_internal_errors(true);
-    $document->loadHTML('<?xml encoding="utf-8" ?><div id="event-content">' . $html . '</div>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+    $previousErrors = libxml_use_internal_errors(true);
+    $document->loadHTML('<?xml encoding="utf-8" ?>' . $html, LIBXML_HTML_NODEFDTD | LIBXML_NONET);
     libxml_clear_errors();
-    $allowed = ['div','p','br','strong','b','em','i','u','ul','ol','li','h2','h3','h4','blockquote','table','thead','tbody','tr','th','td','a','span'];
-    $nodes = $document->getElementsByTagName('*');
-    for ($i = $nodes->length - 1; $i >= 0; $i--) {
-        $node = $nodes->item($i);
-        if (!$node instanceof DOMElement || $node->getAttribute('id') === 'event-content') continue;
-        if (!in_array(strtolower($node->tagName), $allowed, true)) {
-            $node->parentNode?->removeChild($node);
+    libxml_use_internal_errors($previousErrors);
+    $root = $document->getElementsByTagName('body')->item(0);
+    if (!$root instanceof DOMElement) {
+        if ($log) App\Services\LoggingService::warning('events', 'website.content.sanitize.unavailable');
+        return '';
+    }
+    $allowed = [
+        'a','abbr','address','article','aside','b','blockquote','br','caption','cite','code','col','colgroup',
+        'dd','del','details','dfn','div','dl','dt','em','figcaption','figure','h1','h2','h3','h4','h5','h6',
+        'header','hr','i','img','ins','kbd','li','mark','ol','p','pre','q','s','samp','section','small',
+        'span','strong','sub','summary','sup','table','tbody','td','tfoot','th','thead','tr','u','ul','var','wbr',
+    ];
+    foreach ($document->getElementsByTagName('style') as $stylesheet) {
+        if ($log) App\Services\LoggingService::info('events', 'website.content.sanitize.stylesheet', [], 10);
+        if (in_array(strtolower($stylesheet->getAttribute('type')), ['', 'text/css'], true)) {
+            $styles .= eventContentStylesheet($stylesheet->textContent);
+        }
+    }
+    if ($root->hasAttribute('style')) {
+        $bodyStyle = eventContentDeclarations($root->getAttribute('style'));
+        if ($bodyStyle !== '') $styles .= '#' . EVENT_CONTENT_SCOPE . '{' . $bodyStyle . '}';
+    }
+    foreach (array_reverse(iterator_to_array($root->getElementsByTagName('*'))) as $node) {
+        if ($log) App\Services\LoggingService::info('events', 'website.content.sanitize.element', [], 10);
+        $tag = strtolower($node->tagName);
+        if (!in_array($tag, $allowed, true)) {
+            $node->parentNode->removeChild($node);
             continue;
         }
         foreach (iterator_to_array($node->attributes) as $attribute) {
+            if ($log) App\Services\LoggingService::info('events', 'website.content.sanitize.attribute', [], 10);
             $name = strtolower($attribute->name);
+            $value = $attribute->value;
             if ($name === 'class') {
-                $classes = array_intersect(preg_split('/\s+/', trim($attribute->value)), ['event-columns', 'event-stack', 'event-card', 'event-highlight', 'event-muted', 'event-accent', 'event-center', 'event-eyebrow', 'event-stat']);
-                if ($classes) { $node->setAttribute('class', implode(' ', array_unique($classes))); continue; }
+                $classes = [];
+                foreach (preg_split('/\s+/', trim($value)) as $class) {
+                    if ($log) App\Services\LoggingService::info('events', 'website.content.sanitize.class', [], 10);
+                    if (preg_match('/^[a-z_][a-z0-9_-]*$/iD', $class)) $classes[] = eventContentClass($class);
+                }
+                if ($classes) {
+                    $node->setAttribute('class', implode(' ', array_unique($classes)));
+                    continue;
+                }
             }
-            if ($node->tagName === 'a' && $name === 'href') {
-                $href = html_entity_decode(trim($attribute->value), ENT_QUOTES | ENT_HTML5, 'UTF-8');
-                $scheme = parse_url($href, PHP_URL_SCHEME);
-                if (!preg_match('/[\x00-\x1F\x7F]/', $href)
-                    && !str_starts_with($href, '//')
-                    && ($scheme === null || in_array(strtolower((string) $scheme), ['http', 'https', 'mailto'], true))) continue;
+            if ($name === 'style' && ($style = eventContentDeclarations($value)) !== '') {
+                $node->setAttribute('style', $style);
+                continue;
             }
-            if ($node->tagName === 'a' && in_array($name, ['title'], true)) continue;
+            if ($name === 'id' && preg_match('/^[a-z_][a-z0-9_-]*$/iD', $value)) {
+                $node->setAttribute('id', 'event-custom-id-' . $value);
+                continue;
+            }
+            if (($tag === 'a' && $name === 'href') || ($tag === 'img' && $name === 'src')) {
+                $url = trim($value);
+                $scheme = parse_url($url, PHP_URL_SCHEME);
+                $schemes = $tag === 'a' ? ['http', 'https', 'mailto'] : ['http', 'https'];
+                if ($url !== '' && !preg_match('/[\x00-\x1F\x7F\\\\]/', $url) && !str_starts_with($url, '//')
+                    && ($scheme === null || in_array(strtolower((string) $scheme), $schemes, true))) {
+                    if ($tag === 'a' && preg_match('/^#[a-z_][a-z0-9_-]*$/iD', $url)) $url = '#event-custom-id-' . substr($url, 1);
+                    $node->setAttribute($name, $url);
+                    continue;
+                }
+            }
+            if ($name === 'title' || ($tag === 'img' && $name === 'alt') || ($tag === 'details' && $name === 'open')) continue;
+            if (in_array($tag, ['th','td','col','colgroup','img','ol'], true)
+                && in_array($name, ['colspan','rowspan','span','width','height','start'], true) && preg_match('/^\d{1,4}$/D', $value)) continue;
+            if ($tag === 'th' && $name === 'scope' && in_array($value, ['row','col','rowgroup','colgroup'], true)) continue;
             $node->removeAttribute($attribute->name);
         }
-        if ($node->tagName === 'a') $node->setAttribute('rel', 'noopener noreferrer');
+        if ($tag === 'a') $node->setAttribute('rel', 'noopener noreferrer');
+        if ($tag === 'img') {
+            $node->setAttribute('loading', 'lazy');
+            $node->setAttribute('referrerpolicy', 'no-referrer');
+        }
     }
-    $root = $document->getElementById('event-content');
     $output = '';
-    if ($root) foreach ($root->childNodes as $child) $output .= $document->saveHTML($child);
+    foreach ($root->childNodes as $child) $output .= $document->saveHTML($child);
+    if ($log) App\Services\LoggingService::info('events', 'website.content.sanitize.complete', [], 3);
     return $output;
 }
 
