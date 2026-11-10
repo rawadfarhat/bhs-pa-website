@@ -26,39 +26,6 @@ final class EventDataCollectionService
     public const MULTILINE_FIELDS = ['text_01', 'text_02', 'textarea_01', 'textarea_02'];
     public const NUMBER_FIELDS = ['number_01', 'number_02', 'number_03'];
 
-    /** Display-only attendee ceiling; null/blank/invalid values leave totals unchanged. */
-    public static function displayTotals(array $totals, mixed $maximum, mixed $maximum02 = null): array
-    {
-        $log = class_exists(LoggingService::class);
-        if ($log) LoggingService::info('event-data-collection', 'displayTotals.start', [], 3);
-        foreach (['number_01' => $maximum, 'number_02' => $maximum02] as $field => $ceiling) {
-            if ($log) LoggingService::info('event-data-collection', 'displayTotals.field', [], 10);
-            $maximum = $ceiling;
-            $max = is_scalar($maximum) ? trim((string) $maximum) : '';
-            if (!preg_match('/^\d+(?:\.\d{1,6})?$/D', $max)) {
-                if ($log) LoggingService::info('event-data-collection', 'displayTotals.unconfigured', [], 10);
-                continue;
-            }
-            // Compare decimal strings exactly, without converting large totals to floats.
-            $normalize = static function (string $value): array {
-                if (class_exists(LoggingService::class)) LoggingService::info('event-data-collection', 'displayTotals.normalize', [], 8);
-                $parts = explode('.', $value, 2);
-                return [ltrim($parts[0], '0') ?: '0', str_pad($parts[1] ?? '', 6, '0')];
-            };
-            $actual = (string) ($totals[$field] ?? '0');
-            if (preg_match('/^\d+(?:\.\d{1,6})?$/D', $actual)) {
-                if ($log) LoggingService::info('event-data-collection', 'displayTotals.compare', [], 10);
-                [$a, $af] = $normalize($actual); [$b, $bf] = $normalize($max);
-                if (strlen($a) > strlen($b) || (strlen($a) === strlen($b) && (strcmp($a, $b) > 0 || ($a === $b && strcmp($af, $bf) >= 0)))) {
-                    if ($log) LoggingService::info('event-data-collection', 'displayTotals.ceiling', [], 10);
-                    $totals[$field] = $b . (($fraction = rtrim($bf, '0')) !== '' ? '.' . $fraction : '');
-                }
-            }
-        }
-        if ($log) LoggingService::info('event-data-collection', 'displayTotals.complete', [], 3);
-        return $totals;
-    }
-
     public static function totals(PDO $pdo, int $eventId): array
     {
         $query = $pdo->prepare('SELECT COUNT(*) AS count, COALESCE(SUM(number_01),0) AS number_01, COALESCE(SUM(number_02),0) AS number_02, COALESCE(SUM(number_03),0) AS number_03 FROM event_data_collection WHERE event_id=?');

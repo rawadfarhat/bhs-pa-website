@@ -18,10 +18,12 @@ $collection = App\Services\EventDataCollectionService::configuration($event['dat
 $content = replaceEventFormPlaceholder($renderedContent['html'], $collection);
 if (preg_match('/\{count\}|\{sum\s*;\s*field\s*:\s*number_0[123]\s*\}|\{progress\s*;/iu', $content)) {
     try {
-        $content = renderEventCollectionTotals($content, eventCollectionDisplayTotals(App\Services\EventDataCollectionService::totals(db(), $eventId)));
+        if (class_exists(App\Services\LoggingService::class)) App\Services\LoggingService::info('event-data-collection', 'website.event.totals.start', [], 3);
+        $content = renderEventCollectionTotals($content, App\Services\EventDataCollectionService::totals(db(), $eventId));
+        if (class_exists(App\Services\LoggingService::class)) App\Services\LoggingService::info('event-data-collection', 'website.event.totals.complete', [], 3);
     } catch (Throwable $error) {
         if (class_exists(App\Services\LoggingService::class)) App\Services\LoggingService::caught('event-data-collection', 'website.event.totals_unavailable', __LINE__, 'error', $error);
-        // Keep the event and its form usable; never reveal raw totals when ceiling settings cannot be read.
+        // Keep the event and its form usable when totals are unavailable.
         $content = renderEventCollectionTotals($content, ['count' => '�', 'number_01' => '�', 'number_02' => '�', 'number_03' => '�']);
     }
 }

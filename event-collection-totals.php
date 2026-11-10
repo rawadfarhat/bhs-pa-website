@@ -16,7 +16,9 @@ try {
         echo json_encode(['message' => 'Event unavailable.']);
         exit;
     }
-    echo json_encode(['data' => eventCollectionDisplayTotals(App\Services\EventDataCollectionService::totals(db(), $eventId))]);
+    if (class_exists(App\Services\LoggingService::class)) App\Services\LoggingService::info('event-data-collection', 'website.totals.start', [], 3);
+    echo json_encode(['data' => App\Services\EventDataCollectionService::totals(db(), $eventId)]);
+    if (class_exists(App\Services\LoggingService::class)) App\Services\LoggingService::info('event-data-collection', 'website.totals.complete', [], 3);
 } catch (Throwable $error) {
     if (class_exists(App\Services\LoggingService::class)) App\Services\LoggingService::caught('event-data-collection', 'website.totals.failed', __LINE__, 'error', $error);
     http_response_code(503);
