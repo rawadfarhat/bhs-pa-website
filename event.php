@@ -33,6 +33,6 @@ require __DIR__ . '/includes/header.php';
 <?= $introduction['banner'] ?>
 <?php if ($introduction['body'] !== '' || $content !== ''): ?><section class="section"><div class="shell narrow prose"><?= $introduction['body'] ?><?= $content ?></div></section><?php endif; ?>
 <?php if ($galleryHtml !== '' && !$galleryPlaced): ?><section class="section section-tint"><div class="shell"><?= $galleryHtml ?></div></section><?php endif; ?>
-<?php if ($collection['enabled']): ?><?= renderEventCollectionForm($event, $collection) ?><script src="<?= e(url('assets/event-collection.js?v=7')) ?>" defer></script><?php endif; ?>
+<?php if ($collection['enabled']): ?><?= renderEventCollectionForm($event, $collection) ?><script src="<?= e(url('assets/event-collection.js?v=8')) ?>" defer></script><?php endif; ?>
 <script src="<?= e(url('assets/event-gallery.js?v=2')) ?>" defer></script>
 <?php require __DIR__ . '/includes/footer.php'; ?>

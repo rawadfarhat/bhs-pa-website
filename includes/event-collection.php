@@ -45,8 +45,11 @@ function renderEventCollectionForm(array $event, array $configuration): string
     if ($log) LoggingService::info('event-data-collection', 'website.form.render.start', [], 1);
     ob_start(); ?>
 <dialog id="event-collection-dialog" class="event-collection-dialog" aria-labelledby="event-collection-title">
-  <button type="button" class="event-collection-close" aria-label="Close form">×</button>
-  <h2 id="event-collection-title"><?= e($event['name']) ?></h2>
+  <header class="event-collection-header">
+    <h2 id="event-collection-title"><?= e($event['name']) ?></h2>
+    <button type="button" class="event-collection-close" aria-label="Close form">×</button>
+  </header>
+  <div class="event-collection-body">
   <?php if ($configuration['subtext'] !== ''): ?><p class="event-description" data-event-collection-intro><?= e($configuration['subtext']) ?></p><?php endif; ?>
   <form action="<?= e(url('submit-event-information.php')) ?>" method="post" id="event-collection-form" data-totals-url="<?= e(url('event-collection-totals.php?event_id=' . (int) $event['id'])) ?>">
     <input type="hidden" name="event_id" value="<?= (int) $event['id'] ?>">
@@ -103,6 +106,7 @@ function renderEventCollectionForm(array $event, array $configuration): string
     <button type="submit" class="button"><?= e($configuration['submit_label']) ?></button>
   </form>
   <p id="event-collection-message" role="status" aria-live="polite" tabindex="-1"></p>
+  </div>
 </dialog>
 <?php
     if ($log) LoggingService::info('event-data-collection', 'website.form.render.complete', [], 1);

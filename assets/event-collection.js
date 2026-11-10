@@ -2,6 +2,7 @@
   const dialog = document.getElementById('event-collection-dialog');
   const form = document.getElementById('event-collection-form');
   if (!dialog || !form) return;
+  const body = dialog.querySelector('.event-collection-body');
   let opener;
   const log = (label, level) => window.AppDebug?.info('browser', label, level);
   function initializeCountryPicker(picker) {
@@ -89,7 +90,7 @@
     });
     document.addEventListener('click', event => { if (!picker.contains(event.target)) closeCountries(); });
     picker.addEventListener('focusout', event => { if (!picker.contains(event.relatedTarget)) closeCountries(); });
-    dialog.addEventListener('scroll', positionCountries);
+    body.addEventListener('scroll', positionCountries);
     window.addEventListener('resize', positionCountries);
     window.visualViewport?.addEventListener('resize', positionCountries);
     window.visualViewport?.addEventListener('scroll', positionCountries);

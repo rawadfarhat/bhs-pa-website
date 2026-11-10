@@ -81,8 +81,10 @@ final class EventDataCollectionService
         if (!is_array($input)) $input = [];
         $result = ['enabled' => !empty($input['enabled']), 'consent' => !empty($input['consent']), 'submit_label' => self::text($input['submit_label'] ?? 'Submit', 100) ?: 'Submit', 'subtext' => self::text($input['subtext'] ?? '', 2000), 'fields' => []];
         $result['success_message'] = self::text($input['success_message'] ?? '', 2000) ?: self::DEFAULT_SUCCESS_MESSAGE;
-        foreach (self::FIELDS as $key => $label) {
+        $result['field_order'] = self::fieldOrder($input['field_order'] ?? []);
+        foreach ($result['field_order'] as $key) {
             if ($log) LoggingService::info('event-data-collection', 'configuration.field', [], 10);
+            $label = self::FIELDS[$key];
             $field = is_array($input['fields'][$key] ?? null) ? $input['fields'][$key] : [];
             $result['fields'][$key] = ['enabled' => !empty($field['enabled']), 'required' => !empty($field['enabled']) && !empty($field['required']), 'label' => self::text($field['label'] ?? $label, 150) ?: $label];
             if (in_array($key, self::CHOICE_FIELDS, true)) {
@@ -117,6 +119,23 @@ final class EventDataCollectionService
         }
         if ($log) LoggingService::info('event-data-collection', 'configuration.complete', [], 1);
         return $result;
+    }
+
+    private static function fieldOrder(mixed $input): array
+    {
+        $log = class_exists(LoggingService::class);
+        if ($log) LoggingService::info('event-data-collection', 'fieldOrder.start', [], 8);
+        $order = [];
+        if (!is_array($input) || !array_is_list($input)) {
+            if ($log) LoggingService::warning('event-data-collection', 'fieldOrder.invalid');
+            $input = [];
+        }
+        foreach (array_slice($input, 0, count(self::FIELDS)) as $key) {
+            if ($log) LoggingService::info('event-data-collection', 'fieldOrder.field', [], 10);
+            if (is_string($key) && isset(self::FIELDS[$key])) $order[$key] = true;
+        }
+        if ($log) LoggingService::info('event-data-collection', 'fieldOrder.complete', [], 8);
+        return array_keys($order + self::FIELDS);
     }
 
     /** Option text is also the stored value, so older answers remain readable after edits. */
