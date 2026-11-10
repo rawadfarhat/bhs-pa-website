@@ -89,7 +89,8 @@ function renderEventCollectionForm(array $event, array $configuration): string
       </div>
       <input id="collect-<?= e($key) ?>" name="<?= e($key) ?>" type="tel" autocomplete="<?= $key === 'phone' ? 'tel-national' : 'section-' . e(str_replace('_', '-', $key)) . ' tel-national' ?>" maxlength="40" <?= $required ?>>
     </div>
-    <?php elseif (in_array($key, EventDataCollectionService::MULTILINE_FIELDS, true)): ?>
+    <?php elseif (str_starts_with($key, 'textarea_')):
+        if ($log) LoggingService::info('event-data-collection', 'website.form.render.textarea', [], 10); ?>
     <textarea id="collect-<?= e($key) ?>" name="<?= e($key) ?>" maxlength="2000" rows="3" <?= $required ?>></textarea>
     <?php elseif (in_array($key, EventDataCollectionService::CHOICE_FIELDS, true)): ?>
     <select id="collect-<?= e($key) ?>" name="<?= e($key) ?>" <?= $required ?>>
@@ -98,8 +99,12 @@ function renderEventCollectionForm(array $event, array $configuration): string
       <option value="<?= e($option) ?>"><?= e($option) ?></option>
       <?php endforeach; ?>
     </select>
-    <?php else: $type = $key === 'email' ? 'email' : (str_starts_with($key, 'number_') ? 'number' : 'text'); ?>
-    <input id="collect-<?= e($key) ?>" name="<?= e($key) ?>" type="<?= $type ?>" <?= $type === 'number' ? 'step="0.000001" inputmode="decimal"' : 'maxlength="190"' ?> <?= $type === 'number' && isset($field['min']) ? 'min="' . e($field['min']) . '"' : '' ?> <?= $type === 'number' && isset($field['max']) ? 'max="' . e($field['max']) . '"' : '' ?> <?= in_array($key, ['email','name'], true) ? 'autocomplete="' . $key . '"' : '' ?> <?= $field['required'] ? 'required' : '' ?>>
+    <?php else:
+        if ($log) LoggingService::info('event-data-collection', 'website.form.render.single_line', [], 10);
+        $type = $key === 'email' ? 'email' : (str_starts_with($key, 'number_') ? 'number' : 'text');
+        // Legacy Text 01 and Text 02 retain their existing answer length.
+        $maxlength = in_array($key, EventDataCollectionService::MULTILINE_FIELDS, true) ? 2000 : 190; ?>
+    <input id="collect-<?= e($key) ?>" name="<?= e($key) ?>" type="<?= $type ?>" <?= $type === 'number' ? 'step="0.000001" inputmode="decimal"' : 'maxlength="' . $maxlength . '"' ?> <?= $type === 'number' && isset($field['min']) ? 'min="' . e($field['min']) . '"' : '' ?> <?= $type === 'number' && isset($field['max']) ? 'max="' . e($field['max']) . '"' : '' ?> <?= in_array($key, ['email','name'], true) ? 'autocomplete="' . $key . '"' : '' ?> <?= $required ?>>
     <?php endif; endforeach; ?>
     <?php if ($configuration['consent']): ?><label class="event-collection-consent"><input type="checkbox" name="consent" value="1" required> <span>I agree to the use of this information as described in the <a href="<?= e(url('terms')) ?>" target="_blank" rel="noopener">Terms &amp; Conditions</a>.</span></label><?php endif; ?>
     <p class="event-collection-privacy">Your information is used to administer this event and communicate about it. Individual submissions are accessible only to authorized PA staff, including administrators. Read our <a href="<?= e(url('privacy')) ?>" target="_blank" rel="noopener">Privacy Policy</a> and <a href="<?= e(url('terms')) ?>" target="_blank" rel="noopener">Terms &amp; Conditions</a>. For correction or deletion requests, contact <a href="mailto:weserve@bhs-pa.com?subject=Event%20data%20privacy%20request">weserve@bhs-pa.com</a>.</p>
