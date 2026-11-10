@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 require_once __DIR__ . '/event-data-collection-service.php';
+use App\Services\EventDataCollectionService;
+use App\Services\LoggingService;
 
 function eventCollectionSession(): void
 {
@@ -23,7 +25,7 @@ function replaceEventFormPlaceholder(string $html, array $configuration): string
 }
 function renderEventCollectionTotals(string $html, array $totals): string
 {
-    $html = replaceEventText($html, '/\{progress\s*;\s*field\s*:\s*(count|number_01|number_02)\s*;\s*max\s*:\s*(\d+(?:\.\d+)?)\s*(?:;\s*label\s*:([^{}]*))?\}/iu', static function (array $match) use ($totals): string {
+    $html = replaceEventText($html, '/\{progress\s*;\s*field\s*:\s*(count|number_0[123])\s*;\s*max\s*:\s*(\d+(?:\.\d+)?)\s*(?:;\s*label\s*:([^{}]*))?\}/iu', static function (array $match) use ($totals): string {
         $key = strtolower($match[1]);
         $maximum = (float) $match[2];
         if (!is_finite($maximum) || $maximum <= 0) return e($match[0]);
@@ -32,13 +34,15 @@ function renderEventCollectionTotals(string $html, array $totals): string
         $label = html_entity_decode(trim($match[3] ?? ''), ENT_QUOTES | ENT_HTML5, 'UTF-8') ?: 'Progress';
         return '<span class="event-progress" data-event-progress="' . e($key) . '"><span class="event-progress-heading"><span>' . e($label) . '</span><span><strong data-event-collection-stat="' . e($key) . '">' . e($raw) . '</strong> / ' . e($match[2]) . '</span></span><progress max="' . e($match[2]) . '" value="' . e((string) $value) . '" aria-label="' . e($label) . '" aria-valuetext="' . e($raw . ' of ' . $match[2]) . '"></progress></span>';
     });
-    return replaceEventText($html, '/\{count\}|\{sum\s*;\s*field\s*:\s*(number_01|number_02)\s*\}/iu', static function (array $match) use ($totals): string {
+    return replaceEventText($html, '/\{count\}|\{sum\s*;\s*field\s*:\s*(number_0[123])\s*\}/iu', static function (array $match) use ($totals): string {
         $key = isset($match[1]) ? strtolower($match[1]) : 'count';
         return '<span data-event-collection-stat="' . e($key) . '">' . e((string) ($totals[$key] ?? '0')) . '</span>';
     });
 }
 function renderEventCollectionForm(array $event, array $configuration): string
 {
+    $log = class_exists(LoggingService::class);
+    if ($log) LoggingService::info('event-data-collection', 'website.form.render.start', [], 1);
     ob_start(); ?>
 <dialog id="event-collection-dialog" class="event-collection-dialog" aria-labelledby="event-collection-title">
   <button type="button" class="event-collection-close" aria-label="Close form">×</button>
@@ -48,26 +52,49 @@ function renderEventCollectionForm(array $event, array $configuration): string
     <input type="hidden" name="event_id" value="<?= (int) $event['id'] ?>">
     <input type="hidden" name="csrf" value="<?= e($_SESSION['event_collection_csrf']) ?>">
     <label class="event-collection-trap" aria-hidden="true">Leave empty<input name="website" tabindex="-1" autocomplete="off"></label>
-    <?php foreach ($configuration['fields'] as $key => $field): if (!$field['enabled']) continue; ?>
-    <label for="collect-<?= e($key) ?>"><?= e($field['label']) ?> <?= $field['required'] ? '(required)' : '(optional)' ?></label>
-    <?php if ($key === 'phone'): ?>
+    <?php foreach ($configuration['fields'] as $key => $field):
+        if ($log) LoggingService::info('event-data-collection', 'website.form.render.field', [], 10);
+        if (!$field['enabled']) continue;
+        $label = e($field['label']) . ($field['required'] ? ' (required)' : ' (optional)');
+        $required = $field['required'] ? 'required' : '';
+        if (str_starts_with($key, 'checkbox_')): ?>
+    <input type="hidden" name="<?= e($key) ?>" value="0">
+    <label class="event-collection-choice"><input type="checkbox" name="<?= e($key) ?>" value="1" <?= $required ?>> <span><?= $label ?></span></label>
+    <?php continue; elseif ($key === 'radio_01'): ?>
+    <fieldset class="event-collection-radio">
+      <legend><?= $label ?></legend>
+      <?php foreach ($field['options'] as $option): ?>
+      <label class="event-collection-choice"><input type="radio" name="<?= e($key) ?>" value="<?= e($option) ?>" <?= $required ?>> <span><?= e($option) ?></span></label>
+      <?php endforeach; ?>
+    </fieldset>
+    <?php continue; endif; ?>
+    <label for="collect-<?= e($key) ?>"><?= $label ?></label>
+    <?php if (in_array($key, EventDataCollectionService::PHONE_FIELDS, true)):
+        $optionId = $key === 'phone' ? 'event-country-options' : 'event-country-options-' . $key; ?>
     <div class="event-phone-input">
       <div class="event-country-picker">
-        <input type="hidden" name="phone_country" value="LB">
-        <button type="button" class="event-country-toggle" aria-label="Phone country: Lebanon +961" aria-haspopup="listbox" aria-expanded="false" aria-controls="event-country-options"><img data-phone-country-flag src="<?= e(url('assets/flags/lb.svg')) ?>" alt="" width="24" height="18"><span data-phone-country-code>+961</span><span aria-hidden="true">▾</span></button>
+        <input type="hidden" name="<?= e($key) ?>_country" value="LB" data-phone-country>
+        <button type="button" class="event-country-toggle" aria-label="Phone country: Lebanon +961" aria-haspopup="listbox" aria-expanded="false" aria-controls="<?= e($optionId) ?>"><img data-phone-country-flag src="<?= e(url('assets/flags/lb.svg')) ?>" alt="" width="24" height="18"><span data-phone-country-code>+961</span><span aria-hidden="true">▾</span></button>
         <div class="event-country-panel" hidden>
           <input type="search" class="event-country-search" aria-label="Search phone countries" placeholder="Search countries" autocomplete="off">
-          <div id="event-country-options" role="listbox" aria-label="Phone country and calling code">
-            <?php foreach (eventPhoneCountries() as $iso => $country): ?>
+          <div id="<?= e($optionId) ?>" class="event-country-options" role="listbox" aria-label="Phone country and calling code">
+            <?php foreach ($countries ??= eventPhoneCountries() as $iso => $country): ?>
             <button type="button" role="option" tabindex="-1" aria-selected="<?= $iso === 'LB' ? 'true' : 'false' ?>" data-country="<?= e($iso) ?>" data-code="<?= e($country['code']) ?>" data-name="<?= e($country['name']) ?>"><img src="<?= e(url('assets/flags/' . strtolower($iso) . '.svg')) ?>" alt="" width="24" height="18" loading="lazy"><span><?= e($country['name']) ?></span><span>+<?= e($country['code']) ?></span></button>
             <?php endforeach; ?>
           </div>
         </div>
       </div>
-      <input id="collect-phone" name="phone" type="tel" autocomplete="tel-national" maxlength="40" <?= $field['required'] ? 'required' : '' ?>>
+      <input id="collect-<?= e($key) ?>" name="<?= e($key) ?>" type="tel" autocomplete="<?= $key === 'phone' ? 'tel-national' : 'section-' . e(str_replace('_', '-', $key)) . ' tel-national' ?>" maxlength="40" <?= $required ?>>
     </div>
-    <?php elseif (str_starts_with($key, 'text_')): ?>
-    <textarea id="collect-<?= e($key) ?>" name="<?= e($key) ?>" maxlength="2000" rows="3" <?= $field['required'] ? 'required' : '' ?>></textarea>
+    <?php elseif (in_array($key, EventDataCollectionService::MULTILINE_FIELDS, true)): ?>
+    <textarea id="collect-<?= e($key) ?>" name="<?= e($key) ?>" maxlength="2000" rows="3" <?= $required ?>></textarea>
+    <?php elseif (in_array($key, EventDataCollectionService::CHOICE_FIELDS, true)): ?>
+    <select id="collect-<?= e($key) ?>" name="<?= e($key) ?>" <?= $required ?>>
+      <option value=""><?= $field['required'] ? 'Select an option' : 'No selection' ?></option>
+      <?php foreach ($field['options'] as $option): ?>
+      <option value="<?= e($option) ?>"><?= e($option) ?></option>
+      <?php endforeach; ?>
+    </select>
     <?php else: $type = $key === 'email' ? 'email' : (str_starts_with($key, 'number_') ? 'number' : 'text'); ?>
     <input id="collect-<?= e($key) ?>" name="<?= e($key) ?>" type="<?= $type ?>" <?= $type === 'number' ? 'step="0.000001" inputmode="decimal"' : 'maxlength="190"' ?> <?= $type === 'number' && isset($field['min']) ? 'min="' . e($field['min']) . '"' : '' ?> <?= $type === 'number' && isset($field['max']) ? 'max="' . e($field['max']) . '"' : '' ?> <?= in_array($key, ['email','name'], true) ? 'autocomplete="' . $key . '"' : '' ?> <?= $field['required'] ? 'required' : '' ?>>
     <?php endif; endforeach; ?>
@@ -77,5 +104,7 @@ function renderEventCollectionForm(array $event, array $configuration): string
   </form>
   <p id="event-collection-message" role="status" aria-live="polite" tabindex="-1"></p>
 </dialog>
-<?php return (string) ob_get_clean();
+<?php
+    if ($log) LoggingService::info('event-data-collection', 'website.form.render.complete', [], 1);
+    return (string) ob_get_clean();
 }

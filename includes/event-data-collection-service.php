@@ -10,7 +10,21 @@ use PDO;
 final class EventDataCollectionService
 {
     public const DEFAULT_SUCCESS_MESSAGE = 'Thank you for submitting your information';
-    public const FIELDS = ['name' => 'Name', 'email' => 'Email', 'phone' => 'Phone', 'number_01' => 'Number 01', 'number_02' => 'Number 02', 'text_01' => 'Text 01', 'text_02' => 'Text 02'];
+    public const FIELDS = [
+        'name' => 'Name', 'email' => 'Email', 'phone' => 'Phone',
+        'number_01' => 'Number 01', 'number_02' => 'Number 02', 'text_01' => 'Text 01', 'text_02' => 'Text 02',
+        'number_03' => 'Number 03', 'text_03' => 'Text 03',
+        'checkbox_01' => 'Checkbox 01', 'checkbox_02' => 'Checkbox 02', 'checkbox_03' => 'Checkbox 03',
+        'radio_01' => 'Radio group',
+        'dropdown_01' => 'Dropdown 01', 'dropdown_02' => 'Dropdown 02', 'dropdown_03' => 'Dropdown 03',
+        'phone_01' => 'Phone 01', 'phone_02' => 'Phone 02', 'phone_03' => 'Phone 03',
+        'textarea_01' => 'Text area 01', 'textarea_02' => 'Text area 02',
+    ];
+
+    public const CHOICE_FIELDS = ['radio_01', 'dropdown_01', 'dropdown_02', 'dropdown_03'];
+    public const PHONE_FIELDS = ['phone', 'phone_01', 'phone_02', 'phone_03'];
+    public const MULTILINE_FIELDS = ['text_01', 'text_02', 'textarea_01', 'textarea_02'];
+    public const NUMBER_FIELDS = ['number_01', 'number_02', 'number_03'];
 
     /** Display-only attendee ceiling; null/blank/invalid values leave totals unchanged. */
     public static function displayTotals(array $totals, mixed $maximum, mixed $maximum02 = null): array
@@ -47,7 +61,7 @@ final class EventDataCollectionService
 
     public static function totals(PDO $pdo, int $eventId): array
     {
-        $query = $pdo->prepare('SELECT COUNT(*) AS count, COALESCE(SUM(number_01),0) AS number_01, COALESCE(SUM(number_02),0) AS number_02 FROM event_data_collection WHERE event_id=?');
+        $query = $pdo->prepare('SELECT COUNT(*) AS count, COALESCE(SUM(number_01),0) AS number_01, COALESCE(SUM(number_02),0) AS number_02, COALESCE(SUM(number_03),0) AS number_03 FROM event_data_collection WHERE event_id=?');
         $query->execute([$eventId]);
         $totals = $query->fetch(PDO::FETCH_ASSOC);
         foreach ($totals as $key => $value) {
@@ -61,13 +75,23 @@ final class EventDataCollectionService
 
     public static function configuration(mixed $input): array
     {
+        $log = class_exists(LoggingService::class);
+        if ($log) LoggingService::info('event-data-collection', 'configuration.start', [], 1);
         if (is_string($input)) $input = json_decode($input, true);
         if (!is_array($input)) $input = [];
         $result = ['enabled' => !empty($input['enabled']), 'consent' => !empty($input['consent']), 'submit_label' => self::text($input['submit_label'] ?? 'Submit', 100) ?: 'Submit', 'subtext' => self::text($input['subtext'] ?? '', 2000), 'fields' => []];
         $result['success_message'] = self::text($input['success_message'] ?? '', 2000) ?: self::DEFAULT_SUCCESS_MESSAGE;
         foreach (self::FIELDS as $key => $label) {
+            if ($log) LoggingService::info('event-data-collection', 'configuration.field', [], 10);
             $field = is_array($input['fields'][$key] ?? null) ? $input['fields'][$key] : [];
             $result['fields'][$key] = ['enabled' => !empty($field['enabled']), 'required' => !empty($field['enabled']) && !empty($field['required']), 'label' => self::text($field['label'] ?? $label, 150) ?: $label];
+            if (in_array($key, self::CHOICE_FIELDS, true)) {
+                $result['fields'][$key]['options'] = self::options($field['options'] ?? []);
+                if ($result['enabled'] && $result['fields'][$key]['enabled'] && !$result['fields'][$key]['options']) {
+                    if ($log) LoggingService::warning('event-data-collection', 'configuration.choices.missing');
+                    throw new InvalidArgumentException($label . ' needs at least one option.');
+                }
+            }
             if (str_starts_with($key, 'number_')) {
                 if (class_exists(LoggingService::class)) LoggingService::info('event-data-collection', 'limits.configuration.start', [], 3);
                 foreach (['min', 'max'] as $bound) {
@@ -87,8 +111,40 @@ final class EventDataCollectionService
                 }
             }
         }
-        if ($result['enabled'] && !array_filter($result['fields'], fn($field) => $field['enabled'])) throw new InvalidArgumentException('Select at least one field to collect.');
+        if ($result['enabled'] && !array_filter($result['fields'], fn($field) => $field['enabled'])) {
+            if ($log) LoggingService::warning('event-data-collection', 'configuration.fields.missing');
+            throw new InvalidArgumentException('Select at least one field to collect.');
+        }
+        if ($log) LoggingService::info('event-data-collection', 'configuration.complete', [], 1);
         return $result;
+    }
+
+    /** Option text is also the stored value, so older answers remain readable after edits. */
+    private static function options(mixed $input): array
+    {
+        $log = class_exists(LoggingService::class);
+        if ($log) LoggingService::info('event-data-collection', 'options.start', [], 8);
+        if (!is_array($input) || !array_is_list($input) || count($input) > 50) {
+            if ($log) LoggingService::warning('event-data-collection', 'options.list.rejected');
+            throw new InvalidArgumentException('Use up to 50 options per choice field.');
+        }
+        $options = [];
+        foreach ($input as $option) {
+            if ($log) LoggingService::info('event-data-collection', 'options.item', [], 10);
+            if (!is_string($option) || preg_match('/[\r\n\x00]/', $option)) {
+                if ($log) LoggingService::warning('event-data-collection', 'options.item.rejected');
+                throw new InvalidArgumentException('Each option must be one line of text.');
+            }
+            $option = self::text($option, 190);
+            if ($option === '') continue;
+            if (in_array($option, $options, true)) {
+                if ($log) LoggingService::warning('event-data-collection', 'options.duplicate.rejected');
+                throw new InvalidArgumentException('Use distinct options in each choice field.');
+            }
+            $options[] = $option;
+        }
+        if ($log) LoggingService::info('event-data-collection', 'options.complete', [], 8);
+        return $options;
     }
 
     /** Compare signed decimals exactly at database precision. */
@@ -157,10 +213,19 @@ final class EventDataCollectionService
 
     public static function values(array $configuration, array $input, array $countries): array
     {
+        $log = class_exists(LoggingService::class);
+        if ($log) LoggingService::info('event-data-collection', 'values.start', [], 1);
         $values = [];
         foreach ($configuration['fields'] as $key => $field) {
+            if ($log) LoggingService::info('event-data-collection', 'values.field', [], 10);
             if (!$field['enabled']) continue;
-            $value = self::text($input[$key] ?? '', str_starts_with($key, 'text_') ? 2000 : 190);
+            $value = self::text($input[$key] ?? '', in_array($key, self::MULTILINE_FIELDS, true) ? 2000 : 190);
+            if (str_starts_with($key, 'checkbox_') && $value !== '') {
+                if (!in_array($value, ['0', '1'], true) || ($field['required'] && $value !== '1')) {
+                    if ($log) LoggingService::warning('event-data-collection', 'values.checkbox.rejected');
+                    throw new InvalidArgumentException($field['required'] ? $field['label'] . ' must be checked.' : 'Invalid checkbox value.');
+                }
+            }
             if ($value === '') {
                 if ($field['required']) throw new InvalidArgumentException($field['label'] . ' is required.');
                 continue; // Blank optional fields never erase existing values.
@@ -169,7 +234,18 @@ final class EventDataCollectionService
                 $value = strtolower($value);
                 if (!filter_var($value, FILTER_VALIDATE_EMAIL)) throw new InvalidArgumentException('Enter a valid email address.');
             }
-            if ($key === 'phone') $value = self::phone($value, self::text($input['phone_country'] ?? 'LB', 2), $countries);
+            if (in_array($key, self::PHONE_FIELDS, true)) {
+                if ($log) LoggingService::info('event-data-collection', 'values.phone.normalize', [], 8);
+                $value = self::phone($value, self::text($input[$key . '_country'] ?? 'LB', 2), $countries);
+            }
+            if (in_array($key, self::CHOICE_FIELDS, true) && !in_array($value, $field['options'], true)) {
+                if ($log) LoggingService::warning('event-data-collection', 'values.choice.rejected');
+                throw new InvalidArgumentException('Choose a listed option for ' . $field['label'] . '.');
+            }
+            if ($key === 'text_03' && preg_match('/[\r\n]/', $value)) {
+                if ($log) LoggingService::warning('event-data-collection', 'values.single_line.rejected');
+                throw new InvalidArgumentException($field['label'] . ' must be one line.');
+            }
             if (str_starts_with($key, 'number_') && !preg_match('/^-?\d{1,15}(?:\.\d{1,6})?$/D', $value)) throw new InvalidArgumentException($field['label'] . ' must be a number (up to six decimal places).');
             if (str_starts_with($key, 'number_')) {
                 foreach (['min' => -1, 'max' => 1] as $bound => $direction) {
@@ -183,6 +259,7 @@ final class EventDataCollectionService
         }
         if ($configuration['consent'] && ($input['consent'] ?? '') !== '1') throw new InvalidArgumentException('Please agree to the use of your information.');
         if ($configuration['consent']) $values['consented_at'] = gmdate('Y-m-d H:i:s');
+        if ($log) LoggingService::info('event-data-collection', 'values.complete', [], 1);
         return $values;
     }
 

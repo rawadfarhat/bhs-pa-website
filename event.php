@@ -16,13 +16,13 @@ $galleryHtml = renderEventGallery($event, $photos);
 $renderedContent = renderPublicEventContent($event['events_page_content_html'] ?? '', $attachments, $galleryHtml);
 $collection = App\Services\EventDataCollectionService::configuration($event['data_collection_config'] ?? null);
 $content = replaceEventFormPlaceholder($renderedContent['html'], $collection);
-if (preg_match('/\{count\}|\{sum\s*;\s*field\s*:\s*number_0[12]\s*\}|\{progress\s*;/iu', $content)) {
+if (preg_match('/\{count\}|\{sum\s*;\s*field\s*:\s*number_0[123]\s*\}|\{progress\s*;/iu', $content)) {
     try {
         $content = renderEventCollectionTotals($content, eventCollectionDisplayTotals(App\Services\EventDataCollectionService::totals(db(), $eventId)));
     } catch (Throwable $error) {
         if (class_exists(App\Services\LoggingService::class)) App\Services\LoggingService::caught('event-data-collection', 'website.event.totals_unavailable', __LINE__, 'error', $error);
         // Keep the event and its form usable; never reveal raw totals when ceiling settings cannot be read.
-        $content = renderEventCollectionTotals($content, ['count' => '—', 'number_01' => '—', 'number_02' => '—']);
+        $content = renderEventCollectionTotals($content, ['count' => 'ï¿½', 'number_01' => 'ï¿½', 'number_02' => 'ï¿½', 'number_03' => 'ï¿½']);
     }
 }
 $galleryPlaced = $renderedContent['gallery_placed'];
@@ -33,6 +33,6 @@ require __DIR__ . '/includes/header.php';
 <?= $introduction['banner'] ?>
 <?php if ($introduction['body'] !== '' || $content !== ''): ?><section class="section"><div class="shell narrow prose"><?= $introduction['body'] ?><?= $content ?></div></section><?php endif; ?>
 <?php if ($galleryHtml !== '' && !$galleryPlaced): ?><section class="section section-tint"><div class="shell"><?= $galleryHtml ?></div></section><?php endif; ?>
-<?php if ($collection['enabled']): ?><?= renderEventCollectionForm($event, $collection) ?><script src="<?= e(url('assets/event-collection.js?v=6')) ?>" defer></script><?php endif; ?>
+<?php if ($collection['enabled']): ?><?= renderEventCollectionForm($event, $collection) ?><script src="<?= e(url('assets/event-collection.js?v=7')) ?>" defer></script><?php endif; ?>
 <script src="<?= e(url('assets/event-gallery.js?v=2')) ?>" defer></script>
 <?php require __DIR__ . '/includes/footer.php'; ?>
