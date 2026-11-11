@@ -36,10 +36,41 @@ function communityOffer(array $row,bool $detail=false): string
     CommunityClient::diagnostic('website.offer.render',8);
     return communityImage($row,'promotions').'<p class="eyebrow">'.e($row['availability']??'Offer').'</p><h2>'.e($row['name']).'</h2><p>'.e($row['sub_text']??'').'</p>'.($detail?'<p class="community-description">'.e($row['description']??'').'</p><p>'.(($row['redemption_mode']??'')==='once'?'Once per parent identity.':'Repeat redemptions permitted.').'</p>':'').'<p class="community-meta">From '.e($row['start_date']).(!empty($row['end_date'])?' to '.e($row['end_date']):' · No end date').'</p>'.communityCounters($row);
 }
+
+function communitySocialLinks(array $row): string
+{
+    CommunityClient::diagnostic('website.social.render.start',8);
+    $platforms = [
+        'instagram'=>['Instagram','instagram.com','<rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>'],
+        'facebook'=>['Facebook','facebook.com','<path fill="currentColor" d="M14 22v-9h3l.5-4H14V7c0-1 .3-2 2-2h2V2h-3c-3 0-5 2-5 5v2H7v4h3v9z"/>'],
+        'linkedin'=>['LinkedIn','linkedin.com','<path fill="currentColor" d="M5 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM3 10h4v11H3zm7 0h4v1.5c1-1.3 2-2 3.7-2 2.7 0 4.3 1.8 4.3 5V21h-4v-6c0-1.5-.5-2.2-1.7-2.2-1.4 0-2.3 1-2.3 2.5V21h-4z"/>'],
+        'youtube'=>['YouTube','youtube.com','<path fill="currentColor" fill-rule="evenodd" d="M3 5h18a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2zm7 3v8l6-4z"/>'],
+    ];
+    $links = '';
+    foreach ($platforms as $key=>[$label,$domain,$icon]) {
+        CommunityClient::diagnostic('website.social.render.link',10);
+        $url = $row['social_profiles'][$key] ?? '';
+        if ($url === '') continue;
+        $parts = is_string($url) ? parse_url($url) : false;
+        $host = strtolower($parts['host'] ?? '');
+        if (!$parts || strlen($url) > 2048 || !filter_var($url,FILTER_VALIDATE_URL)
+            || strtolower($parts['scheme'] ?? '') !== 'https' || preg_match('/[\s\\\\]/',$url)
+            || isset($parts['user']) || isset($parts['pass']) || isset($parts['port'])
+            || ($host !== $domain && !str_ends_with($host,'.'.$domain))) {
+            CommunityClient::diagnostic('website.social.link.rejected',3,'warning');
+            continue;
+        }
+        $links .= '<a href="'.e($url).'" aria-label="'.e($label).'" title="'.e($label).'" target="_blank" rel="noopener noreferrer">'
+            .'<svg viewBox="0 0 24 24" aria-hidden="true">'.$icon.'</svg></a>';
+    }
+    CommunityClient::diagnostic('website.social.render.complete',8);
+    return $links === '' ? '' : '<div class="community-social-links" role="group" aria-label="Social media profiles">'.$links.'</div>';
+}
+
 function communityBusiness(array $row): void
 {
     CommunityClient::diagnostic('website.business.render',3);
-    echo '<section class="event-card community-business"><div class="community-business-info"><div>'.communityImage($row,'businesses').'<h2>'.e($row['name']).'</h2><p>'.e($row['sub_text']??'').'</p><p class="community-description">'.e($row['description']??'').'</p></div><div><dl><dt>Category</dt><dd>'.e($row['category']??'').'</dd>';
+    echo '<section class="event-card community-business"><div class="community-business-info"><div>'.communityImage($row,'businesses').'<h2>'.e($row['name']).'</h2><p>'.e($row['sub_text']??'').'</p>'.communitySocialLinks($row).'<p class="community-description">'.e($row['description']??'').'</p></div><div><dl><dt>Category</dt><dd>'.e($row['category']??'').'</dd>';
     foreach(['locality'=>'Locality','address'=>'Address'] as $field=>$label)if(!empty($row[$field]))echo '<dt>'.$label.'</dt><dd>'.e($row[$field]).'</dd>';
     echo '</dl>';$hours=[];foreach(['mon'=>'Monday','tue'=>'Tuesday','wed'=>'Wednesday','thu'=>'Thursday','fri'=>'Friday','sat'=>'Saturday','sun'=>'Sunday'] as $key=>$day){$item=$row['hours'][$key]??null;if(($item['mode']??'')==='closed')$hours[$day]='Closed';elseif(($item['mode']??'')==='open'&&!empty($item['intervals'])){$values=[];foreach($item['intervals'] as $interval)if(is_string($interval['open']??null)&&is_string($interval['close']??null))$values[]=$interval['open'].' – '.$interval['close'];if($values)$hours[$day]=implode(', ',$values);}}
     if($hours){echo '<h3>Opening hours</h3><dl>';foreach($hours as $day=>$value)echo '<dt>'.$day.'</dt><dd>'.e($value).'</dd>';echo '</dl>';}echo '</div></div>';
@@ -72,7 +103,7 @@ function communityCards(array $data,array $state,string $kind,?int $business=nul
         $href=communityLink($state,$changes);echo '<article class="event-card community-card"><a href="'.e($href).'">';
         if($kind==='businesses')echo communityImage($row,$kind).'<h2>'.e($row['name']).'</h2><p>'.e($row['sub_text']??'').'</p><p class="community-meta">'.e($row['category']??'').(!empty($row['locality'])?' · '.e($row['locality']):'').'</p>';
         else echo communityOffer($row).'<p>'.e($row['business']).'</p>';
-        echo '</a></article>';
+        echo '</a>'.($kind==='businesses'?communitySocialLinks($row):'').'</article>';
     }echo '</div>';if(!$data['rows'])echo '<p class="empty-state">No matching '.e($kind).'. Try changing your filters.</p>';
 }
 function communityLookup(string $kind,array $state): void
