@@ -17,4 +17,9 @@ ob_start();communityPager(['total'=>26,'page_size'=>25,'page'=>1],[]);$html=ob_g
 foreach(['http://example.test','https://user:secret@example.test','https://example.test/?q=1'] as $base)reject(fn()=>(new CommunityClient(['portal_base_url'=>$base]))->request('availability'),503);
 reject(fn()=>(new CommunityClient([]))->request('../users'),422);
 $rewrites=file_get_contents(__DIR__.'/../.htaccess');check(!str_contains($rewrites,'^(community|event|events|pa-members|subscribe|terms|privacy|festival-of-peace-2026)\\.'),'Raw PHP reaches availability guard before canonical redirect');check(str_contains($rewrites,'^(community|event|events|pa-members|subscribe|terms|privacy|festival-of-peace-2026)$'),'Clean Community rewrite exists');
+const SOCIAL_FIXTURE_URL = 'https://www.instagram.com/synthetic.fixture/';
+$profiles = ['instagram'=>SOCIAL_FIXTURE_URL,'facebook'=>'','linkedin'=>'https://linkedin.com.evil.test/example','youtube'=>'javascript:alert(1)'];
+$links = communitySocialLinks(['social_profiles'=>$profiles]);
+check(str_contains($links,SOCIAL_FIXTURE_URL)&&str_contains($links,'aria-label="Instagram"')&&str_contains($links,'<rect ')&&substr_count($links,'<a ')===1,'Published icons omit empty and untrusted profiles');
+check(communitySocialLinks(['social_profiles'=>[]])==='','No empty social profiles group');
 echo "Community website unit checks passed: bounded context/transport/schema, privacy, escaped content/maps/hours and pagination.\n";
