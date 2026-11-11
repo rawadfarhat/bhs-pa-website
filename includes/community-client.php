@@ -49,6 +49,7 @@ final class CommunityClient
         if(!is_array($row)||!is_scalar($row['id']??null)||!is_string($row['name']??null)||strlen($row['name'])>1000)throw new RuntimeException('The Circle is temporarily unavailable.',503);
         if(!$choice&&(!ctype_digit((string)$row['id'])||(int)$row['id']<1))throw new RuntimeException('The Circle is temporarily unavailable.',503);
         foreach(['sub_text','description','address','locality','maps_url','category','business','start_date','end_date','availability'] as $field)if(isset($row[$field])&&(!is_string($row[$field])||strlen($row[$field])>30000))throw new RuntimeException('The Circle is temporarily unavailable.',503);
+        if(isset($row['social_profiles'])&&!is_array($row['social_profiles']))throw new RuntimeException('The Circle is temporarily unavailable.',503);
         if(isset($row['counters'])){if(!is_array($row['counters']))throw new RuntimeException('The Circle is temporarily unavailable.',503);foreach($row['counters'] as $key=>$value)if(!in_array($key,['redeemed','remaining','total'],true)||!is_int($value)||$value<0)throw new RuntimeException('The Circle is temporarily unavailable.',503);}
         foreach(['owner_user_id','parent_user_id','email','phone','credential_digest','receipt_reference','hours_json','image_id','total_cap','redeemed_count'] as $private)if(array_key_exists($private,$row))throw new RuntimeException('The Circle is temporarily unavailable.',503);
     }

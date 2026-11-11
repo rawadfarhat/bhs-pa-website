@@ -8,3 +8,10 @@
 
 /* Reserve image geometry while optional lazy logos/offers load, matching Events feedback. */
 .community-image-frame{position:relative;display:block;width:100%;height:160px;margin-bottom:1rem;border-radius:10px;overflow:hidden}.community-image-frame .community-image{width:100%;height:100%;margin:0;object-fit:contain}.community-business .community-image-frame{width:96px;height:96px}.community-selected-offer>.community-image-frame{height:240px}.community-image-status{display:none;position:absolute;inset:0;align-items:center;justify-content:center;gap:.5rem;padding:.4rem;background:var(--theme-surface-alt);color:var(--theme-text-muted);font-size:.75rem;text-align:center}.community-image-frame.is-loading>.community-image-status,.community-image-frame.has-error>.community-image-status{display:flex}.community-image-frame.is-loading>img,.community-image-frame.has-error>img{visibility:hidden}.community-image-frame.is-loading>.community-image-status::before{content:"";width:16px;height:16px;flex:0 0 16px;border:2px solid var(--theme-border);border-top-color:var(--theme-primary);border-radius:50%;animation:community-image-spin .8s linear infinite}.community-business .community-image-status{flex-direction:column;font-size:.65rem}@keyframes community-image-spin{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.community-image-frame.is-loading>.community-image-status::before{animation:none}}
+
+.community-card{display:flex;flex-direction:column}.community-card>a{height:auto;flex:1}
+.community-social-links{display:flex;flex-wrap:wrap;gap:.45rem;margin:.6rem 0}
+.community-card .community-social-links{margin:0 1.4rem 1.1rem}
+.community-social-links a{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border:1px solid var(--theme-border);border-radius:.5rem;background:var(--theme-surface);color:var(--theme-primary)}
+.community-social-links a:hover{background:var(--theme-surface-alt);border-color:var(--theme-primary)}
+.community-social-links svg{width:1.25rem;height:1.25rem}
