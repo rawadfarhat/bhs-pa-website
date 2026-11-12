@@ -17,9 +17,12 @@ try{
 }catch(Throwable $error){if(ob_get_level()>0)ob_end_clean();$code=in_array($error->getCode(),[404,422],true)?$error->getCode():503;http_response_code($code);if($code===503)$GLOBALS['community_connector_failed']=true;$failure=$code===422?'Invalid Circle filters.':($code===404?'This Circle page is unavailable.':'The Circle is temporarily unavailable. Please try again.');CommunityClient::diagnostic('website.page.failed',1,$code===503?'error':'warning');}
 require __DIR__.'/includes/header.php';
 ?>
-<link rel="stylesheet" href="<?= e(url('assets/community.css?v=3')) ?>">
+<link rel="stylesheet" href="<?= e(url('assets/community.css?rev=' . substr(hash_file('sha256', __DIR__.'/assets/community.css'), 0, 16))) ?>">
 <section class="page-hero"><div class="shell"><p class="eyebrow">Parents Circle</p><h1>Discover the Circle</h1><p>Discover businesses and offers from our Parents Circle.</p></div></section>
-<section class="section community-section" data-community-page data-status="<?= http_response_code() ?: 200 ?>"><div class="shell" id="communityContent" aria-live="polite">
+<section class="section community-section" data-community-page data-status="<?= http_response_code() ?: 200 ?>">
+<div class="shell">
+<p id="communityProgress" class="community-progress" role="status" hidden></p>
+<div id="communityContent" aria-live="polite">
 <?php if($failure): ?>
 <div class="event-card"><h2><?= e($failure) ?></h2><?php if(communityAvailability()===true): ?><a class="text-link" href="<?= e(communityLink(communityRoot($state))) ?>">← Back to <?= e(($state['view']??'businesses')==='promotions'?'promotions':'businesses') ?></a><?php endif; ?> <a class="text-link" href="<?= e(url()) ?>">Back to home</a></div>
 <?php else:
@@ -45,6 +48,6 @@ elseif($business&&!$promotion&&($state['from']??'')==='offer'&&isset($state['ori
 <nav class="community-tabs" aria-label="Discover the Circle"><a href="<?= e(communityLink($root,['view'=>'businesses','page'=>1])) ?>"<?= $kind==='businesses'?' aria-current="page"':'' ?>>Businesses</a><a href="<?= e(communityLink($root,['view'=>'promotions','page'=>1])) ?>"<?= $kind==='promotions'?' aria-current="page"':'' ?>>Promotions</a></nav>
 <h2><?= ucfirst($kind) ?></h2><?= $filters ?><?php communityCards($data,$state,$kind); ?>
 <?php endif; endif; ?>
-</div></section>
-<script src="<?= e(url('assets/community.js?v=3')) ?>" defer></script>
+</div></div></section>
+<script src="<?= e(url('assets/community.js?rev=' . substr(hash_file('sha256', __DIR__.'/assets/community.js'), 0, 16))) ?>" defer></script>
 <?php require __DIR__.'/includes/footer.php'; ?>
