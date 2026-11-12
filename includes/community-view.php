@@ -41,6 +41,7 @@ function communitySocialLinks(array $row): string
 {
     CommunityClient::diagnostic('website.social.render.start',8);
     $platforms = [
+        'website'=>['Website',null,'<circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><ellipse cx="12" cy="12" rx="4" ry="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 12h18" stroke="currentColor" stroke-width="2"/>'],
         'instagram'=>['Instagram','instagram.com','<rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>'],
         'facebook'=>['Facebook','facebook.com','<path fill="currentColor" d="M14 22v-9h3l.5-4H14V7c0-1 .3-2 2-2h2V2h-3c-3 0-5 2-5 5v2H7v4h3v9z"/>'],
         'linkedin'=>['LinkedIn','linkedin.com','<path fill="currentColor" d="M5 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM3 10h4v11H3zm7 0h4v1.5c1-1.3 2-2 3.7-2 2.7 0 4.3 1.8 4.3 5V21h-4v-6c0-1.5-.5-2.2-1.7-2.2-1.4 0-2.3 1-2.3 2.5V21h-4z"/>'],
@@ -49,14 +50,14 @@ function communitySocialLinks(array $row): string
     $links = '';
     foreach ($platforms as $key=>[$label,$domain,$icon]) {
         CommunityClient::diagnostic('website.social.render.link',10);
-        $url = $row['social_profiles'][$key] ?? '';
+        $url = $key === 'website' ? ($row['website_url'] ?? '') : ($row['social_profiles'][$key] ?? '');
         if ($url === '') continue;
         $parts = is_string($url) ? parse_url($url) : false;
         $host = strtolower($parts['host'] ?? '');
         if (!$parts || strlen($url) > 2048 || !filter_var($url,FILTER_VALIDATE_URL)
-            || strtolower($parts['scheme'] ?? '') !== 'https' || preg_match('/[\s\\\\]/',$url)
+            || strtolower($parts['scheme'] ?? '') !== 'https' || preg_match('~[\x00-\x20\x7f]|\\\\~',$url)
             || isset($parts['user']) || isset($parts['pass']) || isset($parts['port'])
-            || ($host !== $domain && !str_ends_with($host,'.'.$domain))) {
+            || ($domain !== null && $host !== $domain && !str_ends_with($host,'.'.$domain))) {
             CommunityClient::diagnostic('website.social.link.rejected',3,'warning');
             continue;
         }
@@ -64,7 +65,7 @@ function communitySocialLinks(array $row): string
             .'<svg viewBox="0 0 24 24" aria-hidden="true">'.$icon.'</svg></a>';
     }
     CommunityClient::diagnostic('website.social.render.complete',8);
-    return $links === '' ? '' : '<div class="community-social-links" role="group" aria-label="Social media profiles">'.$links.'</div>';
+    return $links === '' ? '' : '<div class="community-social-links" role="group" aria-label="Business links">'.$links.'</div>';
 }
 
 function communityBusiness(array $row): void
