@@ -96,8 +96,9 @@ Logs button; the public website never processes mail or redeems a promotion.
       Google location/address-based map, supplied hours only, no owner/parent/card/receipt
       leakage, and derivative-only images. Test image loading/success/failure/lazy states.
 - [ ] Unpublish/disable/restore in the portal propagates on the next checked request.
-      Verify visible-tab refresh within 30 seconds, return from hidden/BFCache, and actual
-      media withdrawal. No CDN/conditional/304/stale-if-error bypass; no offline catalog.
+      Verify manual refresh, navigation, return from hidden/BFCache, and actual media
+      withdrawal. Check that an idle, visible tab stays in place.
+      No CDN/conditional/304/stale-if-error bypass; no offline catalog.
 - [ ] Outage/schema/oversize/timeout/redirect/invalid TLS responses show a safe unavailable
       state, hide the link and retain no stale business data; unrelated site pages work.
 - [ ] Desktop/tablet/phone layout, full shared header/footer, keyboard/menu/focus, long names,
