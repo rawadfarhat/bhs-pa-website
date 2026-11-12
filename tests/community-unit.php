@@ -22,4 +22,14 @@ $profiles = ['instagram'=>SOCIAL_FIXTURE_URL,'facebook'=>'','linkedin'=>'https:/
 $links = communitySocialLinks(['social_profiles'=>$profiles]);
 check(str_contains($links,SOCIAL_FIXTURE_URL)&&str_contains($links,'aria-label="Instagram"')&&str_contains($links,'<rect ')&&substr_count($links,'<a ')===1,'Published icons omit empty and untrusted profiles');
 check(communitySocialLinks(['social_profiles'=>[]])==='','No empty social profiles group');
+$website = 'https://example.test/?a=1&b=2';
+$links = communitySocialLinks(['website_url'=>$website,'social_profiles'=>$profiles]);
+check(str_contains($links,'href="https://example.test/?a=1&amp;b=2" aria-label="Website"')&&strpos($links,'Website')<strpos($links,'Instagram'),'Approved website is escaped and shown before social links');
+foreach (['','http://example.test','javascript:alert(1)','https://user@example.test','https://example.test\\contact',[]] as $invalid) {
+    check(communitySocialLinks(['website_url'=>$invalid])==='','Empty and invalid website links are hidden');
+}
+ob_start();communityBusiness(['id'=>1,'name'=>'Fixture','website_url'=>$website]);$html=ob_get_clean();
+check(str_contains($html,'aria-label="Website"'),'Business detail shows the approved website');
+ob_start();communityCards(['rows'=>[['id'=>1,'name'=>'Fixture','website_url'=>$website]],'total'=>1,'page'=>1,'page_size'=>25],[],'businesses');$html=ob_get_clean();
+check(str_contains($html,'aria-label="Website"'),'Business card shows the approved website');
 echo "Community website unit checks passed: bounded context/transport/schema, privacy, escaped content/maps/hours and pagination.\n";
