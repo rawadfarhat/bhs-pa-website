@@ -46,5 +46,5 @@ elseif($business&&!$promotion&&($state['from']??'')==='offer'&&isset($state['ori
 <h2><?= ucfirst($kind) ?></h2><?= $filters ?><?php communityCards($data,$state,$kind); ?>
 <?php endif; endif; ?>
 </div></section>
-<script src="<?= e(url('assets/community.js?v=2')) ?>" defer></script>
+<script src="<?= e(url('assets/community.js?v=3')) ?>" defer></script>
 <?php require __DIR__.'/includes/footer.php'; ?>
