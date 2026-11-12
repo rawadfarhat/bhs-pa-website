@@ -95,3 +95,36 @@
 .portal-link svg{flex-shrink:0}
 
 .page-hero.event-banner-only{padding:0;aspect-ratio:16/5}.event-body-introduction{margin-bottom:2rem}.event-body-introduction h1{color:var(--theme-heading);font-size:clamp(2rem,4vw,3rem);line-height:1.1}.event-body-introduction .eyebrow{color:var(--theme-heading)}.event-body-introduction .event-description{color:var(--theme-text-muted)}
+
+@media (prefers-reduced-motion: no-preference) {
+    .scroll-reveal {
+        animation: scroll-reveal 420ms ease-out;
+    }
+
+    .scroll-reveal:focus-within {
+        animation-duration: 0s;
+    }
+
+    @keyframes scroll-reveal {
+        from { opacity: .65; translate: 0 16px; }
+        to { opacity: 1; translate: 0 0; }
+    }
+
+    @supports (animation-timeline: view()) {
+        #main-content > .hero {
+            view-timeline-name: --home-hero;
+        }
+
+        #main-content > .hero > .hero-image {
+            --hero-travel: clamp(24px, 5vw, 48px);
+            top: calc(-1 * var(--hero-travel));
+            animation: hero-parallax auto linear both;
+            animation-timeline: --home-hero;
+            animation-range: exit 0% exit 100%;
+        }
+
+        @keyframes hero-parallax {
+            to { translate: 0 var(--hero-travel); }
+        }
+    }
+}

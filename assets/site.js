@@ -1,4 +1,30 @@
 document.addEventListener('DOMContentLoaded', () => {
+  if ('IntersectionObserver' in window) {
+    const motion = window.matchMedia('(prefers-reduced-motion: no-preference)');
+    const revealTargets = document.querySelectorAll([
+      '#main-content > .section .section-heading',
+      '#main-content > .section .event-list-grid > .event-card',
+      '#main-content > .section .member-grid > .member-card',
+      '#main-content > .section .poster-grid > a',
+      '#main-content > .intro-section > .split',
+      '#main-content > .section .action-panel',
+    ].join(', '));
+    const observer = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        observer.unobserve(entry.target);
+        if (motion.matches) {
+          entry.target.addEventListener('animationend', () => entry.target.classList.remove('scroll-reveal'), { once: true });
+          entry.target.classList.add('scroll-reveal');
+        }
+      }
+    });
+    const viewportHeight = document.documentElement.clientHeight;
+    for (const target of revealTargets) {
+      if (target.getBoundingClientRect().top >= viewportHeight) observer.observe(target);
+    }
+  }
+
   const toggle = document.querySelector('.menu-toggle');
   const nav = document.querySelector('.site-nav');
   toggle?.addEventListener('click', () => {
