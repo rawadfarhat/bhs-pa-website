@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
           entry.target.classList.add('scroll-reveal');
         }
       }
-    });
+    }, { rootMargin: '0px 0px -56px 0px' });
     const viewportHeight = document.documentElement.clientHeight;
     for (const target of revealTargets) {
       if (target.getBoundingClientRect().top >= viewportHeight) observer.observe(target);
