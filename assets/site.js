@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  if ('IntersectionObserver' in window) {
-    const motion = window.matchMedia('(prefers-reduced-motion: no-preference)');
+  if ('IntersectionObserver' in window && window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
     const revealTargets = document.querySelectorAll([
       '#main-content > .section .section-heading',
       '#main-content > .section .event-list-grid > .event-card',
@@ -13,15 +12,15 @@ document.addEventListener('DOMContentLoaded', () => {
       for (const entry of entries) {
         if (!entry.isIntersecting) continue;
         observer.unobserve(entry.target);
-        if (motion.matches) {
-          entry.target.addEventListener('animationend', () => entry.target.classList.remove('scroll-reveal'), { once: true });
-          entry.target.classList.add('scroll-reveal');
-        }
+        entry.target.classList.remove('scroll-reveal-pending');
       }
-    }, { rootMargin: '0px 0px -56px 0px' });
+    }, { rootMargin: '0px 0px 24px 0px' });
     const viewportHeight = document.documentElement.clientHeight;
     for (const target of revealTargets) {
-      if (target.getBoundingClientRect().top >= viewportHeight) observer.observe(target);
+      if (target.getBoundingClientRect().top < viewportHeight) continue;
+      // Set the starting pose offscreen so entry never dims already-visible content.
+      target.classList.add('scroll-reveal', 'scroll-reveal-pending');
+      observer.observe(target);
     }
   }
 
