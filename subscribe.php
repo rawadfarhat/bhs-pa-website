@@ -12,7 +12,7 @@ $grades = [
     'G10' => 'Grade 10', 'G11' => 'Grade 11', 'G12' => 'Grade 12',
 ];
 ?>
-<section class="page-hero compact"><div class="shell narrow"><p class="eyebrow">Parent contact details</p><h1>Stay connected</h1><p>Share your preferred details so you receive clear and timely Parents Association updates.</p></div></section>
+<section class="page-hero compact"><div class="shell narrow"><h1>Stay connected</h1><p>Share your preferred details so you receive clear and timely Parents Association updates.</p></div></section>
 <section class="section"><div class="shell narrow"><form class="contact-form" action="<?= e(url('submit-contact.php')) ?>" method="post" data-contact-form>
 <div class="form-status" role="status" aria-live="polite" hidden></div>
 <input type="text" name="website" class="honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
