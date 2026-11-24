@@ -28,8 +28,33 @@ check(str_contains($links,'href="https://example.test/?a=1&amp;b=2" aria-label="
 foreach (['','http://example.test','javascript:alert(1)','https://user@example.test','https://example.test\\contact',[]] as $invalid) {
     check(communitySocialLinks(['website_url'=>$invalid])==='','Empty and invalid website links are hidden');
 }
-ob_start();communityBusiness(['id'=>1,'name'=>'Fixture','website_url'=>$website]);$html=ob_get_clean();
-check(str_contains($html,'aria-label="Website"'),'Business detail shows the approved website');
-ob_start();communityCards(['rows'=>[['id'=>1,'name'=>'Fixture','website_url'=>$website]],'total'=>1,'page'=>1,'page_size'=>25],[],'businesses');$html=ob_get_clean();
-check(str_contains($html,'aria-label="Website"'),'Business card shows the approved website');
+$contactFixture = ['id'=>1,'name'=>'Fixture','website_url'=>$website,'business_phone'=>'+9613123456','social_profiles'=>[
+    'instagram'=>SOCIAL_FIXTURE_URL,
+    'facebook'=>'https://www.facebook.com/synthetic.fixture',
+    'linkedin'=>'https://www.linkedin.com/company/synthetic-fixture',
+    'youtube'=>'https://www.youtube.com/@SyntheticFixture',
+    'whatsapp'=>'https://wa.me/9613123456',
+]];
+$catalog = ['rows'=>[$contactFixture],'total'=>1,'page'=>1,'page_size'=>25];
+CommunityClient::validate('businesses/1',$contactFixture);
+CommunityClient::validate('businesses',$catalog);
+CommunityClient::validate('businesses/1',array_replace($contactFixture,['business_phone'=>'']));
+reject(fn()=>CommunityClient::validate('businesses/1',$contactFixture+['phone'=>'+9613123456']),503);
+reject(fn()=>CommunityClient::validate('businesses/1',array_replace($contactFixture,['business_phone'=>'tel:+9613123456'])),503);
+
+ob_start();communityBusiness($contactFixture);$detail=ob_get_clean();
+ob_start();communityCards($catalog,[],'businesses');$cards=ob_get_clean();
+foreach ([$detail,$cards] as $html) {
+    foreach (['Website'=>e($website),'Call +9613123456'=>'tel:+9613123456','Instagram'=>SOCIAL_FIXTURE_URL,
+        'Facebook'=>$contactFixture['social_profiles']['facebook'],'LinkedIn'=>$contactFixture['social_profiles']['linkedin'],
+        'YouTube'=>$contactFixture['social_profiles']['youtube'],'WhatsApp'=>'https://wa.me/9613123456'] as $label=>$href) {
+        check(str_contains($html,'href="'.$href.'" aria-label="'.$label.'"'),'Card and detail show approved '.$label);
+    }
+}
+check(communitySocialLinks(['business_phone'=>'','website_url'=>'','social_profiles'=>['whatsapp'=>'']])==='','Blank contacts leave no placeholder');
+check(communitySocialLinks(['business_phone'=>'javascript:alert(1)','phone'=>'+9613123456'])==='','Invalid and private phone values stay hidden');
+foreach (['https://wa.me/','https://wa.me.evil.test/9613123456','https://private@wa.me/9613123456','https://api.whatsapp.com:443/send?phone=9613123456'] as $invalid) {
+    check(communitySocialLinks(['social_profiles'=>['whatsapp'=>$invalid]])==='','Unsafe or empty WhatsApp destinations stay hidden');
+}
+check(str_contains(communitySocialLinks(['social_profiles'=>['whatsapp'=>'https://api.whatsapp.com/send?phone=9613123456']]),'aria-label="WhatsApp"'),'Existing API WhatsApp links still work');
 echo "Community website unit checks passed: bounded context/transport/schema, privacy, escaped content/maps/hours and pagination.\n";

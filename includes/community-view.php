@@ -46,18 +46,30 @@ function communitySocialLinks(array $row): string
         'facebook'=>['Facebook','facebook.com','<path fill="currentColor" d="M14 22v-9h3l.5-4H14V7c0-1 .3-2 2-2h2V2h-3c-3 0-5 2-5 5v2H7v4h3v9z"/>'],
         'linkedin'=>['LinkedIn','linkedin.com','<path fill="currentColor" d="M5 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM3 10h4v11H3zm7 0h4v1.5c1-1.3 2-2 3.7-2 2.7 0 4.3 1.8 4.3 5V21h-4v-6c0-1.5-.5-2.2-1.7-2.2-1.4 0-2.3 1-2.3 2.5V21h-4z"/>'],
         'youtube'=>['YouTube','youtube.com','<path fill="currentColor" fill-rule="evenodd" d="M3 5h18a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2zm7 3v8l6-4z"/>'],
+        'whatsapp'=>['WhatsApp','wa.me','<path d="M5 18l-1 3 4-1a9 9 0 1 0-3-2Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 7c-1 0-2 1-2 2 0 3 4 7 7 7 1 0 2-1 2-2l-3-2-1 1c-1 0-2-1-2-2l1-1z" fill="currentColor"/>'],
     ];
     $links = '';
+    $phone = $row['business_phone'] ?? '';
+    if (is_string($phone) && preg_match('/^\+[1-9][0-9]{6,14}$/D',$phone)) {
+        CommunityClient::diagnostic('website.social.phone.rendered',10);
+        $label = e('Call '.$phone);
+        $links .= '<a href="tel:'.e($phone).'" aria-label="'.$label.'" title="'.$label.'">'
+            .'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3H4c-1 0-2 1-2 2 0 9 8 17 17 17 1 0 2-1 2-2v-3l-5-2-2 2a14 14 0 0 1-7-7l2-2z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></a>';
+    } elseif ($phone !== '') {
+        CommunityClient::diagnostic('website.social.phone.rejected',3,'warning');
+    }
     foreach ($platforms as $key=>[$label,$domain,$icon]) {
         CommunityClient::diagnostic('website.social.render.link',10);
         $url = $key === 'website' ? ($row['website_url'] ?? '') : ($row['social_profiles'][$key] ?? '');
         if ($url === '') continue;
         $parts = is_string($url) ? parse_url($url) : false;
         $host = strtolower($parts['host'] ?? '');
+        $allowedHost = $key === 'whatsapp' ? in_array($host,[$domain,'api.whatsapp.com'],true)
+            : $domain === null || $host === $domain || str_ends_with($host,'.'.$domain);
         if (!$parts || strlen($url) > 2048 || !filter_var($url,FILTER_VALIDATE_URL)
             || strtolower($parts['scheme'] ?? '') !== 'https' || preg_match('~[\x00-\x20\x7f]|\\\\~',$url)
             || isset($parts['user']) || isset($parts['pass']) || isset($parts['port'])
-            || ($domain !== null && $host !== $domain && !str_ends_with($host,'.'.$domain))) {
+            || !$allowedHost || ($domain !== null && strlen($parts['path'] ?? '') < 2)) {
             CommunityClient::diagnostic('website.social.link.rejected',3,'warning');
             continue;
         }
