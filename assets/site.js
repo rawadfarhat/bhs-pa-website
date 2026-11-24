@@ -58,8 +58,21 @@ document.addEventListener('DOMContentLoaded', () => {
     status.hidden = true;
     try {
       const response = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
-      const data = await response.json();
-      status.textContent = data.message;
+      const { message } = await response.json();
+      const approval = response.ok ? message.match(/\bapproved\b/) : null;
+      if (approval) {
+        const emphasis = document.createElement('strong');
+        emphasis.textContent = approval[0];
+        status.replaceChildren(
+          message.slice(0, approval.index),
+          emphasis,
+          message.slice(approval.index + approval[0].length),
+        );
+        window.AppDebug?.info('browser', 'website.registration.confirmation.emphasized', 10);
+      } else {
+        status.textContent = message;
+        window.AppDebug?.info('browser', 'website.registration.status.plain', 10);
+      }
       status.className = `form-status ${response.ok ? 'success' : 'error'}`;
       status.hidden = false;
       if (response.ok) { form.reset(); children?.querySelectorAll('.child-row:not(:first-child)').forEach((row) => row.remove()); updateRemoveButtons(); status.scrollIntoView({ behavior: 'smooth', block: 'center' }); }

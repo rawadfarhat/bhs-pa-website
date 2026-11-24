@@ -13,7 +13,8 @@ function respond(int $status, string $message): never
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') respond(405, 'Method not allowed.');
-if (trim((string) ($_POST['website'] ?? '')) !== '') respond(200, 'Thank you. Your information has been received.');
+$confirmation = 'Thank you for registering. We’ve received your information, and a PA Portal representative will review and verify it. Once your registration is approved, you’ll receive an email with instructions for accessing and signing in to the PA Portal.';
+if (trim((string) ($_POST['website'] ?? '')) !== '') respond(200, $confirmation);
 
 require __DIR__ . '/includes/parent-contact-validation.php';
 try {
@@ -25,7 +26,7 @@ try {
 require __DIR__ . '/includes/parent-contact-storage.php';
 try {
     savePublicParentContact(db(), $submission['contact'], $submission['children']);
-    respond(200, 'Thank you. Your information has been received.');
+    respond(200, $confirmation);
 } catch (RuntimeException $error) {
     $message = $error->getMessage();
     if (str_starts_with($message, 'Multiple contacts') || str_starts_with($message, 'This contact is linked')) respond(409, $message);

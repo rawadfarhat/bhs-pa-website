@@ -134,3 +134,12 @@
         }
     }
 }
+
+.contact-form .form-status.success {
+    color: var(--theme-text);
+    font-weight: 400;
+}
+
+.contact-form .form-status.success strong {
+    color: var(--theme-success);
+}
