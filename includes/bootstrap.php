@@ -357,6 +357,14 @@ function safeEventHtml(?string $html, ?string &$styles = null): string
             if (($tag === 'a' && $name === 'href') || ($tag === 'img' && $name === 'src')) {
                 $url = trim($value);
                 $scheme = parse_url($url, PHP_URL_SCHEME);
+                if ($tag === 'a' && strtolower((string) $scheme) === 'tel') {
+                    if (preg_match('/\Atel:\+[1-9][0-9]{1,14}\z/i', $url)) {
+                        if ($log) App\Services\LoggingService::info('events', 'website.content.sanitize.phone_link_allowed', [], 10);
+                        $node->setAttribute('href', $url);
+                        continue;
+                    }
+                    if ($log) App\Services\LoggingService::warning('events', 'website.content.sanitize.phone_link_rejected');
+                }
                 $schemes = $tag === 'a' ? ['http', 'https', 'mailto'] : ['http', 'https'];
                 if ($url !== '' && !preg_match('/[\x00-\x1F\x7F\\\\]/', $url) && !str_starts_with($url, '//')
                     && ($scheme === null || in_array(strtolower((string) $scheme), $schemes, true))) {

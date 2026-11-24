@@ -49,6 +49,17 @@ websiteEventAssert(!str_contains($renderedContent['html'], '{image_gallery}'), '
 $safeHtml = safeEventHtml('<p onclick="bad()">Welcome <strong>families</strong><script>alert(1)</script><a href="javascript:bad()">link</a></p>');
 websiteEventAssert(str_contains($safeHtml, '<strong>families</strong>') && !str_contains($safeHtml, 'onclick') && !str_contains($safeHtml, '<script') && !str_contains($safeHtml, 'javascript:'), 'Published event HTML must be sanitized.');
 
+$phoneLinks = renderPublicEventContent(<<<'HTML'
+<a href="tel:+96181003766">+961 81 003 766</a>
+<a href="tel:+96181003766;ext=1">Extension</a>
+<a href="tel:+96181003766%0A">Encoded newline</a>
+<img src="tel:+96181003766" alt="Image">
+<a href="mailto:weserve@bhs-pa.com">Sponsor</a>
+HTML, [], '')['html'];
+websiteEventAssert(substr_count($phoneLinks, 'tel:') === 1 && str_contains($phoneLinks, 'href="tel:+96181003766"'),
+    'Only a canonical international telephone link on an anchor should survive.');
+websiteEventAssert(str_contains($phoneLinks, 'href="mailto:weserve@bhs-pa.com"'), 'Existing email links must still work.');
+
 $styled = renderPublicEventContent(<<<'HTML'
 <style>
 @import "https://example.test/unsafe.css";
