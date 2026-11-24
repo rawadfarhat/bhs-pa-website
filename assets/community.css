@@ -50,3 +50,31 @@
 @media(prefers-reduced-motion:reduce){
   .community-progress::before{animation:none}
 }
+
+.community-hero-layout {
+  display:grid;
+  grid-template-columns:auto minmax(0, 1fr);
+  align-items:center;
+  gap:clamp(1.5rem, 4vw, 4.5rem);
+}
+.community-hero-logos {
+  display:grid;
+  grid-template-columns:repeat(3, minmax(0, 9rem));
+  gap:clamp(.6rem, 2vw, 1.75rem);
+}
+.community-hero-logos img {
+  display:block;
+  width:100%;
+  height:auto;
+}
+@media(max-width:760px){
+  .community-hero {
+    padding-block:clamp(2.5rem, 8vw, 4rem);
+  }
+  .community-hero-layout {
+    grid-template-columns:1fr;
+  }
+  .community-hero-logos {
+    grid-template-columns:repeat(3, minmax(0, 5.5rem));
+  }
+}

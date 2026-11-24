@@ -18,7 +18,20 @@ try{
 require __DIR__.'/includes/header.php';
 ?>
 <link rel="stylesheet" href="<?= e(url('assets/community.css?rev=' . substr(hash_file('sha256', __DIR__.'/assets/community.css'), 0, 16))) ?>">
-<section class="page-hero"><div class="shell"><p class="eyebrow">Parents Circle</p><h1>Discover the Circle</h1><p>Discover businesses and offers from our Parents Circle.</p></div></section>
+<section class="page-hero community-hero">
+    <div class="shell community-hero-layout">
+        <div>
+            <p class="eyebrow">Parents Circle</p>
+            <h1>Discover the Circle</h1>
+            <p>Discover businesses and offers from our Parents Circle.</p>
+        </div>
+        <div class="community-hero-logos">
+            <img src="<?= e(url('assets/images/parents-circle/logo.png')) ?>" width="432" height="432" alt="BHS Parents Circle">
+            <img src="<?= e(url('assets/images/parents-circle/community-logo.png')) ?>" width="432" height="432" alt="BHS Parents Circle, a community that connects and gives back">
+            <img src="<?= e(url('assets/images/parents-circle/symbol.png')) ?>" width="432" height="432" alt="Parents Circle emblem with linked figures">
+        </div>
+    </div>
+</section>
 <section class="section community-section" data-community-page data-status="<?= http_response_code() ?: 200 ?>">
 <div class="shell">
 <p id="communityProgress" class="community-progress" role="status" hidden></p>
